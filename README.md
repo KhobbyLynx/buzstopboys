@@ -1,8 +1,8 @@
-# [BUZSTOPBOYS WEB APPLICATION]
+# BUZSTOPBOYS WEB APPLICATION
 
 ![Image](https://s3.amazonaws.com/creativetim_bucket/products/740/original/material-tailwind-react-events-details-template-thumbnail.jpg?1697625313)
 
-This project is a web application built for the **Basta Boys**, an organization focused on cleaning and improving areas within Accra, Ghana. The application showcases before-and-after images of cleaned areas, YouTube videos, upcoming destinations, and facilitates donations and purchases.
+This project is a web application built for the **BuzStopBoys**, an organization focused on cleaning and improving areas within Accra, Ghana. The application showcases before-and-after images of cleaned areas, YouTube videos, upcoming destinations, and facilitates donations and purchases.
 
 ## Project Features
 
@@ -24,8 +24,8 @@ This project is a web application built for the **Basta Boys**, an organization 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/BastaBoys.git
-   cd BastaBoys
+   git clone https://github.com/KhobbyLynx/buzstopboys.git
+   cd buzstopboys
    ```
 
 2. Install dependencies:
@@ -95,4 +95,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
 
-Special thanks to the Basta Boys organization for their continuous efforts in community service.
+Special thanks to the BuzStopBoys organization for their continuous efforts in community service.
