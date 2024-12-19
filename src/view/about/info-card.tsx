@@ -21,7 +21,7 @@ export function InfoCard({ icon: Icon, title, children }: InfoCardProps) {
         <Typography className="px-8 font-normal !text-gray-500">
           { children }
         </Typography> : 
-        <ul className="list-disc">
+        <ul>
          {Array.isArray(children) ? children.map((list, index) => (
   <li key={index} className="px-8 font-normal !text-gray-500 ">{list}</li>
 )) : null}

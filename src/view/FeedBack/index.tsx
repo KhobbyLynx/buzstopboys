@@ -64,7 +64,7 @@ export function Feedback() {
             Help Us Improve and Make a Greater Impact.
           </Typography>
         </div>
-        <div className="flex items-center justify-center md:flex-col gap-x-8 gap-y-12 lg:px-32 ">
+        <div className="grid grid-cols md:grid-cols-4 mx-auto items-center">
           {FEEDBACKS.map((props, key) => (
             <FeedbackCard key={key} {...props} />
           ))}

@@ -14,7 +14,7 @@ import { EnvelopeIcon, PhoneIcon, TicketIcon } from "@heroicons/react/24/solid";
 
 export function ContactForm() {
   return (
-    <section className="px-8 py-10">
+    <section className="px-8 p-[120px]">
       <div className="container mx-auto mb-20 text-center">
         <Typography variant="h1" color="blue-gray" className="mb-4">
           Get in Touch with Us
@@ -28,8 +28,8 @@ export function ContactForm() {
       </div>
       <div>
         <Card shadow={true} className="container mx-auto border border-gray/50">
-          <CardBody className="flex md:flex-col md:gap-10">
-            <div className="flex flex-col items-center justify-center w-3/5 rounded-lg py-8 p-10 md:p-16 bg-[url('/image/banner/cover2.svg')] bg-cover">
+          <CardBody className="grid grid-cols-1 lg:grid-cols-7 md:gap-10">
+            <div className="w-full col-span-3 rounded-lg h-full py-8 p-5 md:p-16 bg-gray-900 bg-[url('/image/banner/event.jpeg')] bg-cover">
               <Typography variant="h4" color="white" className="mb-2">
               Send Us a Message
               </Typography>
@@ -75,9 +75,10 @@ export function ContactForm() {
                 </IconButton>
               </div>
             </div>
-            <div className="w-full mt-8 md:mt-0 md:px-10 p-10">
+            <div className="w-full mt-8 md:mt-0 md:px-10 col-span-4 h-full p-5">
               <form action="#">
                 <div className="mb-8 grid gap-4 lg:grid-cols-2">
+                  {/* @ts-ignore */}
                   <Input
                     color="gray"
                     size="lg"
@@ -89,6 +90,7 @@ export function ContactForm() {
                       className: "!min-w-full mb-3 md:mb-0",
                     }}
                   />
+                  {/* @ts-ignore */}
                   <Input
                     color="gray"
                     size="lg"
@@ -101,6 +103,7 @@ export function ContactForm() {
                     }}
                   />
                 </div>
+                {/* @ts-ignore */}
                 <Input
                   color="gray"
                   size="lg"
@@ -119,13 +122,16 @@ export function ContactForm() {
                   What are you interested on?
                 </Typography>
                 <div className="-ml-3 mb-10">
+                  {/* @ts-ignore */}
                   <Radio
                     color="gray"
                     name="type"
                     label="Volunteer"
                     defaultChecked
                   />
+                  {/* @ts-ignore */}
                   <Radio color="gray" name="type" label="Donate" />
+                  {/* @ts-ignore */}
                   <Radio color="gray" name="type" label="Other" />
                 </div>
                 <Textarea

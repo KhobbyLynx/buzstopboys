@@ -30,7 +30,7 @@ export function Footer() {
   return (
     <footer className="pb-5 p-10 md:pt-10">
       <div className="container flex flex-col mx-auto">
-        <div className="flex !w-full py-10 mb-5 md:mb-20 flex-col justify-center !items-center bg-gray-900 container max-w-6xl mx-auto rounded-2xl p-5 ">
+        <div className="flex !w-full py-10 mb-5 md:mb-20 flex-col justify-center !items-center bg-gray-900 container max-w-6xl mx-auto rounded-2xl p-5 bg-[url('/image/banner/cover7.jpg')] bg-right-bottom bg-cover bg-no-repeat" >
           <Typography
             className="text-2xl md:text-3xl text-center font-bold "
             color="white"
@@ -45,7 +45,7 @@ export function Footer() {
           </Typography>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 md:flex-row">
             <div className="w-80">
-              <Input label="Email" color="white" />
+              <Input label="Email" color="white" crossOrigin={""} />
             </div>
             <Button size="md" className="lg:w-32" fullWidth color="white">
               subscribe
@@ -67,26 +67,26 @@ export function Footer() {
             ))}
           </ul>
           <div className="flex w-fit justify-center gap-2">
-            <IconButton size="sm" color="gray" variant="text">
+            <IconButton size="sm" color="white" variant="text">
             <i className="fa-brands fa-twitter text-lg" />
             </IconButton>
-            <IconButton size="sm" color="gray" variant="text">
+            <IconButton size="sm" color="white" variant="text">
               <i className="fa-brands fa-youtube text-lg" />
             </IconButton>
-            <IconButton size="sm" color="gray" variant="text">
+            <IconButton size="sm" color="white" variant="text">
               <i className="fa-brands fa-instagram text-lg" />
             </IconButton>
-            <IconButton size="sm" color="gray" variant="text">
+            <IconButton size="sm" color="white" variant="text">
               <i className="fa-brands fa-tiktok text-lg" />
             </IconButton>
-            <IconButton size="sm" color="gray" variant="text">
+            <IconButton size="sm" color="white" variant="text">
               <i className="fa-brands fa-facebook text-lg" />
             </IconButton>
           </div>
         </div>
         <Typography
           color="blue-gray"
-          className="text-center mt-12 font-normal !text-gray-700"
+          className="text-center mt-12 font-normal !text-gray-900"
         >
           &copy; {CURRENT_YEAR} BuzStopBoys. {" "}
           All Rights Reservered.

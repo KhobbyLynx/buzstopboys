@@ -45,7 +45,7 @@ const Team = () => {
   return (
     <section
       id="team"
-      className="overflow-hidden pb-12 pt-20 lg:pb-[36px] lg:pt-[200px]"
+      className="overflow-hidden pb-12 pt-20 lg:pb-[36px] lg:pt-[120px]"
     >
       <div className="container mx-auto mb-20">
         <div className="mb-[60px]">
