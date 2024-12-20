@@ -24,7 +24,7 @@ const STATS = [
 
 export function OurStats() {
   return (
-    <section className="container mx-auto grid gap-10 px-8 pb-36 lg:grid-cols-1 lg:gap-20 xl:grid-cols-2 xl:place-items-center">
+    <section className="mx-auto grid gap-6 lg:grid-cols-1 lg:gap-20 xl:grid-cols-2 xl:place-items-center bg-gray-100 dark:bg-gray-800 dark:text-white py-16 px-6 mb-10">
       <div>
         <Typography variant="h6" color="blue" className="mb-6 font-medium">
           Our Stats
