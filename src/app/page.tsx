@@ -14,10 +14,19 @@ export default function Portfolio() {
   return (
     <>
       <Hero />
-      <SponsoredBy />
+      
+      <Box className="px-6 md:px-16 mb-20 lg:mb-30">
+        <SponsoredBy />
+      </Box>
+
       <AboutSection />
-      <Feedback />
+
+      <Box className="px-6 md:px-16 mb-20 lg:mb-30">
+        <Feedback />
+      </Box>
+
       <OurStats />
+      
       <Box className="px-8 md:px-16 mb-20 lg:mb-30">
         <Faq />
       </Box>
