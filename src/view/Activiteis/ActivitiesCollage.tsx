@@ -56,7 +56,7 @@ const ACTIVITIES = [
 
 export function ActivitiesCollage() {
   return (
-    <section className="container mx-auto px-8 py-10">
+    <section className="mx-auto py-10">
       <div className="mb-10 grid place-items-center text-center">
         <Typography variant="h2" color="blue-gray" className="my-3">
           Activities Studio
