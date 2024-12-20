@@ -14,7 +14,7 @@ const SPONSORS = [
 
 export function SponsoredBy() {
   return (
-    <section className="py-8 px-8 lg:py-20">
+    <section className="py-8 lg:py-20">
       <div className="container mx-auto text-center">
         <Typography variant="h6" color="blue-gray" className="mb-8">
           SPONSORED BY
@@ -22,8 +22,8 @@ export function SponsoredBy() {
         <div className="flex flex-wrap items-center justify-center gap-20">
           {SPONSORS.map((logo, key) => (
             <Image
-              width={92}
-              height={92}
+              width={60}
+              height={60}
               key={key}
               src={`/image/partners/${logo}.svg`}
               alt={logo}
