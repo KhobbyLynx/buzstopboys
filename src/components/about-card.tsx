@@ -15,7 +15,7 @@ interface AboutCardProp {
 export function AboutCard({ title, description, subTitle, coverImage }: AboutCardProp) {
   return (
     <Card shadow={false} >
-      <CardBody  className={`h-[453px] p-5 flex flex-col justify-center items-center rounded-2xl bg-[url('/image/banner/${coverImage}')] bg-cover`}>
+      <CardBody  className={`h-[453px] p-5 flex flex-col justify-center items-center rounded-2xl bg-[url('/image/banner/${coverImage}.svg')] bg-cover`}>
         <Typography variant="h6" className="mb-4 text-center" color="white">
           {subTitle}
         </Typography>
