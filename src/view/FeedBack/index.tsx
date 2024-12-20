@@ -44,9 +44,9 @@ const FEEDBACKS: Feedback[] = [
 
 export function Feedback() {
   return (
-    <section className="px-8 py-16">
+    <section className="py-24">
       <div className="container mx-auto">
-        <div className="mb-16 flex flex-col items-center w-full">
+        <div className="mb-16 flex flex-col items-center w-full text-center">
           <Typography variant="h2" color="blue-gray" className="mb-2">
           We Value Your Feedback
           </Typography>
@@ -57,7 +57,7 @@ export function Feedback() {
             Help Us Improve and Make a Greater Impact.
           </Typography>
         </div>
-        <div className="grid grid-cols md:grid-cols-4 mx-auto items-center">
+        <div className="grid grid-cols md:grid-cols-4 gap-x-6 mx-auto items-center">
           {FEEDBACKS.map((props, key) => (
             <FeedbackCard key={key} {...props} />
           ))}
