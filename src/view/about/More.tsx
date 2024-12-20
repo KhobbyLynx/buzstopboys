@@ -51,7 +51,7 @@ const INFO = [
 
 export function MoreInfo() {
   return (
-    <section className="px-8 mb-20 lg:mb-60">
+    <section className="mt-36 mb-20 lg:mb-40">
       <div className="container mx-auto text-center">
         <Typography color="blue-gray" className="mb-2 font-bold uppercase">
           #BUZSTOPBOYS
@@ -66,7 +66,7 @@ export function MoreInfo() {
          BuzStopBoys is a dedicated non-governmental organization based in Accra, Ghana, committed to creating cleaner and healthier environments for all. Our mission is simple yet impactful: to transform neglected and unclean areas into vibrant, sustainable spaces that foster community well-being and environmental health.
         </Typography>
       </div>
-      <div className="container mx-auto grid grid-cols-1 gap-y-10 md:grid-cols-2 mt-10">
+      <div className="mx-auto grid grid-cols-1 gap-y-5 md:grid-cols-2 mt-10">
         {INFO.map((props, idx) => (
           <InfoCard key={idx} {...props} />
         ))}
