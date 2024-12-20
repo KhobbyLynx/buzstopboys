@@ -16,7 +16,7 @@ export function ContactForm() {
   return (
     <section className="mb-20 lg:mb-40 px-0 pt-[64px]">
       <div className="container mx-auto mb-20 text-center">
-        <Typography variant="h1" color="blue-gray" className="mb-4">
+        <Typography variant="h1" color="blue-gray" className="mb-4 px-4">
           Get in Touch with Us
         </Typography>
         <Typography
