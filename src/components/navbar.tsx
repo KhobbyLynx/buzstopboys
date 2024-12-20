@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Navbar as MTNavbar,
@@ -15,11 +16,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
-
-interface NavItemProps {
-  children: React.ReactNode;
-  href?: string;
-}
+import { usePathname } from "next/navigation";
 
 const NAV_MENU = [
   {
@@ -57,6 +54,8 @@ const NAV_MENU = [
 export function Navbar() {
   const [open, setOpen] = React.useState(false);
   const [isScrolling, setIsScrolling] = React.useState(false);
+
+  const pathname = usePathname();
 
   const handleOpen = () => setOpen((cur) => !cur);
 
@@ -97,7 +96,7 @@ export function Navbar() {
           }`}
         >
           {NAV_MENU.map(({ name, icon: Icon, href }) => (
-            <Link key={name} href={href} className="flex items-center gap-2 font-medium">
+            <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-gray-200' : ''}`}>	
               <Icon className="h-5 w-5" />
               <span>{name}</span>
             </Link>
@@ -128,9 +127,9 @@ export function Navbar() {
       </div>
         <Collapse open={open}>
         <div className="container mx-auto mt-4 rounded-lg bg-white px-6 py-5">
-          <ul className="flex flex-col gap-4 text-gray-900">
+          <ul className="flex flex-col gap-4">
             {NAV_MENU.map(({ name, icon: Icon, href }) => (
-              <Link key={name} href={href} className="flex items-center gap-2 font-medium">
+              <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-blue-400': 'text-gray-900'}`} onClick={handleOpen}>
                 <Icon className="h-5 w-5" />
                 {name}
               </Link>
