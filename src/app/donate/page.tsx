@@ -7,11 +7,10 @@ function pages() {
  
 
   return (
-    <div>
-        <PageNavbar />
+    <>
         <DonationCards />
         <DonationCampaign />
-    </div>
+    </>
   )
 }
 
