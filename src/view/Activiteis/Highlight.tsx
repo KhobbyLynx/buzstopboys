@@ -7,7 +7,7 @@ import Image from "next/image";
 
 function Highlight() {
   return (
-    <Box component="section" py={{ xs: 0, sm: 12 }} px={{ xs: 2, md: 4, lg:6}}>
+    <Box  py={{ xs: 0, sm: 12 }} px={{ xs: 2, md: 4}}>
       <Box
         component="div"
         position="relative"
@@ -16,7 +16,6 @@ function Highlight() {
           background: 'linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25))',
           borderRadius: '0.75rem',
           boxShadow: 'none',
-          overflow: 'hidden'
         }}
       >
         <Image 
