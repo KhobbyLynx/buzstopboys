@@ -9,7 +9,7 @@ const STATS = [
     title: "Areas Transformed",
   },
   {
-    count: "10,000+ ",
+    count: "12k + ",
     title: "Waste Removed(kg)",
   },
   {
@@ -24,7 +24,7 @@ const STATS = [
 
 export function OurStats() {
   return (
-    <section className="container mx-auto grid gap-10 px-8 py-36 lg:grid-cols-1 lg:gap-20 xl:grid-cols-2 xl:place-items-center">
+    <section className="container mx-auto grid gap-10 px-8 pb-36 lg:grid-cols-1 lg:gap-20 xl:grid-cols-2 xl:place-items-center">
       <div>
         <Typography variant="h6" color="blue" className="mb-6 font-medium">
           Our Stats
@@ -43,7 +43,7 @@ export function OurStats() {
         </Typography>
       </div>
       <div>
-        <div className="grid grid-cols-2 gap-8 gap-x-28">
+        <div className="grid grid-cols-2 gap-8 gap-x-10">
           {STATS.map((props, key) => (
             <StatsCard key={key} {...props} />
           ))}
