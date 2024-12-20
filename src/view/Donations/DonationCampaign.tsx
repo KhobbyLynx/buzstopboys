@@ -52,7 +52,7 @@ const CAMPAIGN = [
 
 export function DonationCampaign() {
   return (
-    <section className="px-8 pt-[120px] md:p-[20px]">
+    <section className="py-0">
       <div className="container mx-auto mb-24 text-center">
         <Typography variant="h2" color="blue-gray">
         Support a Cause Close to Your Heart
@@ -70,7 +70,7 @@ export function DonationCampaign() {
           We’re working tirelessly to tackle key challenges in our community. Whether it&apos;s cleaning our environment, providing essentials to those in need, or empowering local youth, your support fuels our mission. Select a purpose below to make your donation impactful and purpose-driven.
         </Typography>
       </div>
-  <div className="container mx-auto grid grid-cols-1 gap-x-10 gap-y-2  md:grid-cols-2 lg:grid-cols-3 lg:gap-x-14">
+  <div className="mx-auto grid grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-14">
     {CAMPAIGN.map((props, idx) => (
         <DonationCampaignCard key={idx} {...props} />
     ))}
