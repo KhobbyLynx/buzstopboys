@@ -4,7 +4,6 @@ import {
   Collapse,
   Button,
   IconButton,
-  Typography,
 } from "@material-tailwind/react";
 import {
   XMarkIcon,
@@ -91,7 +90,7 @@ export function Navbar() {
       className="fixed top-0 z-50 border-0"
     >
       <div className="container mx-auto flex items-center justify-between">
-        <Image src={isScrolling ? `/logos/logo_black.png` : '/logos/buzstopboys.png'} alt="BuzStopBoys" width={120} height={120}/>
+        <Image src={isScrolling ? `/logos/logo_black.png` : '/logos/buzstopboys.png'} alt="BuzStopBoys" width={80} height={80}/>
         <ul
           className={`ml-10 hidden items-center gap-6 lg:flex ${
             isScrolling ? "text-gray-900" : "text-white"
