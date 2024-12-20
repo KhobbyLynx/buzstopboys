@@ -16,9 +16,9 @@ function DonationCards() {
 
   return (
       
-          <section className="px-8 p-[64px]">
-                <div className="container mx-auto mb-16 text-center">
-                  <Typography variant="h2" color="blue-gray">
+          <section className="py-[64px]">
+                <div className="container mx-auto mb-24 text-center">
+                  <Typography variant="h2" color="blue-gray" className="px-8">
                   Make a Difference Your Way
                   </Typography>
                   <Typography
