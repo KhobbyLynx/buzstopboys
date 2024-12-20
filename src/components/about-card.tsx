@@ -13,9 +13,18 @@ interface AboutCardProp {
 }
 
 export function AboutCard({ title, description, subTitle, coverImage }: AboutCardProp) {
+  const backgroundImageStyle = {
+    backgroundImage: coverImage ? `url('/image/banner/${coverImage}.svg')` : 'none',
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+  };
+
   return (
-    <Card shadow={false} >
-      <CardBody  className={`h-[453px] p-5 flex flex-col justify-center items-center rounded-2xl bg-[url('/image/banner/${coverImage}.svg')] bg-cover`}>
+    <Card shadow={false}>
+      <CardBody
+        className="h-[453px] p-5 flex flex-col justify-center items-center rounded-2xl"
+        style={backgroundImageStyle}
+      >
         <Typography variant="h6" className="mb-4 text-center" color="white">
           {subTitle}
         </Typography>
@@ -35,6 +44,5 @@ export function AboutCard({ title, description, subTitle, coverImage }: AboutCar
     </Card>
   );
 }
-
 
 export default AboutCard;
