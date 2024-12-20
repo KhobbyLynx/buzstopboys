@@ -58,7 +58,7 @@ const Team = () => {
           />
         </div>
 
-        <div className="-mx-4 flex flex-wrap justify-center">
+        <div className="mx-4 flex flex-wrap justify-center">
           {teamData.map((team, i) => (
             <SingleTeam key={i} team={team} />
           ))}
