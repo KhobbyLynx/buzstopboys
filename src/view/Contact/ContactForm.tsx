@@ -14,7 +14,7 @@ import { EnvelopeIcon, PhoneIcon, TicketIcon } from "@heroicons/react/24/solid";
 
 export function ContactForm() {
   return (
-    <section className="px-8 p-[120px]">
+    <section className="mb-20 lg:mb-40 px-0 pt-[64px]">
       <div className="container mx-auto mb-20 text-center">
         <Typography variant="h1" color="blue-gray" className="mb-4">
           Get in Touch with Us
@@ -42,19 +42,13 @@ export function ContactForm() {
               <div className="flex gap-5">
                 <PhoneIcon className="h-6 w-6 text-white" />
                 <Typography variant="h6" color="white" className="mb-2">
-                  +1(424) 535 3523
+                  +233 537 151 049
                 </Typography>
               </div>
-              <div className="flex my-2 gap-5">
+              <div className="flex my-2 mb-10 gap-5">
                 <EnvelopeIcon className="h-6 w-6 text-white" />
                 <Typography variant="h6" color="white" className="mb-2">
-                  hello@mail.com
-                </Typography>
-              </div>
-              <div className="flex mb-10 gap-5">
-                <TicketIcon className="h-6 w-6 text-white" />
-                <Typography variant="h6" color="white" className="mb-2">
-                  Open Support Ticket
+                  buzstopboys@gmail.com
                 </Typography>
               </div>
               <div className="flex items-center gap-5">
@@ -129,6 +123,8 @@ export function ContactForm() {
                     label="Volunteer"
                     defaultChecked
                   />
+                  {/* @ts-ignore */}
+                  <Radio color="gray" name="type" label="Sponsor" />
                   {/* @ts-ignore */}
                   <Radio color="gray" name="type" label="Donate" />
                   {/* @ts-ignore */}
