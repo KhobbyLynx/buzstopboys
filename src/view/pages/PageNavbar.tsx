@@ -68,7 +68,7 @@ export function PageNavbar() {
   }, []);
 
   return (
-    <div className="px-10 sticky top-4 z-50">
+    <div className="px-4 sticky top-4 z-50">
       <div className="mx-auto container">
         <MTNavbar
           blurred
@@ -76,7 +76,7 @@ export function PageNavbar() {
           className="z-50 mt-6 relative border-0 pr-3 py-3 pl-6"
         >
           <div className="flex items-center justify-between">
-            <Image src="/logos/logo_black.png" alt="BuzStopBoys" width={92} height={92}/>
+            <Image src="/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80}/>
             <ul className="ml-10 hidden items-center gap-8 lg:flex text-gray-900">
             {NAV_MENU.map(({ name, icon: Icon, href }) => (
             <Link key={name} href={href} className="flex items-center gap-2 font-medium ">
