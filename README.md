@@ -1,6 +1,6 @@
 # BUZSTOPBOYS WEB APPLICATION
 
-![Image](https://s3.amazonaws.com/creativetim_bucket/products/740/original/material-tailwind-react-events-details-template-thumbnail.jpg?1697625313)
+![Image](https://res.cloudinary.com/khobbylynx/image/upload/v1734658270/buzstopboys/website-pages/buzstopboys-homepage_imkmll.png)
 
 This project is a web application built for the **BuzStopBoys**, an organization focused on cleaning and improving areas within Accra, Ghana. The application showcases before-and-after images of cleaned areas, YouTube videos, upcoming destinations, and facilitates donations and purchases.
 
