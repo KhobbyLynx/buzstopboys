@@ -7,7 +7,6 @@ import PageNavbar from "@/view/pages/PageNavbar"
 function page() {
   return (
     <div>
-        <PageNavbar />
         <ActivitiesCollage />
         <Highlight />
     </div>
