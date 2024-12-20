@@ -40,18 +40,11 @@ const FEEDBACKS: Feedback[] = [
     star: 5,
     img: "/image/avatar2.jpg",
   },
-  {
-    name: "Kwame Asare",
-    job: "Student",
-    feedback: "A great effort, but I think more awareness campaigns could help reach even more people.",
-    star: 4,
-    img: "/image/avatar3.jpg",
-  },
 ];
 
 export function Feedback() {
   return (
-    <section className="px-8 py-36">
+    <section className="px-8 py-16">
       <div className="container mx-auto">
         <div className="mb-16 flex flex-col items-center w-full">
           <Typography variant="h2" color="blue-gray" className="mb-2">
