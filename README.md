@@ -100,6 +100,7 @@ To bypass these errors during development, consider:
    ```
 
 **CREDIT**: [STACKOVERFLOW](https://stackoverflow.com/questions/78296875/typescript-error-using-material-tailwind-react-with-nextjs14/)
+
 Consider reaching out to the library's maintainers by raising an issue on their [GitHub repository](https://github.com/creativetimofficial/material-tailwind/issues).
 
 ## Contributions
