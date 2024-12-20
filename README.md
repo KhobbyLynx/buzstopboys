@@ -83,24 +83,24 @@ To bypass these errors during development, consider:
 
 ### Long-Term Fix
 
- 1. **DELETE**: Delete package-lock.json and node_modules folder if available
+1. **DELETE**: Delete package-lock.json and node_modules folder if available
 
- 2. **EDIT PACKAGE.JSON FILE**: Manually replace the version of @types/react to "18.2.42"
+2. **EDIT PACKAGE.JSON FILE**: Manually replace the version of @types/react to "18.2.42"
 
    ```typescript
-         "@types/react": "18.2.42",
-      ```
-    (Be aware to not include the ^ symbol, it may not work if kept).
- 
- 3.  **REINSTALL DEPENDENCIES**: Reinstall the dependencies with npm install.
+      "@types/react": "18.2.42",
+   ```
 
-      ```bash
+   (Be aware to not include the ^ symbol, it may not work if kept).
+
+3. **REINSTALL DEPENDENCIES**: Reinstall the dependencies with npm install.
+
+   ```bash
       npm install
-      ```
+   ```
 
-      **CREDIT**: [STACKOVERFLOW](https://stackoverflow.com/questions/78296875/typescript-error-using-material-tailwind-react-with-nextjs14/)
-
-   Consider reaching out to the library's maintainers by raising an issue on their [GitHub repository](https://github.com/creativetimofficial/material-tailwind/issues).
+**CREDIT**: [STACKOVERFLOW](https://stackoverflow.com/questions/78296875/typescript-error-using-material-tailwind-react-with-nextjs14/)
+Consider reaching out to the library's maintainers by raising an issue on their [GitHub repository](https://github.com/creativetimofficial/material-tailwind/issues).
 
 ## Contributions
 
