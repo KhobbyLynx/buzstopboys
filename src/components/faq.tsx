@@ -35,7 +35,7 @@ export function Faq() {
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
   return (
-    <section className="py-8 px-8 lg:py-20">
+    <section className="py-8 lg:py-20">
       <div className="container mx-auto">
         <div className="text-center">
           <Typography variant="h1" color="blue-gray" className="mb-4">
@@ -43,7 +43,7 @@ export function Faq() {
           </Typography>
           <Typography
             variant="lead"
-            className="mx-auto mb-24 lg:w-3/5 !text-gray-500"
+            className="mx-auto mb-10 lg:w-3/5 !text-gray-500"
           >
             Have questions about who we are, what we do, or how you can contribute? We’ve compiled answers to some of the most common inquiries to help you better understand BuzStopBoys and our mission to create cleaner, healthier communities.
           </Typography>
