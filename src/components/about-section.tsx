@@ -9,20 +9,20 @@ const EVENT_INFO = [
     description:
       "We identify unclean areas, deploy cleaning teams equipped with sustainable tools, and work closely with community members to restore spaces into clean, vibrant environments.",
     subTitle: "From Neglect to Renewal",
-    coverImage: 'cover2.svg'
+    coverImage: 'cover2'
   },
   {
     title: "Empowering Communities for Change",
     description:
     "Organizing hygiene education programs, engaging local volunteers, and creating partnerships to sustain cleanliness efforts long-term.",
     subTitle: "Community Outreach",
-    coverImage: 'cover3.svg'
+    coverImage: 'cover3'
   },
 ];
 
 export function AboutSection() {
   return (
-    <section className="container mx-auto flex flex-col items-center px-4 py-10 mb-20 lg:mb-60">
+    <section className="container mx-auto flex flex-col items-center px-4 py-10 mb-20">
       <Typography variant="h6" className="text-center mb-2" color="blue">
         About BuzStopBoys
       </Typography>
@@ -44,7 +44,7 @@ export function AboutSection() {
             title="Our Next Stop!"
             subTitle="Join Us on Our Mission"
             description=" Sharing details about upcoming locations and encouraging volunteers, donations, and partnerships to support our initiatives."
-            coverImage="cover4.svg"
+            coverImage="cover4"
           />
         </div>
       </div>
