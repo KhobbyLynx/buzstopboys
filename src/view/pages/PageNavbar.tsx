@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
   Navbar as MTNavbar,
@@ -19,6 +20,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const NAV_MENU = [
   {
@@ -56,6 +58,8 @@ const NAV_MENU = [
 export function PageNavbar() {
   const [open, setOpen] = React.useState(false);
 
+  const pathname = usePathname();
+
   function handleOpen() {
     setOpen((cur) => !cur);
   }
@@ -79,7 +83,7 @@ export function PageNavbar() {
             <Image src="/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80}/>
             <ul className="ml-10 hidden items-center gap-8 lg:flex text-gray-900">
             {NAV_MENU.map(({ name, icon: Icon, href }) => (
-            <Link key={name} href={href} className="flex items-center gap-2 font-medium ">
+            <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-gray-200' : ''}`}>
               <Icon className="h-5 w-5 " />
               <span>{name}</span>
             </Link>
@@ -112,7 +116,7 @@ export function PageNavbar() {
         <div className="container mx-auto mt-4 rounded-lg bg-white px-6 py-5">
           <ul className="flex flex-col gap-4 text-gray-900">
             {NAV_MENU.map(({ name, icon: Icon, href }) => (
-              <Link key={name} href={href} className="flex items-center gap-2 font-medium">
+              <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-blue-400' : ''}`}>
                 <Icon className="h-5 w-5" />
                 {name}
               </Link>
