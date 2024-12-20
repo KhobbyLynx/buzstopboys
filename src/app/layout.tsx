@@ -1,15 +1,14 @@
+import React from 'react';
+
 import "./globals.css";
+import '@/styles/styles.scss'
+
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
 
 // ** COMPONENTS
-import { Layout, Footer } from "@/components";
+import { ThemeProviderLayout } from "@/components";
+import Layout from '@/layouts';
 
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -22,11 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+
   return (
     <html lang="en">
       <head>
@@ -35,13 +31,12 @@ export default function RootLayout({
           data-site="YOUR_DOMAIN_HERE"
           src="https://api.nepcha.com/js/nepcha-analytics.js"
         ></script>
-        <link rel="shortcut icon" href="/logos/logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/logos/logo.jpg" type="image/png" />
       </head>
-      <body className={roboto.className}>
-        <Layout>
-          {children}
-          <Footer />
-        </Layout>
+      <body>
+        <ThemeProviderLayout>
+           <Layout>{children}</Layout>
+        </ThemeProviderLayout>
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
@@ -52,4 +47,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;
