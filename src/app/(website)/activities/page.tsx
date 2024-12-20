@@ -2,14 +2,16 @@
 
 import ActivitiesCollage from "@/view/Activiteis/ActivitiesCollage"
 import Highlight from "@/view/Activiteis/Highlight"
-import PageNavbar from "@/view/pages/PageNavbar"
+import { Box } from "@mui/material"
 
 function page() {
   return (
-    <div>
-        <ActivitiesCollage />
+    <>
+    <Box className="px-8">
+      <ActivitiesCollage />
+    </Box>
         <Highlight />
-    </div>
+    </>
   )
 }
 
