@@ -22,7 +22,7 @@ const EVENT_INFO = [
 
 export function AboutSection() {
   return (
-    <section className="container mx-auto flex flex-col items-center px-4 py-10 mb-20">
+    <section className="mx-auto flex flex-col items-center py-10 md:py-20 px-8 lg:px-16 bg-gray-100 dark:bg-gray-800 dark:text-white">
       <Typography variant="h6" className="text-center mb-2" color="blue">
         About BuzStopBoys
       </Typography>
