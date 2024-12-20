@@ -15,7 +15,7 @@ function PageHero() {
       />
       <div className="container mx-auto mt-10">
         <div className="grid grid-cols-12 text-center lg:text-left">
-          <Card className="col-span-full rounded-xl border border-white bg-white/90 py-10 p-8 shadow-lg shadow-black/10 backdrop-blur-sm backdrop-saturate-200 xl:col-span-7">
+          <Card className="col-span-full rounded-xl border border-white bg-white/90 md:bg-white/50 py-10 p-8 shadow-lg shadow-black/10 backdrop-blur-sm backdrop-saturate-200 xl:col-span-7">
             <Typography
               variant="h1"
               color="blue-gray"
