@@ -44,11 +44,10 @@ const teamData: TeamType[] = [
 const Team = () => {
   return (
     <section
-      id="team"
-      className="overflow-hidden pb-12 pt-20 lg:pb-[36px] lg:pt-[120px]"
+      className="bg-gray-100 dark:bg-gray-800 dark:text-white mb-20 py-10"
     >
       <div className="container mx-auto mb-20">
-        <div className="mb-[60px]">
+        <div className="mb-[60px] px-8">
           <SectionTitle
             subtitle="Our Team"
             title="Meet the Team"
@@ -58,7 +57,7 @@ const Team = () => {
           />
         </div>
 
-        <div className="mx-4 flex flex-wrap justify-center">
+        <div className="flex flex-wrap justify-center">
           {teamData.map((team, i) => (
             <SingleTeam key={i} team={team} />
           ))}
