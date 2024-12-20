@@ -11,15 +11,15 @@ interface DonationsCampaignCardProps {
 
 function DonationsCampaignCard({ img, title, desc, icon: Icon }: DonationsCampaignCardProps) {
   return (
-    <Card className="relative grid min-h-[12rem] w-full overflow-hidden">
+    <Card className="relative grid min-h-[12rem] w-full overflow-hidden cursor-pointer">
       <Image
         width={768}
         height={768}
         src={img}
         alt={title}
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-top"
       />
-      <div className="absolute inset-0 h-full w-full bg-black/70" />
+      <div className="absolute inset-0 h-full w-full bg-black/50" />
       <CardBody className="relative flex flex-col justify-between">
         <Icon className="h-8 w-8 text-white" />
         <div>
