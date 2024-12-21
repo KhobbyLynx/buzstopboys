@@ -45,9 +45,9 @@ function Highlight() {
             </Typography>
             <Typography variant="h4" color="white" mb={1}>
             Kwame Nkrumah Circle, Accra
+            </Typography>
             <Typography variant="h6" color="white" mb={2}>
                 Saturday & Sunday, 25th & 26th January, 2025
-            </Typography>
             </Typography>
             <Typography variant="body1" color="white" mb={6}>
             Let’s unite to make our community cleaner and healthier! Join the Basta Boys as we tackle litter, beautify our surroundings, and inspire positive change. Whether you bring a friend, your family, or just yourself, every little effort counts. Together, we can create a cleaner and greener Accra for everyone to enjoy.
