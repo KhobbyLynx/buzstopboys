@@ -9,8 +9,8 @@ function page() {
     <>
     <Box className="px-8">
       <ActivitiesCollage />
-        <VideoSwiper />
     </Box>
+        <VideoSwiper />
         <Highlight />
     </>
     
