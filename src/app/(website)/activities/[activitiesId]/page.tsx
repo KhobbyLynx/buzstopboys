@@ -14,14 +14,14 @@ function ActiivityDetails() {
       <Box>
         <Typography variant="h2">Header of the Details Page</Typography>
         <Box>
-          <Image src={"/image/avatar1.jpg"} alt="author" width={80} height={80}/>
+          <Image src={"/images/avatars/avatar1.jpg"} alt="author" width={80} height={80}/>
           <Typography variant="body2">Samuel Tetteh</Typography>
           <Typography variant="body2">1 Dec, 2024</Typography>
         </Box>
         <Typography variant="h3">Sub Header</Typography>
       </Box>
       <Box>
-        <Image src={"/image/banner/event.jpeg"} alt="eventImage" width={600} height={400}/>
+        <Image src={"/images/banner/event.jpeg"} alt="eventImage" width={600} height={400}/>
         <Typography variant="body2">1 Dec, 2024</Typography>
       </Box>
       <Box>
