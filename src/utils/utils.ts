@@ -1,0 +1,124 @@
+// This file component can not be flagged as use client as getAuthenticattedUserData is required to be a server function
+
+// ** UUID
+import { v4 as uuidv4 } from 'uuid'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from '../configs/firebase'
+
+// ** Firebase Logout Func
+export const logoutFirebase = async () => {
+  try {
+    await signOut(auth)
+    console.log('Firebase SignOut Successful')
+  } catch (error) {
+    console.log('Error Logging Out', error)
+  }
+}
+
+// ** Get User ID from Firebase
+export const getUserId = () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(
+      auth,
+      (user) => {
+        if (user) {
+          // User is signed in, return the user ID
+          resolve(user.uid)
+        } else {
+          // No user is signed in
+          resolve(null)
+        }
+      },
+      (error) => {
+        // Handle any errors that occur
+        reject(error)
+      }
+    )
+  })
+}
+
+// ** Get Patron Data from Firebase
+export const getAuthenticatedUserData = () => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(
+      auth,
+      async (user) => {
+        if (user) {
+          try {
+            // Fetch access token
+            const accessToken = await user.getIdToken();
+
+            const userData = {
+              id: user.uid,
+              lastSignInTime: user.metadata.lastSignInTime,
+              accessToken,
+              refreshToken: user.refreshToken,
+            };
+
+            resolve(userData);
+          } catch (error) {
+            console.error("Error getting access token:", error);
+            reject(error);
+          }
+        } else {
+          resolve(null); // No user signed in
+        }
+      },
+      (error) => {
+        console.error("Error fetching user data:", error);
+        reject(error);
+      }
+    );
+  });
+};
+
+
+// ** Format Amount
+export function formatAmount(amount: number): string {
+    return `GHS ${amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
+}
+
+// ** Format Date & Time
+export function formatDate(isoDate: string, locale: string = 'en-US'): string {
+    const date = new Date(isoDate);
+    
+    // Format the date (e.g., "December 29, 2024")
+    const formattedDate = date.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  
+    // Format the time (e.g., "6:23 PM")
+    const formattedTime = date.toLocaleTimeString(locale, {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true, // 12-hour format
+    });
+  
+    return `${formattedDate} at ${formattedTime}`;
+}
+  
+// ** Returns initials from string
+export const getInitials = (string: string) =>
+  string.split(/\s/).reduce((response, word) => (response += word.slice(0, 1)), '')
+
+
+// ** Generate Random ID
+export const generateRandomId = () => {
+  const uuid = uuidv4()
+  return uuid.slice(0, 8).toUpperCase()
+}
+
+// ** getUsername
+export function splitEmail(email : String | null): String | undefined {
+  if(!email) return ""
+  const atIndex = email.indexOf('@') // Find the index of the @ symbol
+  if (atIndex === -1) {
+    // If no @ symbol is found, return null
+    return ""
+  }
+
+  const username = email.slice(0, atIndex)
+  return username
+}
