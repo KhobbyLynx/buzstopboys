@@ -110,6 +110,16 @@ export const generateRandomId = () => {
   return uuid.slice(0, 8).toUpperCase()
 }
 
+// ** Generate Random Password
+export const generateRandomPassword = () => {
+  const uuid = uuidv4()
+  const firstFive = uuid.slice(0, 5)
+  const lastFive = uuid.slice(5, 10).toUpperCase()
+
+  const password = `${firstFive}@${lastFive}`
+  return password
+}
+
 // ** getUsername
 export function splitEmail(email : String | null): String | undefined {
   if(!email) return ""
