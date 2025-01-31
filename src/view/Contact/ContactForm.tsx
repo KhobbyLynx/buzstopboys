@@ -29,7 +29,7 @@ export function ContactForm() {
       <div>
         <Card shadow={true} className="container mx-auto border border-gray/50">
           <CardBody className="grid grid-cols-1 lg:grid-cols-7 md:gap-10">
-            <div className="w-full col-span-3 rounded-lg h-full py-8 p-5 md:p-16 bg-gray-900 bg-[url('/image/banner/event.jpeg')] bg-cover">
+            <div className="w-full col-span-3 rounded-lg h-full py-8 p-5 md:p-16 bg-gray-900 bg-[url('/images/banner/event.jpeg')] bg-cover">
               <Typography variant="h4" color="white" className="mb-2">
               Send Us a Message
               </Typography>
