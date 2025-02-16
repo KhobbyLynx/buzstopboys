@@ -22,7 +22,7 @@ import MuiAvatar from '@mui/material/Avatar'
 import Icon from '@/components/icon'
 
 // ** Store Imports
-// import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
 import CustomChip from '@/components/mui/chip'
@@ -31,7 +31,7 @@ import CustomChip from '@/components/mui/chip'
 import { getInitials } from '@/utils/utils'
 
 // ** Actions Imports
-// import { fetchUsers, deleteUser } from 'src/store/apps/user'
+import { deleteUser, getPatrons, reinstateUser, suspendUser } from '@/store/users'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -40,39 +40,13 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Types 
-type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'light'
+import { PatronMDBType } from '@/types/patron'
+type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'default'
 
-type UserType = {
-  userId: string
-  numberId: string
-  id: string
-  username: string
-  firstname: string
-  lastname: string
-  address: string
-  avatar: string
-  email: string
-  contact: string
-  onlineStatus: Boolean
-  verified: string
-  role: string
-  avatarColor?: ThemeColor
-  // tokens: {
-  //   refreshToken: string
-  //   accessToken: string
-  //   expirationTime: string
-  // }
-  // timeStamp: {
-  //   createdAt: Date
-  //   lastLogin: Date
-  // }
-}
-
-// import { RootState, AppDispatch } from 'src/store'
+import { RootState, AppDispatch } from '@/store'
 
 // ** Custom Table Components Imports
 import TableHeader from '@/view/admin/users/list/TableHeader'
-import axiosRequest from '@/utils/axiosRequest'
 import SidebarAddPatron from '@/view/admin/users/list/AddPatronDrawer'
 
 interface UserRoleType {
@@ -88,7 +62,7 @@ interface verificationStatusType {
 }
 
 interface CellType {
-  row: UserType
+  row: PatronMDBType
 }
 
 // ** renders client column
@@ -102,7 +76,7 @@ const userRoleObj: UserRoleType = {
 
 const userStatusObj: UserStatusType = {
   Online: 'info',
-  Offline: 'light'
+  Offline: 'default'
 }
 
 const verificationStatusObj: verificationStatusType = {
@@ -111,7 +85,7 @@ const verificationStatusObj: verificationStatusType = {
 }
 
 // ** renders client column
-const renderClient = (row: UserType) => {
+const renderClient = (row: PatronMDBType) => {
   if (row.avatar) {
     return <MuiAvatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
@@ -125,9 +99,9 @@ const renderClient = (row: UserType) => {
   }
 }
 
-const RowOptions = ({ patronID }: { patronID: number | string }) => {
+const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: boolean | undefined }) => {
   // ** Hooks
-  // const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -155,9 +129,11 @@ const RowOptions = ({ patronID }: { patronID: number | string }) => {
       buttonsStyling: false,
     }).then(async function (result) {
       if (result.value) {
-        // Run suspend action
-        // dispatch(deleteUser(userId))
+        // Run Suspend action
+        dispatch(suspendUser(patronID))
         
+        dispatch(getPatrons()) // Fetch users to get update
+
         MySwal.fire({
           icon: 'success',
           title: 'Suspend!',
@@ -170,6 +146,48 @@ const RowOptions = ({ patronID }: { patronID: number | string }) => {
         MySwal.fire({
           title: 'Cancelled',
           text: 'Suspension Cancelled!!',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
+          },
+        });
+      }
+    });
+  
+    handleRowOptionsClose()
+  }
+
+  const handleReinstate = () => {
+    MySwal.fire({
+      title: 'Reinstate Account',
+      text: 'Are you sure you would like to reinstate this account?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Reinstate it!',
+      customClass: {
+        confirmButton: 'bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded',
+        cancelButton: 'bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2',
+      },
+      buttonsStyling: false,
+    }).then(async function (result) {
+      if (result.value) {
+        // Run Suspend action
+        dispatch(reinstateUser(patronID))
+        
+        dispatch(getPatrons()) // Fetch users to get update
+
+        MySwal.fire({
+          icon: 'success',
+          title: 'Reinstate!',
+          text: 'Account has been Reinstated.',
+          customClass: {
+            confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
+          },
+        });
+      } else if (result.dismiss === MySwal.DismissReason.cancel) {
+        MySwal.fire({
+          title: 'Cancelled',
+          text: 'Reinstatement Cancelled!!',
           icon: 'error',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
@@ -196,7 +214,9 @@ const RowOptions = ({ patronID }: { patronID: number | string }) => {
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        // dispatch(deleteUser(userId))
+        dispatch(deleteUser(patronID))
+
+        dispatch(getPatrons()) // Fetch users after deleting user
         
         MySwal.fire({
           icon: 'success',
@@ -251,10 +271,16 @@ const RowOptions = ({ patronID }: { patronID: number | string }) => {
           <Icon icon='tabler:eye' fontSize={20} />
           View
         </MenuItem>
-        <MenuItem onClick={handleSuspend} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:edit' fontSize={20} />
+       {suspended ?
+       (<MenuItem onClick={handleReinstate} sx={{ '& svg': { mr: 2 } }}>
+          <Icon icon='lsicon:play-outline' fontSize={20} />
+          Reinstate
+        </MenuItem>) :
+       (<MenuItem onClick={handleSuspend} sx={{ '& svg': { mr: 2 } }}>
+          <Icon icon='lsicon:suspend-outline' fontSize={20} />
           Suspend
-        </MenuItem>
+        </MenuItem>)
+        }
         <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
           <Icon icon='tabler:trash' fontSize={20} />
           Delete
@@ -403,7 +429,7 @@ const columns: GridColDef[] = [
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
       return (
-          <RowOptions patronID={row.id} 
+          <RowOptions patronID={row.id} suspended={row.suspended}
         />
       )}
   }
@@ -414,33 +440,15 @@ const UserList = () => {
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
 
-  const [patrons, setPatrons] = useState([])
+  // ** Hooks
+  const dispatch = useDispatch<AppDispatch>()
+  const store = useSelector((state: RootState) => state.users)
 
   useEffect(() => {
-    const fetchPatrons = async () => {
-      const patrons = await axiosRequest.get('/patrons')
-
-      setPatrons(patrons.data)
-      console.log('patrons', patrons)
-    }
-
-    fetchPatrons()
-  }, [])
-
-  // ** Hooks
-  // const dispatch = useDispatch<AppDispatch>()
-  // const store = useSelector((state: RootState) => state.user)
-
-  // useEffect(() => {
-  //   dispatch(
-  //     fetchUsers({
-  //       role,
-  //       onlineStatus,
-  //       q: value,
-  //       verified
-  //     })
-  //   )
-  // }, [dispatch, verified, , role, onlineStatus, value])
+    dispatch(
+      getPatrons()
+    )
+  }, [dispatch, store.numberOfUsers])
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
@@ -454,7 +462,7 @@ const UserList = () => {
           <DataGrid
             autoHeight
             rowHeight={62}
-            rows={patrons}
+            rows={store.users}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}

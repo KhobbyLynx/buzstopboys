@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import MuiAvatar from '@mui/material/Avatar'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
@@ -30,7 +31,7 @@ import CustomChip from '@/components/mui/chip'
 import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteActivity, getActivities } from '@/store/activities'
+import { deleteDonationCampaign, getDonationOptions, getDonationsCampaigns } from '@/store/donations'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -41,22 +42,39 @@ const MySwal = withReactContent(Swal)
 // ** Types 
 import { AppDispatch, RootState } from '@/store'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
+type CampaignStatus = 'active' | 'suspended' | 'completed'
+
+type CampaignsType = {
+  id: string
+  title: string
+  desc: string
+  img: string
+  raised: number
+  target: number
+  status: CampaignStatus
+  createdAt: string
+  updatedAt: string
+}
 
 // ** Custom Table Components Imports
-import TableHeader from '@/view/admin/activities/list/TableHeader'
-import { LinearProgress, Tooltip } from '@mui/material'
+import TableHeader from '@/view/admin/donations/list/TableHeader'
+import { Button, LinearProgress, Tooltip } from '@mui/material'
 
 // ** Sidebar Components
-import SidebarAddDonationCampaign from '@/view/admin/activities/list/AddActivityDrawer'
-import SidebarEditActivity from '@/view/admin/activities/list/EditActivityDrawer'
-import { ActivityProps } from '@/types/activities'
+import SidebarAddDonationCampaign from '@/view/admin/donations/list/AddDonationCampaignDrawer'
+import SidebarEditDonationCampaign from '@/view/admin/donations/list/EditDonationCampaignDrawer'
+import CardLineChart from '@/components/Cards/CardLineChart'
+import CardBarChart from '@/components/Cards/CardBarChart'
+import IconifyIcon from '@/components/icon'
+import CardOptionsList from '@/components/Cards/CardOptionsList'
+import { Progress } from '@material-tailwind/react'
 
 interface StatusType {
   [key: string]: ThemeColor
 }
 
 interface CellType {
-  row: ActivityProps
+  row: CampaignsType
 }
 
 const StatusObj: StatusType = {
@@ -65,15 +83,37 @@ const StatusObj: StatusType = {
   completed: 'success'
 }
 
-const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps}) => {
+const ProgressBar = ({ percentage, color } : {percentage: number, color: string}) => (
+  <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ width: 96, mr: 1 }}>
+      <LinearProgress
+        variant="determinate"
+        value={percentage}
+        sx={{
+          height: 8,
+          borderRadius: 5,
+          backgroundColor: `${color}.100`,
+          "& .MuiLinearProgress-bar": {
+            backgroundColor: `${color}.500`,
+          },
+        }}
+      />
+    </Box>
+    <Box sx={{ minWidth: 35 }}>
+      <Typography variant="body2" color="text.secondary">{`${percentage}%`}</Typography>
+    </Box>
+  </Box>
+);
+
+const RowOptions = ({ patronID, data}: { patronID: string, data: CampaignsType}) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [editActivityOpen, setEditActivityOpen] = useState<boolean>(false)
+  const [editCampaignOpen, setEditCampaignOpen] = useState<boolean>(false)
   
-  const toggleEditActivityDrawer = () => setEditActivityOpen(!editActivityOpen)
+  const toggleEditCampaignDrawer = () => setEditCampaignOpen(!editCampaignOpen)
 
   const rowOptionsOpen = Boolean(anchorEl)
 
@@ -86,8 +126,8 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
 
   const handleDelete = () => {
     MySwal.fire({
-      title: 'Delete Activity',
-      text: 'Are you sure you would like to delete this Activity?',
+      title: 'Delete Campaign',
+      text: 'Are you sure you would like to delete Donation Campaign?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
@@ -99,12 +139,12 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteActivity(patronID))
+        dispatch(deleteDonationCampaign(patronID))
         
         MySwal.fire({
           icon: 'success',
           title: 'Deleted!',
-          text: 'Activity has been deleted.',
+          text: 'Donation Campaign has been deleted.',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
@@ -125,7 +165,7 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
   };
 
   const handleEdit = () => {
-    toggleEditActivityDrawer()
+    toggleEditCampaignDrawer()
     handleRowOptionsClose();
   }
 
@@ -153,7 +193,7 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/admin/activities/${patronID}`}
+          href={`/admin/donations/${patronID}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon='tabler:eye' fontSize={20} />
@@ -171,7 +211,7 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
     </>
     <>
       {/* Edit Modal */}
-      <SidebarEditActivity open={editActivityOpen} toggle={toggleEditActivityDrawer} activityData={data} />  
+      <SidebarEditDonationCampaign open={editCampaignOpen} toggle={toggleEditCampaignDrawer} campaignData={data} />  
     </>
     </>
   )
@@ -193,7 +233,7 @@ const columns: GridColDef[] = [
  <Typography
   noWrap
   component={Link}
-  href={`/admin/activities/${row.id}`}
+  href={`/admin/donations/${row.id}`}
   sx={{
     fontWeight: 500,
     textDecoration: 'none',
@@ -240,6 +280,60 @@ const columns: GridColDef[] = [
     }
   },
   {
+    flex: 0.15,
+    minWidth: 136,
+    headerName: 'Target',
+    field: 'target',
+    renderCell: ({ row }: CellType) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {formatAmount(row.target)}
+        </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.15,
+    minWidth: 136,
+    headerName: 'Raised',
+    field: 'raised',
+    renderCell: ({ row }: CellType) => {
+      return (
+        <Typography noWrap sx={{ color: 'text.secondary' }}>
+          {formatAmount(row.raised)}
+        </Typography>
+      )
+    }
+  },
+  {
+    flex: 0.12,
+    minWidth: 200,
+    field: 'status',
+    headerName: 'Status',
+    renderCell: ({ row }: CellType) => {
+      return (
+          <CustomChip
+            rounded
+            skin='light'
+            size='small'
+            label={row.status}
+            color={StatusObj[row.status]}
+          />
+      )
+    }
+  },
+  {
+    flex: 0.15,
+    minWidth: 200,
+    field: 'progress',
+    headerName: 'Progress',
+    renderCell: ({ row }: CellType) => {
+      return (
+        <ProgressBar percentage={calculatePercentage(row.target, row.raised)} color={StatusObj[row.status]} />
+      )
+    }
+  },
+  {
     flex: 0.10,
     minWidth: 240,
     field: 'createdAt',
@@ -265,35 +359,43 @@ const columns: GridColDef[] = [
   }
 ]
 
-const DashActivities = () => {
+const DashDonations = () => {
   // ** State
-  const [addNewActivityOpen, setAddNewActivityOpen] = useState<boolean>(false)
+  const [addNewCampaignOpen, setAddNewCampaignOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state.activities)
+  const donations = useSelector((state: RootState) => state.donations)
 
-  console.log('Activities', store)
   useEffect(() => {
-    // Fetch Activities
-    dispatch(getActivities())
+    // Fetch Donation Campaigns 
+    dispatch(getDonationsCampaigns())
+
+    // Fetch Donation Options
+    dispatch(getDonationOptions())
   }, [ dispatch ])
 
-  const toggleAddActivityDrawer = () => setAddNewActivityOpen(!addNewActivityOpen)
+  const toggleAddCampaignDrawer = () => setAddNewCampaignOpen(!addNewCampaignOpen)
 
   return (
     <>
     <Grid container spacing={6} sx={{ mt: 1 }}>
+      <Grid item md={6} xs={12} lg={6}>
+        <CardLineChart />
+      </Grid>
+      <Grid item md={6} xs={12} lg={6}>
+        <CardOptionsList data={donations.donationOptions}/>
+      </Grid>
       <Grid item xs={12} lg={12}>
         <Card>
-          <CardHeader title='List of Activities' />
+          <CardHeader title='List of Donation Campaigns' />
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader toggle={toggleAddActivityDrawer} />
+          <TableHeader toggle={toggleAddCampaignDrawer} />
           <DataGrid
             autoHeight
             rowHeight={62}
-            rows={store.activities}
+            rows={donations.donationCampaigns}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}
@@ -304,10 +406,10 @@ const DashActivities = () => {
       </Grid>
     
       {/* Create Modal */}
-      <SidebarAddDonationCampaign open={addNewActivityOpen} toggle={toggleAddActivityDrawer} />
+      <SidebarAddDonationCampaign open={addNewCampaignOpen} toggle={toggleAddCampaignDrawer} />
     </Grid>
     </>
   )
 }
 
-export default DashActivities
+export default DashDonations
