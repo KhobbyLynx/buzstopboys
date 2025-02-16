@@ -6,7 +6,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
-import Image from 'next/image';
 import { ActivityProps } from '@/types/activities';
 import IconifyIcon from '@/components/icon';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,13 +13,7 @@ import { RootState, AppDispatch } from '@/store';
 import { selectedActivity } from '@/store/activities';
 import { useParams } from "next/navigation";
 
-interface ActivityPageProps {
-  params: {
-    activityId: string;
-  };
-}
-
-const ActivityDetailsPage: React.FC<ActivityPageProps> = () => {
+const ActivityDetailsPage: React.FC = () => {
   const { activityId } = useParams() as { activityId: string };
 
   const dispatch: AppDispatch = useDispatch();
@@ -31,15 +24,6 @@ const ActivityDetailsPage: React.FC<ActivityPageProps> = () => {
   }, [dispatch, activityId]);
 
   const activityData: ActivityProps | null = store.selectedActivity;
-
-  console.log('&@ACTITVITY DATA', activityData)
-
-  const pagination = {
-    clickable: true,
-    renderBullet: function (index: number, className: string) {
-      return '<span class="' + className + '">' + (index + 1) + '</span>';
-    },
-  };
 
   if (!activityData || !activityData.details || !activityData.imgs || !activityData.videoUrls) {
     return <Typography variant="h6">Activity not found. {activityId}</Typography>;
@@ -82,13 +66,13 @@ const ActivityDetailsPage: React.FC<ActivityPageProps> = () => {
 
       <Divider sx={{ my: 4 }} />
 
-          {/* Image Carousel */}
-          <Box mb={4}>
+      {/* Image Carousel */}
+      <Box mb={4}>
         <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
           Gallery
         </Typography>
         <Swiper
-          pagination={{clickable: true}}
+          pagination={{ clickable: true }}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           modules={[Pagination, Autoplay]}
           className="mySwiper"
