@@ -1,35 +1,28 @@
 'use client'
-import { DonationCampaignProps, DonationOptionsProps } from "@/types/donations"
-import axiosRequest from "@/utils/axiosRequest"
+import { AppDispatch, RootState } from "@/store"
+import { getDonationOptions, getDonationsCampaigns } from "@/store/donations"
 import DonationCampaign from "@/view/Donations/DonationCampaign"
 import DonationCards from "@/view/Donations/DonationCards"
 import { Box } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
 function Donations() {
-  const [donationOptions, setDonationOptions] = useState<DonationOptionsProps[]>([])
-  const [donationCampaign, setDonationCampaign] = useState<DonationCampaignProps[]>([])
-  useEffect(()  => {
-    fetchCampaignsAndDonationOptions()
-  }, [])
- 
-  const fetchCampaignsAndDonationOptions = async () => {
-    try {
-      const response = await axiosRequest.get("/donate")
-      const {donationOptions, campaigns} = response.data
-      setDonationCampaign(campaigns)
-      setDonationOptions(donationOptions)
+  const dispatch = useDispatch<AppDispatch>()
+  const donations = useSelector((state : RootState) => state.donations)
+  
+  useEffect(() => {
+    // Fetch Donation Campaigns 
+    dispatch(getDonationsCampaigns())
 
-      console.log("Donations fetched:", response.data)
-    } catch (error: any) {
-      console.error("Error fetching donations:", error)
-    }
-  }
+    // Fetch Donation Options
+    dispatch(getDonationOptions())
+  }, [ dispatch ])
 
   return (
     <Box className="px-8 md:px-16 mb-20 lg:mb-30">
-        <DonationCards donationOptions={donationOptions} />
-        <DonationCampaign donationCampaign={donationCampaign} />
+        <DonationCards donationOptions={donations.donationOptions} />
+        <DonationCampaign donationCampaign={donations.donationCampaigns} />
     </Box>
   )
 }

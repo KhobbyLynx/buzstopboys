@@ -1,49 +1,138 @@
-import { Box, Typography } from "@mui/material"
-import Image from "next/image"
+'use client';
 
-function ActiivityDetails() {
-  const videoData = { 
-    id: 1, 
-    title: "BuzstopBoys Expands Solar Lighting Initiative on Achimota Hospital Road", 
-    date: "1 month ago", url: "https://www.youtube.com/embed/O6w5FzGVTO4",
-    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-  }
+import React, { useEffect } from 'react';
+import { Box, Typography, Container, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import Image from 'next/image';
+import { ActivityProps } from '@/types/activities';
+import IconifyIcon from '@/components/icon';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '@/store';
+import { selectedActivity } from '@/store/activities';
+import { useParams } from "next/navigation";
 
-  return (
-    <Box>
-      <Box>
-        <Typography variant="h2">Header of the Details Page</Typography>
-        <Box>
-          <Image src={"/images/avatars/avatar1.jpg"} alt="author" width={80} height={80}/>
-          <Typography variant="body2">Samuel Tetteh</Typography>
-          <Typography variant="body2">1 Dec, 2024</Typography>
-        </Box>
-        <Typography variant="h3">Sub Header</Typography>
-      </Box>
-      <Box>
-        <Image src={"/images/banner/event.jpeg"} alt="eventImage" width={600} height={400}/>
-        <Typography variant="body2">1 Dec, 2024</Typography>
-      </Box>
-      <Box>
-        <Typography variant="h4">Sub Header</Typography>
-        <Typography variant="body1">Lorem ipsum dolor sit amet, consectetur adipiscing elit</Typography>
-      </Box>
-      <Box>
-        <iframe
-          width="100%"
-          height="415"
-          src={videoData.url}
-          title={videoData.title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        <Typography variant="body2">{videoData.date}</Typography>
-        <Typography variant="h4">{videoData.title}</Typography>
-        {videoData.desc ? <Typography variant="body1">{videoData.desc}</Typography> : ""}
-      </Box>
-    </Box>
-  )
+interface ActivityPageProps {
+  params: {
+    activityId: string;
+  };
 }
 
-export default ActiivityDetails
+const ActivityDetailsPage: React.FC<ActivityPageProps> = () => {
+  const { activityId } = useParams() as { activityId: string };
+
+  const dispatch: AppDispatch = useDispatch();
+  const store = useSelector((state: RootState) => state.activities);
+
+  useEffect(() => {
+    dispatch(selectedActivity(activityId));
+  }, [dispatch, activityId]);
+
+  const activityData: ActivityProps | null = store.selectedActivity;
+
+  console.log('&@ACTITVITY DATA', activityData)
+
+  const pagination = {
+    clickable: true,
+    renderBullet: function (index: number, className: string) {
+      return '<span class="' + className + '">' + (index + 1) + '</span>';
+    },
+  };
+
+  if (!activityData || !activityData.details || !activityData.imgs || !activityData.videoUrls) {
+    return <Typography variant="h6">Activity not found. {activityId}</Typography>;
+  }
+  
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Title and Caption */}
+      <Box textAlign="center" mb={4}>
+        <Typography variant="h2" className="my-3 text-blue-gray" gutterBottom>
+          {activityData.title}
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          {activityData.caption}
+        </Typography>
+      </Box>
+
+      {/* Icon and Description */}
+      <Box display="flex" flexDirection='column' alignItems="center" mb={4}>
+        <IconifyIcon fontSize='2rem' icon={activityData.icon} className='text-red-400' /> 
+        <Typography variant="body1">{activityData.desc}</Typography>
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+      {/* Details (Bullet Points) */}
+      <Box mb={4}>
+        <Typography variant="h5">
+          Key Details
+        </Typography>
+        <List>
+          {activityData.details.map((detail: string, index: number) => (
+            <ListItem key={index}>
+              <ListItemIcon>•</ListItemIcon>
+              <ListItemText primary={detail} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+          {/* Image Carousel */}
+          <Box mb={4}>
+        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
+          Gallery
+        </Typography>
+        <Swiper
+          pagination={{clickable: true}}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          modules={[Pagination, Autoplay]}
+          className="mySwiper"
+        >
+          {activityData.imgs.map((img: string, index: number) => (
+            <SwiperSlide key={index}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  paddingTop: '56.25%', // 16:9 aspect ratio
+                  background: `url(${img}) center center no-repeat`,
+                  backgroundSize: 'cover',
+                  borderRadius: 2,
+                  boxShadow: 3,
+                }}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Box>
+
+      <Divider sx={{ my: 4 }} />
+
+      {/* Video Section */}
+      <Box mb={4}>
+        <Typography variant="h5" gutterBottom>
+          Videos
+        </Typography>
+        {activityData.videoUrls.map((videoUrl: string, index: number) => (
+          <Box key={index} mb={4}>
+            <iframe
+              width="100%"
+              height="415"
+              src={videoUrl}
+              title={`Video ${index + 1}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </Box>
+        ))}
+      </Box>
+    </Container>
+  );
+};
+
+export default ActivityDetailsPage;

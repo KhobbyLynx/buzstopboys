@@ -132,11 +132,14 @@ const Login = () => {
   })
 
   const onSubmit = async (data: FormData) => {
-    console.log('@Data from Login page', data)
+    // Set loading state
     setLoading(true)
+    
     try {
+      // Dispatch the login action
       const resultAction = await dispatch(handleLoginPatron(data))
 
+      // Check if the action is fulfilled
       if(handleLoginPatron.fulfilled.match(resultAction)){
         router.push('/')
       } else {
@@ -146,7 +149,12 @@ const Login = () => {
             type: 'manual',
             message: 'User not found'
           })
-        } else if (
+        } else if (typeof resultAction.payload === 'string' && resultAction.payload.includes("auth/user-disabled")) {
+          setError('password', {
+            type: 'manual',
+            message: 'Your account has been suspended. Please contact support.'
+          })
+        }else if (
           typeof resultAction.payload === 'string' && resultAction.payload.includes('auth/network-request-failed')
         ) {
           setError('password', {
@@ -161,6 +169,8 @@ const Login = () => {
             message: 'Invalid credentials'
           })}
       }
+
+      // Reset loading state
       setLoading(false)
     } catch (error) {
       setLoading(false)
