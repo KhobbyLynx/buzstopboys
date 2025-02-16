@@ -10,15 +10,9 @@ export default function NotFoundPage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
         textAlign: 'center',
-        padding: 2,
-        background: `
-          radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%),
-          url('/patterns/waves.svg') repeat
-        `,
-        backgroundSize: 'cover',
-        color: 'white',
+        padding: 20,
+        color: 'black',
       }}
     >
       <Typography
