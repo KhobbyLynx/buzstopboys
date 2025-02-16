@@ -13,13 +13,13 @@ const config: Config = withMT({
   theme: {
     extend: {
       backgroundImage: {
-        'cover-1': "url('/image/banner/cover.jpeg')",
-        'cover-2': "url('/image/banner/cover2.svg')",
-        'cover-3': "url('/image/banner/cover3.svg')",
-        'cover-4': "url('/image/banner/cover4.svg')",
-        'cover-5': "url('/image/banner/cover5.jpg')",
-        'cover-6': "url('/image/banner/cover6.svg')",
-        'event': "url('/image/banner/event.jpeg')",
+        'cover-1': "url('/images/banner/cover.jpeg')",
+        'cover-2': "url('/images/banner/cover2.svg')",
+        'cover-3': "url('/images/banner/cover3.svg')",
+        'cover-4': "url('/images/banner/cover4.svg')",
+        'cover-5': "url('/images/banner/cover5.jpg')",
+        'cover-6': "url('/images/banner/cover6.svg')",
+        'event': "url('/images/banner/event.jpeg')",
       }
     }
   },
