@@ -1,29 +1,31 @@
-import { ACTIVITIES } from "@/data"
-import { redirect } from "next/navigation"
+import Activity from "@/models/activity.model";
+import { ActivityProps } from "@/types/activities";
+import { NextRequest } from "next/server";
 
-export async function GET(Request: Request, { params }: { params: { activitiesId: string } }) {
+export async function GET(req: NextRequest, context: { params: { activityId: string } }) {
+    try {
+        const { activityId } = context.params; // Await params
 
-    if( Number(params.activitiesId) > ACTIVITIES.length ){
-        redirect("/donate/api")
+        // Fetch activity and convert to a plain object
+        const activity = await Activity.findOne({ id: activityId }).lean();
+
+        console.log('@ROute', {activity, activityId})
+        if (!activity) {
+            return new Response(JSON.stringify({ message: "Activity not found" }), {
+                status: 404,
+                headers: { "content-type": "application/json" },
+            });
+        }
+
+        return new Response(JSON.stringify(activity), {
+            status: 200,
+            headers: { "content-type": "application/json" },
+        });
+    } catch (error: any) {
+        console.error("Error fetching single activity:", error);
+        return new Response(JSON.stringify({ message: error.message }), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+        });
     }
-
-    const activity = ACTIVITIES.find((activity) => activity.id === parseInt(params.activitiesId))
-    return  Response.json(activity)
-}
-
-export async function PATCH(Request: Request, { params }: {params: {activitiesId: string}}) {
-    const activity = ACTIVITIES.find(activity => activity.id === Number(params.activitiesId))
-    const body = await Request.json()
-    const { title } = body
-
-    return Response.json({
-        ...activity,
-        title
-    })
-}
-
-export async function DELETE(Request: Request, { params } : { params: {activitiesId : string}}) {
-    const activityIdx = ACTIVITIES.findIndex(activity => activity.id === parseInt(params.activitiesId))
-
-    ACTIVITIES.splice(activityIdx, 1)
 }
