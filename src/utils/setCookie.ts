@@ -10,7 +10,10 @@ export const setCookie = async (name: string, value: PatronWebType) => {
           value: typeof value === "object" ? JSON.stringify(value) : value,
         });
     
+
         const result = response.data;
+
+        console.log('@@@Cookie set!', result);
         return result;
       } catch (error) {
         console.error("Error setting cookie:", error);

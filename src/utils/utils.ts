@@ -74,30 +74,27 @@ export const getAuthenticatedUserData = () => {
 
 
 // ** Format Amount
-export function formatAmount(amount: number): string {
+export function formatAmount(amount: number ): string {
     return `GHS ${amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')}`;
 }
 
 // ** Format Date & Time
 export function formatDate(isoDate: string, locale: string = 'en-US'): string {
-    const date = new Date(isoDate);
-    
-    // Format the date (e.g., "December 29, 2024")
-    const formattedDate = date.toLocaleDateString(locale, {
+  const date = new Date(isoDate);
+
+  return date.toLocaleString('en-GB', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  
-    // Format the time (e.g., "6:23 PM")
-    const formattedTime = date.toLocaleTimeString(locale, {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true, // 12-hour format
-    });
-  
-    return `${formattedDate} at ${formattedTime}`;
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false, // 24-hour format
+      timeZone: 'UTC', // Ensure consistent output
+  }).replace(',', '');
 }
+
   
 // ** Returns initials from string
 export const getInitials = (string: string) =>
@@ -131,4 +128,19 @@ export function splitEmail(email : String | null): String | undefined {
 
   const username = email.slice(0, atIndex)
   return username
+}
+
+// ** Calculate Percentage
+export const calculatePercentage = (total: number, obtained: number) => {
+  const percentage = (obtained / total) * 100
+  return Number(percentage.toFixed(2))
+}
+
+// ** Generate Random Color
+export function generateRandomColor() {
+  // Generate a random number between 0 and 16777215 (0xFFFFFF in decimal)
+  const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+
+  // Ensure the color is always 6 digits long by padding with leading zeros if necessary
+  return `#${randomColor.padStart(6, '0')}`;
 }
