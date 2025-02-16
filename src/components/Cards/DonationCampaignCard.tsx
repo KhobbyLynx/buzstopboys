@@ -2,10 +2,12 @@
 
 import { Typography, Card, CardBody, CardHeader, Button } from "@material-tailwind/react";
 import Image from "next/image";
-import { formatAmount } from "@/lib/utils"
+import { formatAmount } from "@/utils/utils"
 import AuthModal from "../Modals/AuthModal";
 import { useState } from "react";
 import DonationCampaignModal from "../Modals/DonationCampaign";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface DonationCampaignCardProps {
   img: string;
@@ -13,17 +15,21 @@ interface DonationCampaignCardProps {
   raised: number;
   title: string;
   desc: string;
+  status: string
 }
 
 export function DonationCampaignCard({ ...props }: DonationCampaignCardProps) {
-  const {img, target, title, desc, raised} = props
-  const [auth, setAuth] = useState<boolean>(false);
+  const {img, target, title, desc, raised, status} = props
    const [show, setShow] = useState<boolean>(false);
    const [showDetails, setShowDetails] = useState<boolean>(false);
     const toggleModal = () => setShow(!show);
     const toggleDetailsModal = () => setShowDetails(!showDetails);
 
-    const handeCampaignDonate = () => {}
+
+  const isLoggedIn = useSelector((state : RootState) => state.auth.isLoggedIn)
+
+  const handeCampaignDonate = () => {}
+
   return (
     <div>
     <Card className="border">
@@ -73,19 +79,24 @@ export function DonationCampaignCard({ ...props }: DonationCampaignCardProps) {
         <Typography className="mb-6 font-normal !text-gray-600">
           {desc}
         </Typography>
-        <Button variant="outlined" className="justify-self-end self-end" onClick={
+        <Button 
+        variant="outlined" 
+        className="justify-self-end self-end" 
+        disabled={status !== 'active'}
+        color={status === 'completed' ? 'green' : 'red'}
+        onClick={
           ()=> {
-            !auth ? toggleModal() : handeCampaignDonate()
-            console.log('Donate Now', show)
+            !isLoggedIn ? toggleModal() : handeCampaignDonate()
+            console.log('Donated!', show)
           }}
         >
-         Donate Toward a Purpose
+         {status === 'completed' ? 'Target Reached' : 'Donate Toward a Purpose'}
         </Button>
       </CardBody>
     </Card>
     <AuthModal show={show} toggleModal={toggleModal} />
     <DonationCampaignModal 
-        auth={auth}
+        isLoggedIn={isLoggedIn}
         show={showDetails}
         toggleModal={toggleDetailsModal}
         handeCampaignDonate={handeCampaignDonate}
@@ -94,6 +105,7 @@ export function DonationCampaignCard({ ...props }: DonationCampaignCardProps) {
         title={title}
         desc={desc}
         raised={raised} 
+        status={status} 
       />
     </div>
   );
