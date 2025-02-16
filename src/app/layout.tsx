@@ -9,7 +9,6 @@ import type { Metadata } from "next";
 import { ThemeProviderLayout } from "@/components";
 import Layout from '@/layouts';
 
-
 export const metadata: Metadata = {
   title: {
     default: 'BuzStopBoys',
@@ -17,7 +16,7 @@ export const metadata: Metadata = {
   },
   description: 'Buzstopboys, volunteering, healthy environments',
   icons: {
-    icon: '/images/logos/logo.jpg',
+    icon: '/favicon.ico',
   },
 };
 
@@ -31,7 +30,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           data-site="YOUR_DOMAIN_HERE"
           src="https://api.nepcha.com/js/nepcha-analytics.js"
         ></script>
-        <link rel="shortcut icon" href="/logos/logo.jpg" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/png" />
       </head>
       <body>
         <ThemeProviderLayout>
