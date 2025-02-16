@@ -8,58 +8,29 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import {
-  RectangleStackIcon,
-  UserCircleIcon,
-  CommandLineIcon,
   XMarkIcon,
   Bars3Icon,
-  HomeIcon,
-  InboxArrowDownIcon,
-  InformationCircleIcon,
-  PhoneIcon,
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-
-const NAV_MENU = [
-  {
-    name: "Home",
-    icon: HomeIcon,
-    href: "/"
-  },
-  {
-    name: "Our Merch",
-    icon: InboxArrowDownIcon,
-    href: "/our-merch"
-  },
-  {
-    name: "Activities",
-    icon: InboxArrowDownIcon,
-    href: "/activities"
-  },
-  {
-    name: "Donations",
-    icon: InboxArrowDownIcon,
-    href: "/donate"
-  },
-  {
-    name: "About Us",
-    icon: InformationCircleIcon,
-    href: "/about-us"
-  },
-  {
-    name: "Contact",
-    icon: PhoneIcon,
-    href: "/contact",
-  },
-];
+import { useSelector } from "react-redux";
+import { PatronWebType } from "@/types/patron";
+import PatronDropdown from "@/components/Dropdowns/patronDropdown";
+import IconifyIcon from "@/components/icon";
+import { clientNavigation } from "@/navigation/client.navigation";
 
 export function PageNavbar() {
+  // ** States
   const [open, setOpen] = React.useState(false);
 
+  // ** Hooks
   const pathname = usePathname();
-
+   const patronData = useSelector((state: { auth: { data: PatronWebType | null, isLoggedIn: boolean} }) => state.auth)
+  
+    const auth = patronData.data
+    const isLoggedIn = patronData.isLoggedIn
+    
   function handleOpen() {
     setOpen((cur) => !cur);
   }
@@ -80,15 +51,16 @@ export function PageNavbar() {
           className="z-50 mt-6 relative border-0 pr-3 py-3 pl-6"
         >
           <div className="flex items-center justify-between">
-            <Image src="/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80}/>
+            <Image src="/images/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80}/>
             <ul className="ml-10 hidden items-center gap-8 lg:flex text-gray-900">
-            {NAV_MENU.map(({ name, icon: Icon, href }) => (
+            {clientNavigation.map(({ name, icon, href }) => (
             <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-gray-200' : ''}`}>
-              <Icon className="h-5 w-5 " />
+              <IconifyIcon className="h-5 w-5" icon={icon}/>
               <span>{name}</span>
             </Link>
           ))}
             </ul>
+            {auth && isLoggedIn ? <PatronDropdown patronData={auth}/> :
             <div className="hidden items-center gap-4 lg:flex">
           <Link href='/log-in'>
           <Button color="gray" variant="text">
@@ -98,7 +70,7 @@ export function PageNavbar() {
         <Link href='/sign-up'>
             <Button color="gray">Sign Up</Button>
         </Link>
-        </div>
+        </div>}
             <IconButton
               variant="text"
               color="gray"
@@ -115,9 +87,9 @@ export function PageNavbar() {
           <Collapse open={open}>
         <div className="container mx-auto mt-4 rounded-lg bg-white px-6 py-5">
           <ul className="flex flex-col gap-4 text-gray-900">
-            {NAV_MENU.map(({ name, icon: Icon, href }) => (
+            {clientNavigation.map(({ name, icon, href }) => (
               <Link key={name} href={href} className={`flex items-center gap-2 font-medium ${pathname === href ? 'underline underline-offset-6 text-blue-400' : ''}`}>
-                <Icon className="h-5 w-5" />
+                <IconifyIcon className="h-5 w-5" icon={icon}/>
                 {name}
               </Link>
             ))}

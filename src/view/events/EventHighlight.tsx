@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import Image from "next/image";
 
-function Highlight() {
+function EventHighlight() {
   return (
     <Box  py={{ xs: 0, sm: 12 }} px={{ xs: 2, md: 4}}>
       <Box
@@ -19,7 +19,7 @@ function Highlight() {
         }}
       >
         <Image 
-        src="/image/banner/waves-white.svg" 
+        src="/images/banner/waves-white.svg" 
         alt="pattern" 
         layout="fill"
         objectFit="cover"
@@ -68,4 +68,4 @@ function Highlight() {
   );
 }
 
-export default Highlight;
+export default EventHighlight;

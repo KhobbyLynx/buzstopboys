@@ -3,6 +3,7 @@
 import { Typography } from "@material-tailwind/react";
 
 import DonationCampaignCard from "@/components/Cards/DonationCampaignCard";
+import { DonationCampaignProps } from "@/types/donations";
 
 const CAMPAIGN = [
   {
@@ -10,47 +11,47 @@ const CAMPAIGN = [
     raised: 6500,
     title: "Clean Up Korle Gonno Beach",
     desc: "Help us restore the beauty of Korle Gonno Beach by funding tools, waste bins, and community involvement programs.",
-    img: "/image/campaigns/beach1.jpg",
+    img: "/images/campaigns/beach1.jpg",
   },
   {
     target: 15000,
     raised: 12000,
     title: "Sanitation Awareness in Schools",
     desc: "Support our initiative to educate students on hygiene and proper waste management in local schools.",
-    img: "/image/campaigns/water.png",
+    img: "/images/campaigns/water.png",
   },
   {
     target: 8000,
     raised: 3000,
     title: "Market Clean-Up Drive",
     desc: "Contribute to cleaning up major market areas and installing waste disposal systems for sustainable waste management.",
-    img: "/image/campaigns/waste.jpg",
+    img: "/images/campaigns/waste.jpg",
   },
   {
     target: 12000,
     raised: 5000,
     title: "Community Waste Segregation Program",
     desc: "Sponsor waste segregation training and provide households with color-coded bins to promote recycling.",
-    img: "/image/campaigns/beach3.png"
+    img: "/images/campaigns/beach3.png"
   },
   {
     target: 20000,
     raised: 14000,
     title: "Accra City Clean-Up Marathon",
     desc: "Join hands to clean up Accra’s streets during our biggest clean-up campaign yet. Your funds will cover logistics and cleaning supplies.",
-    img: "/image/campaigns/beach2.jpg"
+    img: "/images/campaigns/beach2.jpg"
   },
   {
     target: 10000,
     raised: 7500,
     title: "Hospital Waste Management Initiative",
     desc: "Donate to improve waste management in local clinics and hospitals, ensuring a cleaner and safer environment for patients.",
-    img: "/image/campaigns/beach1.jpg",
+    img: "/images/campaigns/beach1.jpg",
   },
 ];
 
 
-export function DonationCampaign() {
+export function DonationCampaign({ donationCampaign } : { donationCampaign: DonationCampaignProps[] }) {
   return (
     <section className="py-0">
       <div className="container mx-auto mb-24 text-center">
@@ -71,9 +72,13 @@ export function DonationCampaign() {
         </Typography>
       </div>
   <div className="mx-auto grid grid-cols-1 gap-x-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-x-14">
-    {CAMPAIGN.map((props, idx) => (
-        <DonationCampaignCard key={idx} {...props} />
-    ))}
+    {donationCampaign.map((props, idx) => {
+         if(props.status !== 'suspended') {
+            return <DonationCampaignCard key={idx} {...props} />
+         } else {
+            return null
+         }
+    })}
   </div>
     </section>
   );

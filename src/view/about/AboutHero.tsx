@@ -9,7 +9,7 @@ function PageHero() {
       <Image
         width={1200}
         height={1200}
-        src="/image/banner/cover5.jpg"
+        src="/images/banner/cover5.jpg"
         alt="bg-img"
         className="absolute inset-0 ml-auto w-[920px] h-[780px] rounded-bl-[100px] object-cover object-center"
       />
@@ -42,28 +42,28 @@ function PageHero() {
                 width={128}
                 height={128}
                 className="opacity-60"
-                src="/image/partners/lynx.svg"
+                src="/images/partners/lynx.svg"
                 alt="lynx"
               />
               <Image
                 width={128}
                 height={128}
                 className="opacity-60"
-                src="/image/partners/cirad.svg"
+                src="/images/partners/cirad.svg"
                 alt="netflix"
               />
               <Image
                 width={128}
                 height={128}
                 className="opacity-60"
-                src="/image/partners/ecoplanet.svg"
+                src="/images/partners/ecoplanet.svg"
                 alt="coinbase"
               />
               <Image
                 width={128}
                 height={128}
                 className="opacity-60"
-                src="/image/partners/bioversity.svg"
+                src="/images/partners/bioversity.svg"
                 alt="google"
               />
             </div>

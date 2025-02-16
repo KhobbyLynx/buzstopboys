@@ -1,60 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from 'react';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+
+// import required modules
+import { Autoplay, EffectCards } from 'swiper/modules';
+
 import {
-  Button,
   Typography,
-  Card,
-  CardBody,
 } from "@material-tailwind/react";
 
-import {
-  GlobeEuropeAfricaIcon,
-  MicrophoneIcon,
-  PuzzlePieceIcon,
-  HeartIcon,
-  AcademicCapIcon,
-  LightBulbIcon,
-} from "@heroicons/react/24/solid";
-
-import { Box, Grid } from "@mui/material";
-
 import CollageCard from "@/components/Cards/CollageCard";
-import RotatingCard from "@/components/Cards/RotationCard";
-import RotatingCardFront from "@/components/Cards/RotationCard/RotationCardFront";
-import RotatingCardBack from "@/components/Cards/RotationCard/RotationCardBack";
 import Image from "next/image";
+import { ActivityProps } from "@/types/activities";
+import Link from 'next/link';
 
 
-const ACTIVITIES = [
-  {
-    img: "/image/campaigns/clean-sanitation.jpeg",
-    icon: GlobeEuropeAfricaIcon,
-    title: "Cleaning & Sanitation",
-    desc: "750+ spaces revitalized",
-  },
-  {
-    img: "/image/campaigns/with-JM.jpeg",
-    icon: HeartIcon,
-    title: "Sponsors & Partnerships",
-    desc: "100+ partners",
-  },
-  {
-    img: "/image/campaigns/team-photo.png",
-    icon: LightBulbIcon,
-    title: "Street Lighting",
-    desc: "200+ lights installed",
-  },
-  {
-    img: "/image/campaigns/civil-gh.png",
-    icon: AcademicCapIcon,
-    title: "Education & Training",
-    desc: "Spreading knowledge through commitment",
-  },
-];
+export function ActivitiesCollage({ data: ACTIVITIES } : { data: ActivityProps[]}) {
+ console.log("@ACTIVITIES", ACTIVITIES)
 
-
-export function ActivitiesCollage() {
   return (
     <section className="mx-auto py-10">
       <div className="mb-10 grid place-items-center text-center">
@@ -66,12 +35,26 @@ export function ActivitiesCollage() {
           are committed to creating a positive impact in the world.
         </Typography>
         <Typography variant="h4" className="my-3 text-blue-400">
-          Watch our activities in action
+          Watch our activities in action <br /> You can also volunteer to any listed 
+          <Link href={'/events'} className='text-blue-gray-600 ml-1'>Event</Link>
         </Typography>
       </div>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded overflow-hidden my-auto cursor-pointer">
-        <Image src="/image/campaigns/pokuase-porject.jpeg" alt="event" layout="responsive" width={400} height={400}/>
+        <div className="rounded overflow-hidden my-auto">
+        <Swiper 
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          effect={'cards'}
+          grabCursor={true}
+          modules={[EffectCards, Autoplay]}
+          className="mySwiper"
+        >
+        <SwiperSlide>
+          <Image src="https://res.cloudinary.com/khobbylynx/image/upload/v1739193350/buzstopboys/info_graphics/Ghkc7rFXcAA814D_mxxoxc.jpg" alt="event" layout="responsive" width={400} height={400}/>
+        </SwiperSlide>
+        <SwiperSlide><Image src="/images/campaigns/pokuase-porject.jpeg" alt="event" layout="responsive" width={400} height={400}/></SwiperSlide>
+        <SwiperSlide><Image src="https://res.cloudinary.com/khobbylynx/image/upload/v1739193357/buzstopboys/info_graphics/GhuJUhvWgAAlCb0_jwu8qv.jpg" alt="event" layout="responsive" width={400} height={400}/></SwiperSlide>
+        <SwiperSlide><Image src="https://res.cloudinary.com/khobbylynx/image/upload/v1739193289/buzstopboys/events/GhbgWQfXAAAkPXp_iwcs3b.jpg" alt="event" layout="responsive" width={400} height={400}/></SwiperSlide>
+        </Swiper>
         </div>
         <div className="col-span-1 flex flex-col gap-6">
           {ACTIVITIES.slice(0, 2).map((props, key) => (

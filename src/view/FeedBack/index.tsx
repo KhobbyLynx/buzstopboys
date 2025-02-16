@@ -17,28 +17,28 @@ const FEEDBACKS: Feedback[] = [
     job: "Software Engineer",
     feedback: "BuzStopBoys has done an incredible job transforming our neighborhood park. Their dedication is truly inspiring!",
     star: 5,
-    img: "/image/avatar2.jpg",
+    img: "/images/avatars/avatar2.jpg",
   },
   {
     name: "Jane Smith",
     job: "Teacher",
     feedback: "The cleanliness of our community has significantly improved thanks to their efforts. Keep up the great work!",
     star: 3,
-    img: "/image/avatar1.jpg",
+    img: "/images/avatars/avatar1.jpg",
   },
   {
     name: "Samuel Opoku",
     job: "Entrepreneur",
     feedback: "I appreciate their mission, but there’s still room for improvement in organizing volunteers.",
     star: 4,
-    img: "/image/avatar3.jpg",
+    img: "/images/avatars/avatar3.jpg",
   },
   {
     name: "Ama Mensah",
     job: "Nurse",
     feedback: "Fantastic initiative! I’m happy to see such impactful work in our community.",
     star: 5,
-    img: "/image/avatar2.jpg",
+    img: "/images/avatars/avatar2.jpg",
   },
 ];
 

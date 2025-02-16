@@ -1,19 +1,8 @@
 import DonateCard from "@/components/Cards/DonateCard"
+import { DonationOptionsProps } from "@/types/donations"
 import { Typography } from "@material-tailwind/react"
 
-function DonationCards() {
-    const DONATIONS = [
-        {
-          amount: 50,
-        },
-        {
-          amount: null,
-        },
-        {
-          amount: 100,
-        }
-      ]
-
+function DonationCards({ donationOptions } : { donationOptions: DonationOptionsProps[] }) {
   return (
       
           <section className="py-[64px]">
@@ -36,8 +25,8 @@ function DonationCards() {
                 </div>
                 <div className="container mx-auto grid grid-cols-1 gap-4 md:grid-cols-3"> 
             {
-              DONATIONS.map((props, idx) => (
-                <DonateCard key={idx} {...props}/>
+              donationOptions.map((props) => (
+                <DonateCard key={props.id} {...props}/>
               ))
             }
           </div>

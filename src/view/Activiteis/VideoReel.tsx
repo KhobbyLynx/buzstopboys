@@ -1,11 +1,11 @@
 "use client"
 import React from "react";
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, useMediaQuery, useTheme, Typography } from "@mui/material";
 
 const videoData = [
-  { id: 1, title: "Solar Lighting Initiative", url: "https://www.youtube.com/embed/O6w5FzGVTO4" },
-  { id: 2, title: "Video 2", url: "https://www.youtube.com/embed/5Hf8OG150_A" },
-  { id: 3, title: "Video 3", url: "https://www.youtube.com/embed/g2dKs9wRHjo" },
+  { id: 1, title: "BuzstopBoys Expands Solar Lighting Initiative on Achimota Hospital Road", date: '1 month ago', url: "https://www.youtube.com/embed/O6w5FzGVTO4" },
+  { id: 2, title: "Kickstart 3-Day Clean-Up Carnival to Revive Ghana’s Biggest Interchange", date: '1 day ago',url: "https://www.youtube.com/embed/g2dKs9wRHjo" },
+  { id: 3, title: "West Hills Mall-Street Revival: BuzstopBoys Clean Up for Road Safety!", date: 'September, 2024',url: "https://www.youtube.com/embed/8kWF_obv_5E" },
 ];
 
 const VideoReel: React.FC = () => {
@@ -27,7 +27,10 @@ const VideoReel: React.FC = () => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
-              <Box mt={1}>{video.title}</Box>
+              <Box className="mt-1">
+                <Typography className="text-gray-500">{video.date}</Typography>
+                <Typography className="text-gray-900">{video.title}</Typography>
+              </Box>
             </Box>
           </Grid>
         ))}
