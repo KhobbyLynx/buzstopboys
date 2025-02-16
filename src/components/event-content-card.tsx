@@ -55,7 +55,7 @@ export function EventContentCard({
         <div className="flex items-center gap-4">
           <Avatar
             variant="circular"
-            src="/logos/spotify-logo.png"
+            src="/images/logos/spotify-logo.png"
             alt="spotify"
             size="lg"
           />

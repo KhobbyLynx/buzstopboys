@@ -3,7 +3,7 @@
 import { Box, Button, Slide, Divider, Modal, Typography } from "@mui/material";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import { formatAmount } from "@/lib/utils";
+import { formatAmount } from "@/utils/utils";
 import AuthModal from "./AuthModal";
 import { useState } from "react";
 
@@ -16,10 +16,11 @@ interface DonationCampaignCardProps {
   raised: number;
   title: string;
   desc: string;
-  auth: boolean
+  isLoggedIn: boolean
+  status: string
 }
 
-function DonationCampaignModal({toggleModal, show, img, target, title, desc, raised, auth, handeCampaignDonate}: DonationCampaignCardProps) {
+function DonationCampaignModal({toggleModal, show, img, target, title, desc, raised, status, isLoggedIn, handeCampaignDonate}: DonationCampaignCardProps) {
   const [showInnerModal, setShowInnerModal] = useState<boolean>(false)
   const toggleInnerModal = () => setShowInnerModal(!showInnerModal)
   return (
@@ -47,11 +48,14 @@ function DonationCampaignModal({toggleModal, show, img, target, title, desc, rai
                 <Typography className="text-center pt-1 pb-2 font-normal text-blue-900 uppercase">Raised: {formatAmount(raised)}</Typography>
                 </Box>
                 <Box className="flex flex-col gap-4 pt-4 w-full">
-                    <Button variant="contained" onClick={
+                    <Button 
+                      variant="contained" 
+                      disabled={status !== "active"}
+                      onClick={
                       ()=> {
-                        !auth ? toggleInnerModal() : handeCampaignDonate() 
+                        !isLoggedIn ? toggleInnerModal() : handeCampaignDonate() 
                       }
-                    }>Donate Toward This Purpose</Button>
+                    }>{status === 'completed' ? 'Target Reached' : 'Donate Toward a Purpose'}</Button>
                 </Box>
             </Box>
           </Slide>

@@ -4,7 +4,7 @@ import { Button } from "@material-tailwind/react";
 
 export function FixedPlugin() {
   return (
-    <a href="https://www.material-tailwind.com" target="_blank">
+    <a href="https://samueltetteh.netlify.app/" target="_blank">
       <Button
         color="white"
         size="sm"
@@ -14,10 +14,10 @@ export function FixedPlugin() {
           width={128}
           height={128}
           className="w-5 h-5"
-          alt="Material Tailwind"
-          src="https://www.material-tailwind.com/favicon.png"
+          alt="Lynx"
+          src="https://samueltetteh.netlify.app/static/media/logoDark.aa5b846a8282a664eace.png"
         />{" "}
-        Made With Material Tailwind
+        Made With 💖 by Samuel Tetteh
       </Button>
     </a>
   );

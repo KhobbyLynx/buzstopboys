@@ -22,7 +22,7 @@ const STATS = [
   },
 ];
 
-export function OurStats() {
+function OurStats() {
   return (
     <section className="mx-auto grid gap-6 lg:grid-cols-1 lg:gap-20 xl:grid-cols-2 xl:place-items-center bg-gray-100 dark:bg-gray-800 dark:text-white py-16 px-6 mb-10">
       <div>

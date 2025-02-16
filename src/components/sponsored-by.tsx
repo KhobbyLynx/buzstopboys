@@ -25,7 +25,7 @@ export function SponsoredBy() {
               width={60}
               height={60}
               key={key}
-              src={`/image/partners/${logo}.svg`}
+              src={`/images/partners/${logo}.svg`}
               alt={logo}
             />
           ))}

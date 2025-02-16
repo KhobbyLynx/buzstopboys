@@ -16,7 +16,7 @@ const EVENT_CONTENT = [
     name: "Marcell Glock",
     position: "Chief Executive, Spotify",
     panel: "Panel Discussion",
-    img: "/image/avatar1.jpg",
+    img: "/images/avatars/avatar1.jpg",
   },
   {
     title: "Introduction to Machine Learning",
@@ -24,7 +24,7 @@ const EVENT_CONTENT = [
     name: "Marcell Glock",
     position: "Chief Executive, Spotify",
     panel: "Workshop",
-    img: "/image/avatar2.jpg",
+    img: "/images/avatars/avatar2.jpg",
   },
   {
     title: "AI in Healthcare: Revolutionizing Patient Care",
@@ -32,7 +32,7 @@ const EVENT_CONTENT = [
     name: "Marcell Glock",
     position: "Chief Executive, Spotify",
     panel: "Workshop",
-    img: "/image/avatar3.jpg",
+    img: "/images/avatars/avatar3.jpg",
   },
 ];
 
