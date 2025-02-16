@@ -6,10 +6,7 @@ import "swiper/css/autoplay";
 import "swiper/css/effect-coverflow";
 import {
   Navigation,
-  Pagination,
-  Mousewheel,
   Autoplay,
-  EffectCoverflow,
 } from "swiper/modules";
 import { Grid, Box, Typography } from "@mui/material";
 
@@ -19,33 +16,17 @@ export default function VideoSwiper() {
     { id: 2, title: "Kickstart 3-Day Clean-Up Carnival to Revive Ghana’s Biggest Interchange", date: "1 day ago", url: "https://www.youtube.com/embed/g2dKs9wRHjo" },
     { id: 3, title: "West Hills Mall-Street Revival: BuzstopBoys Clean Up for Road Safety!", date: "September, 2024", url: "https://www.youtube.com/embed/8kWF_obv_5E" },
     { id: 4, title: "BuzstopBoys Expands Solar Lighting Initiative on Achimota Hospital Road", date: "1 month ago", url: "https://www.youtube.com/embed/O6w5FzGVTO4" },
-    { id: 5, title: "Kickstart 3-Day Clean-Up Carnival to Revive Ghana’s Biggest Interchange", date: "1 day ago", url: "https://www.youtube.com/embed/g2dKs9wRHjo" },
-    { id: 6, title: "West Hills Mall-Street Revival: BuzstopBoys Clean Up for Road Safety!", date: "September, 2024", url: "https://www.youtube.com/embed/8kWF_obv_5E" },
-    { id: 7, title: "BuzstopBoys Expands Solar Lighting Initiative on Achimota Hospital Road", date: "1 month ago", url: "https://www.youtube.com/embed/O6w5FzGVTO4" },
-    { id: 8, title: "Kickstart 3-Day Clean-Up Carnival to Revive Ghana’s Biggest Interchange", date: "1 day ago", url: "https://www.youtube.com/embed/g2dKs9wRHjo" },
-    { id: 9, title: "West Hills Mall-Street Revival: BuzstopBoys Clean Up for Road Safety!", date: "September, 2024", url: "https://www.youtube.com/embed/8kWF_obv_5E" },
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full m-0 relative">
       <Swiper
-        modules={[Navigation, Mousewheel, EffectCoverflow]}
-        navigation
-        effect={"coverflow"}
-        coverflowEffect={{
-          rotate: 50,
-          stretch: 0,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true,
-        }}
-        pagination={{ clickable: true }}
-        spaceBetween={30}
-        slidesPerView={2}
-        centeredSlides={true}
-        mousewheel
-        // autoplay={{ delay: 3000, disableOnInteraction: false }}
+        autoplay={{ delay: 5000, disableOnInteraction: true }}
         className="w-full h-full"
+        navigation
+        slidesPerView={3}
+        spaceBetween={30}
+        modules={[ Navigation, Autoplay]}
       >
         {videoData.map((video) => (
           <SwiperSlide key={video.id}>
