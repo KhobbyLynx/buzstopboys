@@ -14,7 +14,7 @@ interface AboutCardProp {
 
 export function AboutCard({ title, description, subTitle, coverImage }: AboutCardProp) {
   const backgroundImageStyle = {
-    backgroundImage: coverImage ? `url('/image/banner/${coverImage}.svg')` : 'none',
+    backgroundImage: coverImage ? `url('/images/banner/${coverImage}.svg')` : 'none',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
   };

@@ -1,5 +1,5 @@
 "use client"
-import { formatAmount } from "@/lib/utils";
+import { formatAmount } from "@/utils/utils";
 import { InboxArrowDownIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@material-tailwind/react";
 import { useState } from "react";
