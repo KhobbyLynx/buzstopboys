@@ -30,7 +30,7 @@ export function Footer() {
   return (
     <footer className="pb-5 p-10 md:pt-10">
       <div className="container flex flex-col mx-auto">
-        <div className="flex !w-full py-10 mb-5 md:mb-20 flex-col justify-center !items-center bg-gray-900 container max-w-6xl mx-auto rounded-2xl p-5 bg-[url('/image/banner/cover7.jpg')] bg-right-bottom bg-cover bg-no-repeat" >
+        <div className="flex !w-full py-10 mb-5 md:mb-20 flex-col justify-center !items-center bg-gray-900 container max-w-6xl mx-auto rounded-2xl p-5 bg-[url('/images/banner/cover7.jpg')] bg-right-bottom bg-cover bg-no-repeat" >
           <Typography
             className="text-2xl md:text-3xl text-center font-bold "
             color="white"
