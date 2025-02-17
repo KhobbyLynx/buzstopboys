@@ -1,15 +1,14 @@
 import Activity from "@/models/activity.model";
-import { ActivityProps } from "@/types/activities";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, context: { params: { activityId: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ activityId: string }> }) {
     try {
-        const { activityId } = context.params; // Await params
+        const { activityId } = await context.params; // Await params
 
         // Fetch activity and convert to a plain object
         const activity = await Activity.findOne({ id: activityId }).lean();
 
-        console.log('@ROute', {activity, activityId})
+        console.log('@Route', { activity, activityId });
         if (!activity) {
             return new Response(JSON.stringify({ message: "Activity not found" }), {
                 status: 404,
