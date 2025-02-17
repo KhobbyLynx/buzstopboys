@@ -1,13 +1,12 @@
+'use client'
+import { useParams } from 'next/navigation'
 import React from 'react'
 
-interface Params {
-  patronID: string;
-}
-
-function PatronDetails({params}: {params: Params}) {
+function PatronDetails() {
+  const { patronId } = useParams() as { patronId: string }
   return (
     <div>
-      {`${params.patronID} details`}
+      {`${patronId} details`}
     </div>
   )
 }
