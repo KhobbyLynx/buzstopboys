@@ -1,12 +1,13 @@
+'use client'
+import { useParams } from 'next/navigation'
 import React from 'react'
 
-interface ParamsType {
-    campaignID: String
-}
-const DonationCampaignDetails = ({params}: {params: ParamsType}) => {
+const DonationCampaignDetails: React.FC = () => {
+
+  const { campaignId } = useParams() as { campaignId : string}
   return (
     <div>
-        ID from Campaign {`${params.campaignID}`}
+        ID from Campaign {`${campaignId}`}
     </div>
   )
 }
