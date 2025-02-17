@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Chart, BarController, BarElement, LinearScale, CategoryScale, Tooltip, Legend } from 'chart.js';
+import { Chart, BarController, BarElement, LinearScale, CategoryScale, Tooltip, Legend, ChartConfiguration } from 'chart.js';
 
 // Register the required components
 Chart.register(BarController, BarElement, LinearScale, CategoryScale, Tooltip, Legend);
@@ -14,7 +14,7 @@ declare global {
 
 export default function CardBarChart() {
   React.useEffect(() => {
-    const config: ChartConfiguration = {
+    const config: ChartConfiguration<'bar'> = {
       type: 'bar',
       data: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
