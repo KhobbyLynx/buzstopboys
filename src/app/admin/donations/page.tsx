@@ -16,7 +16,6 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import MuiAvatar from '@mui/material/Avatar'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
@@ -54,6 +53,7 @@ type CampaignsType = {
   status: CampaignStatus
   createdAt: string
   updatedAt: string
+  subText?: string
 }
 
 // ** Custom Table Components Imports
@@ -64,10 +64,7 @@ import { Button, LinearProgress, Tooltip } from '@mui/material'
 import SidebarAddDonationCampaign from '@/view/admin/donations/list/AddDonationCampaignDrawer'
 import SidebarEditDonationCampaign from '@/view/admin/donations/list/EditDonationCampaignDrawer'
 import CardLineChart from '@/components/Cards/CardLineChart'
-import CardBarChart from '@/components/Cards/CardBarChart'
-import IconifyIcon from '@/components/icon'
 import CardOptionsList from '@/components/Cards/CardOptionsList'
-import { Progress } from '@material-tailwind/react'
 
 interface StatusType {
   [key: string]: ThemeColor
