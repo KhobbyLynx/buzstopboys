@@ -1,6 +1,9 @@
+import { storage } from "@/configs/firebase";
 import { AddEventType, EditEventType, EventProps } from "@/types/events";
 import axiosRequest from "@/utils/axiosRequest";
+import { generateRandomId } from "@/utils/utils";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 // ** FETCH EVENTS
 export const getEvents = createAsyncThunk('events/getEvents', 
@@ -21,8 +24,17 @@ export const getEvents = createAsyncThunk('events/getEvents',
 // ** ADD NEW EVENT
 export const addEvent = createAsyncThunk('events/addEvent', 
     async (data: AddEventType, { rejectWithValue }) => {
+        const { img } = data
         try {
-            const response = await axiosRequest.post('/events', data)
+            const uploadResponse = await axiosRequest.post('/upload', { img })
+            const imgUrl = uploadResponse.data.url
+
+            const eventData = {
+                ...data,
+                img: imgUrl
+            }
+
+            const response = await axiosRequest.post('/events', eventData)
             const newEvent = response.data
 
             return newEvent
@@ -52,8 +64,9 @@ export const updateEvent = createAsyncThunk('events/updateEvent',
 
 // ** DELETE EVENT
 export const deleteEvent = createAsyncThunk('events/deleteEvent',
-    async (id: string, { rejectWithValue }) => {
+    async ({id, imgUrl} : {id: string, imgUrl: string}, { rejectWithValue }) => {
         try {
+            await axiosRequest.delete(`/upload?id=${imgUrl}`)
             await axiosRequest.delete(`/events?id=${id}`)
             return id
         } catch (error) {
@@ -64,11 +77,30 @@ export const deleteEvent = createAsyncThunk('events/deleteEvent',
         }
 })
 
+// ** FETCH SINGLE EVENT 
+export const singleEvent = createAsyncThunk('events/singleEvent', 
+    async (id: string, {rejectWithValue}) => {
+        try {
+            const response = await axiosRequest.get(`/events/${id}`)
+            const eventData = response.data
+
+            return eventData
+        } catch (error) {
+            if(process.env.NODE_ENV === 'development'){
+                console.log('Error fetching single event', error)
+            }
+            return rejectWithValue(error instanceof Error ? error.message : 'An error occurred fetching single event')
+        }
+    }
+)
+
+
 
 export const eventSlice = createSlice({
     name: 'events',
     initialState: {
-        events: [] as EventProps[]
+        events: [] as EventProps[],
+        selectedEvent: {} as EventProps
     },
     reducers: {
        
@@ -89,6 +121,9 @@ export const eventSlice = createSlice({
         })
         .addCase(deleteEvent.fulfilled, (state, action) => {
             state.events = state.events.filter(event => event.id !== action.payload)
+        })
+        .addCase(singleEvent.fulfilled, (state, action) => {
+            state.selectedEvent = action.payload
         })
     }
 })
