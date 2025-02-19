@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         const { title, desc, img, startTime, startDate, venue, hashTags } = data
 
         // Check if the required fields are provided
-        if (!title || !desc || !venue || !startDate || !startTime || !img) {
+        if (!title || !desc || !venue || !startDate || !startTime) {
             return new Response(JSON.stringify({ message: "Title, Description, Time & date, an Image and Venue are required" }), {
                 status: 400,
                 headers: {
