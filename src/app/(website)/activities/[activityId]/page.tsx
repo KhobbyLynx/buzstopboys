@@ -10,7 +10,7 @@ import { ActivityProps } from '@/types/activities';
 import IconifyIcon from '@/components/icon';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store';
-import { selectedActivity } from '@/store/activities';
+import { singleActivity } from '@/store/activities';
 import { useParams } from "next/navigation";
 
 const ActivityDetailsPage: React.FC = () => {
@@ -20,7 +20,7 @@ const ActivityDetailsPage: React.FC = () => {
   const store = useSelector((state: RootState) => state.activities);
 
   useEffect(() => {
-    dispatch(selectedActivity(activityId));
+    dispatch(singleActivity(activityId));
   }, [dispatch, activityId]);
 
   const activityData: ActivityProps | null = store.selectedActivity;
