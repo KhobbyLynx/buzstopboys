@@ -30,6 +30,9 @@ import { addActivity, updateActivity } from '@/store/activities'
 // ** Types Imports
 import { AppDispatch } from '@/store'
 import { ActivityProps, AddActivityType } from '@/types/activities'
+import { Toast } from '@/utils/toast'
+import Image from 'next/image'
+import { useDropzone } from 'react-dropzone'
 
 interface SidebarEditActivityType {
   open: boolean
@@ -71,6 +74,68 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
 
   // ** State
   const [icon, setIcon] = useState<string>('nrk:globe')
+
+   // ** File Upload State
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [img, setImg] = useState<File | null>(null)
+  
+    // ** Dropzone Logic
+    const readAndValidateImage = (file: File) => {
+      return new Promise<File>((resolve, reject) => {
+        const reader = new FileReader()
+  
+        reader.onload = (event: ProgressEvent<FileReader>) => {
+          const image = new window.Image()
+          image.src = event.target?.result as string
+  
+          image.onload = () => {
+            // Validate size
+            if (file.size <= 2 * 1024 * 1024) {
+              resolve(file)
+            } else {
+              reject(new Error('File size exceeds 2 MB.'))
+            } 
+          }
+        }
+  
+        reader.onerror = () => {
+          reject(new Error('Failed to read the file.'))
+        }
+  
+        reader.readAsDataURL(file)
+      })
+    }
+  
+    const { getRootProps, getInputProps } = useDropzone({
+      maxFiles: 1,
+      maxSize: 2 * 1024 * 1024, // 2 MB
+      accept: {
+        'image/*': ['.png', '.jpg', '.jpeg']
+      },
+      onDrop: async (acceptedFiles) => {
+        try {
+          const validatedImage = await readAndValidateImage(acceptedFiles[0])
+          
+          console.log('Files', validatedImage)
+          // setUploadedFiles([...uploadedFiles, ...acceptedFiles])
+          setUploadedFiles([validatedImage])
+          setImg(validatedImage as File)
+        } catch (error: any) {
+          Toast.fire({
+            icon: 'error',
+            title: 'Image Upload',
+            text: error.message
+          })
+        }
+      },
+      onDropRejected: () => {
+        Toast.fire({
+          icon: 'error',
+          title: 'Image Upload',
+          text: 'You can only upload 1 image & maximum size of 2 MB.'
+        })
+      }
+    })
 
     // ** Details
     const [details, setDetails] = useState<string[]>(['']);
@@ -210,6 +275,39 @@ const handleClose = () => {
               />
             )}
           />
+
+            {/* Dropzone */}
+            <Box {...getRootProps()} sx={{ p: 3, border: '1px dashed gray', cursor: 'pointer', mb: 2 }}>
+              <input {...getInputProps()} />
+              <Typography>Drag & drop some images here, or click to select files</Typography>
+            </Box>
+
+            {/* Display Uploaded Images */}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
+              {uploadedFiles.map((file, index) => (
+                <Box key={index} sx={{ position: 'relative' }}>
+                  <Image
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    width={80}
+                    height={80}
+                     style={{ 
+                      borderRadius: 8, 
+                      objectFit: 'cover',
+                      width: 'auto',  // Ensures aspect ratio is maintained
+                      height: 'auto'  // Ensures aspect ratio is maintained
+                    }}
+                  />
+                  <IconButton
+                    onClick={() => setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))}
+                    sx={{ position: 'absolute', top: 0, right: 0, background: 'white' }}
+                  >
+                    <IconifyIcon icon='tabler:x' fontSize={16} />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>  
+
           <Controller
             name='caption'
             control={control}
