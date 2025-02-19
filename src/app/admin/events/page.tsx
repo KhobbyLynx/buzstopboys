@@ -102,7 +102,7 @@ const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) =>
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteEvent(eventID))
+        dispatch(deleteEvent({id:eventID, imgUrl: data.img}))
 
         MySwal.fire({
           icon: 'success',
