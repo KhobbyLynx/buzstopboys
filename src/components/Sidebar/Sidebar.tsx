@@ -26,7 +26,10 @@ const Sidebar = () => {
       </ul>
 
       {/* Sidebar Collapse Button */}
-      <button className="md:hidden px-3 py-1 text-xl border border-transparent" onClick={() => setCollapseShow("bg-white m-2 py-3 px-6")}>
+      <button 
+        className="md:hidden px-3 py-1 text-xl border border-transparent" 
+        onClick={() => setCollapseShow("bg-white m-2 py-3 px-6")}
+      >
         <i className="fas fa-bars"></i>
       </button>
 
@@ -37,8 +40,9 @@ const Sidebar = () => {
         <ul>
           <li>
             <Link href="/">
-              <div className={`py-3 font-bold flex items-center ${pathname === "/" ? "text-lightBlue-500" : "text-blueGray-700"}`}>
-                <IconifyIcon icon='iconoir:www' className="mr-2"/> Go to Webpage
+              <div className={`group py-3 font-bold flex items-center transition duration-300 ${pathname === "/" ? "text-white bg-blue-500" : "text-gray-700 hover:text-white hover:bg-gray-400"}`}>
+                <IconifyIcon icon="iconoir:www" className="mr-2 ml-2" /> 
+                Go to Webpage
               </div>
             </Link>
           </li>
@@ -48,10 +52,11 @@ const Sidebar = () => {
         <h6 className="text-xs uppercase font-bold py-2">Admin Pages</h6>
         <ul>
           {adminNavigation.map(({ name, href, icon }) => (
-            <li key={href}>
+            <li key={href} className="mb-1"> 
               <Link href={href}>
-                <div className={`py-3 font-bold flex items-center ${pathname.includes(href) ? "text-lightBlue-500" : "text-blueGray-700"}`}>
-                  <i className={`fa-solid ${icon} mr-2`}></i> {name}
+                <div className={`group py-3 font-bold flex items-center transition duration-300 ${pathname.includes(href) ? "text-white bg-blue-500" : "text-gray-700 hover:text-white hover:bg-gray-400"}`}>
+                  <i className={`fa-solid ${icon} mr-2 ml-2`}></i> 
+                  {name}
                 </div>
               </Link>
             </li>
