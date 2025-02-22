@@ -170,15 +170,58 @@ export const patronSlice = createSlice({
         numberOfPatrons: 0 as number,
         numberOfAdmins: 0 as number,
         numberOfUsers: 0 as number,
+        pending: false as boolean,
     },
     name: 'patrons',
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(getPatrons.fulfilled, (state, action) => {
+        builder
+
+        // ** Get All Users
+        .addCase(getPatrons.fulfilled, (state, action) => {
             state.users = action.payload.users
             state.numberOfPatrons = action.payload.patronsCount
             state.numberOfAdmins = action.payload.adminsCount
             state.numberOfUsers = action.payload.usersCount
+            state.pending = false
+        })
+        .addCase(getPatrons.pending, (state) => {
+            state.pending = true
+        })
+
+        // ** Delete User
+        .addCase(deleteUser.pending, (state) => {
+            state.pending = true
+        })
+        .addCase(deleteUser.fulfilled, (state, action) => {
+            state.users = state.users.filter((u) => u.id !== action.payload)
+            state.numberOfUsers - 1
+            state.numberOfAdmins = state.users.filter((u) => u.role === 'admin').length
+            state.numberOfPatrons = state.users.filter((u) => u.role === 'patron').length  
+            state.pending = false 
+        })
+
+        // ** Suspend User
+        .addCase(suspendUser.pending, (state) => {
+            state.pending = true
+        })
+        .addCase(suspendUser.fulfilled, (state, action) => {
+            state.users = state.users.map((u) => u.id === action.payload.data.id ? action.payload.data : u)
+            state.pending = false
+        })
+
+        // ** Reinstate User
+        .addCase(reinstateUser.pending, (state) => {
+            state.pending = true
+        })
+        .addCase(reinstateUser.fulfilled, (state, action) => {
+            state.users = state.users.map((u) => u.id === action.payload.data.id ? action.payload.data : u)
+            state.pending = false
+        })
+
+        // ** Admin Register Patron
+        .addCase(handleAdminRegisterPatron.pending, (state) => {
+            state.pending = true
         })
         .addCase(handleAdminRegisterPatron.fulfilled, (state, action) => {
             state.users.push(action.payload)
@@ -188,6 +231,7 @@ export const patronSlice = createSlice({
             } else {
                 state.numberOfPatrons + 1
             }
+            state.pending = false
         })
     }
 })
