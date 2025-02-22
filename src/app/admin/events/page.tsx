@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { LinearProgress, Tooltip } from '@mui/material'
+import { CircularProgress, Tooltip } from '@mui/material'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
@@ -39,7 +39,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)
 
-// ** Types 
+// ** Types
 import { AppDispatch, RootState } from '@/store'
 import { EventProps } from '@/types/events'
 
@@ -49,8 +49,8 @@ import TableHeader from '@/view/admin/events/list/TableHeader'
 // ** Sidebar Components
 import SidebarAddEvent from '@/view/admin/events/list/AddEventDrawer'
 import SidebarEditEvent from '@/view/admin/events/list/EditEventDrawer'
-import EventDetailsModal from '@/view/admin/events/list/EventDetailsModal'
 import { ThemeColor } from '@/layouts/types'
+import { useRouter } from 'next/navigation'
 
 interface StatusType {
   [key: string]: ThemeColor
@@ -63,20 +63,19 @@ interface CellType {
 const StatusObj: StatusType = {
   upcoming: 'info',
   past: 'error',
-  suspended: 'warning'
+  suspended: 'warning',
 }
 
-const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) => {
+const RowOptions = ({ eventID, data }: { eventID: string; data: EventProps }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [editEventOpen, setEditEventOpen] = useState<boolean>(false)
-  const [viewEventOpen, setViewEventOpen] = useState<boolean>(false)
 
   const toggleEditEventDrawer = () => setEditEventOpen(!editEventOpen)
-  const toggleViewEventDrawer = () => setViewEventOpen(!viewEventOpen)
 
   const rowOptionsOpen = Boolean(anchorEl)
 
@@ -102,7 +101,7 @@ const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) =>
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteEvent({id:eventID, imgUrl: data.img}))
+        dispatch(deleteEvent({ id: eventID, imgUrl: data.img }))
 
         MySwal.fire({
           icon: 'success',
@@ -111,7 +110,7 @@ const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) =>
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -120,27 +119,27 @@ const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) =>
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
+    })
 
-    handleRowOptionsClose();
-  };
+    handleRowOptionsClose()
+  }
 
   const handleEdit = () => {
     toggleEditEventDrawer()
-    handleRowOptionsClose();
+    handleRowOptionsClose()
   }
 
   const handleView = () => {
-    toggleViewEventDrawer()
-    handleRowOptionsClose();
+    router.push(`/admin/events/${eventID}`)
+    handleRowOptionsClose()
   }
 
   return (
     <>
-      <IconButton size='small' onClick={handleRowOptionsClick}>
-        <Icon icon='tabler:dots-vertical' />
+      <IconButton size="small" onClick={handleRowOptionsClick}>
+        <Icon icon="tabler:dots-vertical" />
       </IconButton>
       <Menu
         keepMounted
@@ -149,33 +148,30 @@ const RowOptions = ({ eventID, data }: { eventID: string, data: EventProps }) =>
         onClose={handleRowOptionsClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
         <MenuItem onClick={handleView} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:eye' fontSize={20} />
+          <Icon icon="tabler:eye" fontSize={20} />
           View
         </MenuItem>
         <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='uil:edit' fontSize={20} />
+          <Icon icon="uil:edit" fontSize={20} />
           Edit
         </MenuItem>
         <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:trash' fontSize={20} />
+          <Icon icon="tabler:trash" fontSize={20} />
           Delete
         </MenuItem>
       </Menu>
 
       {/* Edit Modal */}
       <SidebarEditEvent open={editEventOpen} toggle={toggleEditEventDrawer} eventData={data} />
-
-      {/* View Modal */}
-      <EventDetailsModal open={viewEventOpen} onClose={toggleViewEventDrawer} event={data} />
     </>
   )
 }
@@ -211,13 +207,13 @@ const columns: GridColDef[] = [
                 {title}
               </Typography>
             </Tooltip>
-            <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
+            <Typography noWrap variant="body2" sx={{ color: 'text.disabled' }}>
               {id}
             </Typography>
           </Box>
         </Box>
       )
-    }
+    },
   },
   {
     flex: 0.25,
@@ -227,7 +223,8 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Tooltip title={row.desc} placement="top-start">
-          <Typography noWrap
+          <Typography
+            noWrap
             sx={{
               fontWeight: 500,
               color: 'text.secondary',
@@ -235,55 +232,56 @@ const columns: GridColDef[] = [
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
               maxWidth: '200px',
-            }}>
+            }}
+          >
             {row.desc}
           </Typography>
         </Tooltip>
       )
-    }
+    },
   },
   {
-    flex: 0.15,
-    minWidth: 150,
+    flex: 0.14,
+    minWidth: 140,
     field: 'startDate',
     headerName: 'Start Date',
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {formatDate(row.startDate)}
+          {formatDate(row.startDate).date}
         </Typography>
       )
-    }
+    },
   },
   {
-    flex: 0.15,
-    minWidth: 150,
+    flex: 0.13,
+    minWidth: 130,
     field: 'endDate',
     headerName: 'End Date',
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {formatDate(row.endDate)}
+          {row.endDate ? formatDate(row.endDate).date : '-'}
         </Typography>
       )
-    }
+    },
   },
   {
-    flex: 0.1,
-    minWidth: 100,
+    flex: 0.13,
+    minWidth: 130,
     field: 'status',
     headerName: 'Status',
     renderCell: ({ row }: CellType) => {
       return (
         <CustomChip
-          skin='light'
-          size='small'
+          skin="light"
+          size="small"
           label={row.status}
           color={StatusObj[row.status]}
           sx={{ textTransform: 'capitalize' }}
         />
       )
-    }
+    },
   },
   {
     flex: 0.03,
@@ -292,11 +290,9 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return (
-        <RowOptions eventID={row.id} data={row} />
-      )
-    }
-  }
+      return <RowOptions eventID={row.id} data={row} />
+    },
+  },
 ]
 
 const DashEvents = () => {
@@ -308,24 +304,37 @@ const DashEvents = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.events)
 
+  const { events, pending } = store
+
   useEffect(() => {
     // Fetch Events
-    dispatch(getEvents())
+    if (events.length === 0) {
+      dispatch(getEvents())
+    }
   }, [dispatch])
 
   const toggleAddEventDrawer = () => setAddNewEventOpen(!addNewEventOpen)
+
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
 
   return (
     <Grid container spacing={6} sx={{ mt: 1 }}>
       <Grid item xs={12} lg={12}>
         <Card>
-          <CardHeader title='List of Events' />
+          <CardHeader title="List of Events" />
           <Divider sx={{ m: '0 !important' }} />
           <TableHeader toggle={toggleAddEventDrawer} />
           <DataGrid
             autoHeight
             rowHeight={62}
-            rows={store.events}
+            rows={events}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}
