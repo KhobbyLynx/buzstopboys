@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Drawer from '@mui/material/Drawer'
@@ -33,6 +33,8 @@ import { ActivityProps, AddActivityType } from '@/types/activities'
 import { Toast } from '@/utils/toast'
 import Image from 'next/image'
 import { useDropzone } from 'react-dropzone'
+import { FormHelperText } from '@mui/material'
+import { convertToEmbedUrl } from '@/utils/utils'
 
 interface SidebarEditActivityType {
   open: boolean
@@ -43,30 +45,14 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(6),
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }))
 
 const EditActivitySchema = yup.object().shape({
-  title: yup
-  .string()
-  .required('Title is required'),
-  desc: yup
-  .string()
-  .required('Activity Description is required'),
-  caption: yup
-  .string()
-  .required('Caption is required'),
+  title: yup.string().required('Title is required'),
+  desc: yup.string().required('Activity Description is required'),
+  caption: yup.string().required('Caption is required'),
 })
-
-const Icons = {
-  'nrk:globe': 'Globe',
-  'si:heart-fill': 'Heart',
-  'mdi:lightbulb-on': 'Light',
-  'heroicons:academic-cap-solid': 'Education',
-  'octicon:sponsor-tiers-16': 'Sponsor',
-  'healthicons:i-training-class-outline': 'Training',
-  'healthicons:miner-worker-alt-outline': 'Work'
-}
 
 const SidebarAddActivity = (props: SidebarEditActivityType) => {
   // ** Props
@@ -75,103 +61,125 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
   // ** State
   const [icon, setIcon] = useState<string>('nrk:globe')
 
-   // ** File Upload State
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-    const [img, setImg] = useState<File | null>(null)
-  
-    // ** Dropzone Logic
-    const readAndValidateImage = (file: File) => {
-      return new Promise<File>((resolve, reject) => {
-        const reader = new FileReader()
-  
-        reader.onload = (event: ProgressEvent<FileReader>) => {
-          const image = new window.Image()
-          image.src = event.target?.result as string
-  
-          image.onload = () => {
-            // Validate size
-            if (file.size <= 2 * 1024 * 1024) {
-              resolve(file)
-            } else {
-              reject(new Error('File size exceeds 2 MB.'))
-            } 
+  // ** File Upload State
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+  const [imgs, setImgs] = useState<string[]>([])
+  const [imageError, setImageError] = useState<string>('')
+
+  // ** Dropzone Logic
+  const readAndValidateImage = (file: File): Promise<File> => {
+    return new Promise<File>((resolve, reject) => {
+      const reader = new FileReader()
+
+      reader.onload = (event: ProgressEvent<FileReader>) => {
+        const image = new window.Image()
+        image.src = event.target?.result as string
+        image.onload = () => {
+          // Validate size
+          if (file.size <= 2 * 1024 * 1024) {
+            setImgs((prevImgs) => [...prevImgs, reader.result as string])
+            resolve(file)
+          } else {
+            reject(new Error('File size exceeds 2 MB.'))
           }
         }
-  
-        reader.onerror = () => {
-          reject(new Error('Failed to read the file.'))
+
+        image.onerror = () => {
+          reject(new Error('Invalid image file.'))
         }
-  
-        reader.readAsDataURL(file)
-      })
-    }
-  
-    const { getRootProps, getInputProps } = useDropzone({
-      maxFiles: 1,
-      maxSize: 2 * 1024 * 1024, // 2 MB
-      accept: {
-        'image/*': ['.png', '.jpg', '.jpeg']
-      },
-      onDrop: async (acceptedFiles) => {
-        try {
-          const validatedImage = await readAndValidateImage(acceptedFiles[0])
-          
-          console.log('Files', validatedImage)
-          // setUploadedFiles([...uploadedFiles, ...acceptedFiles])
-          setUploadedFiles([validatedImage])
-          setImg(validatedImage as File)
-        } catch (error: any) {
-          Toast.fire({
-            icon: 'error',
-            title: 'Image Upload',
-            text: error.message
-          })
-        }
-      },
-      onDropRejected: () => {
-        Toast.fire({
-          icon: 'error',
-          title: 'Image Upload',
-          text: 'You can only upload 1 image & maximum size of 2 MB.'
-        })
       }
+
+      reader.onerror = () => {
+        reject(new Error('Failed to read the file.'))
+      }
+
+      reader.readAsDataURL(file)
     })
+  }
 
-    // ** Details
-    const [details, setDetails] = useState<string[]>(['']);
+  const { getRootProps, getInputProps } = useDropzone({
+    maxFiles: 3,
+    maxSize: 2 * 1024 * 1024, // 2 MB
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg'],
+    },
+    onDrop: async (acceptedFiles) => {
+      try {
+        const validatedImages = await Promise.all(
+          acceptedFiles.map((file) => readAndValidateImage(file))
+        )
 
-    const handleAddDetail = () => {
-      setDetails([...details, '']); // Add an empty string for a new detail
-    };
-  
-    const handleRemoveDetail = (index: number) => {
-      const updatedDetails = details.filter((_, i) => i !== index); // Remove the detail at the given index
-      setDetails(updatedDetails);
-    };
-  
-    const handleDetailChange = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const newDetails = [...details];
-      newDetails[index] = event.target.value; // Update the value of the specific detail
-      setDetails(newDetails);
-    };
- 
-    // ** Video Urls
-    const [videoUrls, setVideoUrls] = useState<string[]>(['']);
+        setUploadedFiles((prevFiles) => [...prevFiles, ...validatedImages])
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error uploading image - OnDrop', error)
+        }
+      }
+    },
+    onDropRejected: (fileRejections) => {
+      fileRejections.forEach((rejection) => {
+        rejection.errors.forEach((error) => {
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error uploading image - onDropRejected', error)
+          }
 
-    const handleAddVideoUrl = () => {
-      setVideoUrls([...videoUrls, '']); 
-    };
-  
-    const handleRemoveVideoUrl = (index: number) => {
-      const updatedVideoUrl = videoUrls.filter((_, i) => i !== index); // Remove the url at the given index
-      setVideoUrls(updatedVideoUrl);
-    };
-  
-    const handleVideoUrlChange = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const newVideoUrls = [...videoUrls];
-      newVideoUrls[index] = event.target.value; // Update the value of the specific url
-      setVideoUrls(newVideoUrls);
-    };
+          if (error.code === 'file-too-large') {
+            setImageError('File size exceeds 2 MB.')
+          } else if (error.code === 'too-many-files') {
+            setImageError('You can only upload 3 images.')
+          } else if (error.code === 'file-invalid-type') {
+            setImageError('Invalid file type. Please upload a PNG, JPG, or JPEG image.')
+          } else {
+            setImageError('File upload rejected.')
+          }
+        })
+      })
+    },
+  })
+
+  // ** Details
+  const [details, setDetails] = useState<string[]>([''])
+  const [detailsError, setDetailsError] = useState<string>('')
+
+  const handleAddDetail = () => {
+    setDetails([...details, '']) // Add an empty string for a new detail
+  }
+
+  const handleRemoveDetail = (index: number) => {
+    const updatedDetails = details.filter((_, i) => i !== index) // Remove the detail at the given index
+    setDetails(updatedDetails)
+  }
+
+  const handleDetailChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const newDetails = [...details]
+    newDetails[index] = event.target.value // Update the value of the specific detail
+    setDetails(newDetails)
+  }
+
+  // ** Video Urls
+  const [videoUrls, setVideoUrls] = useState<string[]>([''])
+  const [videoUrlsError, setVideoUrlsError] = useState<string>('')
+
+  const handleAddVideoUrl = () => {
+    setVideoUrls([...videoUrls, ''])
+  }
+
+  const handleRemoveVideoUrl = (index: number) => {
+    const updatedVideoUrl = videoUrls.filter((_, i) => i !== index) // Remove the url at the given index
+    setVideoUrls(updatedVideoUrl)
+  }
+
+  const handleVideoUrlChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const newVideoUrls = [...videoUrls]
+    newVideoUrls[index] = event.target.value // Update the value of the specific url
+    setVideoUrls(newVideoUrls)
+  }
 
   const defaultValues = {
     title: '',
@@ -182,15 +190,28 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
+  // ** useEffect
+  useEffect(() => {
+    setTimeout(() => {
+      setImageError('')
+    }, 5000)
+    setTimeout(() => {
+      setDetailsError('')
+    }, 5000)
+    setTimeout(() => {
+      setVideoUrlsError('')
+    }, 5000)
+  }, [imageError, detailsError, videoUrlsError])
+
   const {
     reset,
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues,
     mode: 'onChange',
-    resolver: yupResolver(EditActivitySchema)
+    resolver: yupResolver(EditActivitySchema),
   })
 
   interface SubmitActivityDataType {
@@ -200,34 +221,61 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
   }
 
   const onSubmit = (data: SubmitActivityDataType) => {
-    console.log('Data From Add Activity Form',{...data, icon, details, videoUrls})
+    // ** Validation
+    if (imgs.length === 0) {
+      return setImageError('Please upload an image')
+    }
 
-    dispatch(addActivity({...data, icon, details, videoUrls}))
-    reset()
-    toggle()
+    if (imgs.length > 3) {
+      return setImageError('You can only upload 3 images')
+    }
+
+    if (details.length === 0 || details[0] === '') {
+      return setDetailsError('Please add details')
+    }
+
+    if (videoUrls.length === 0 || videoUrls[0] === '') {
+      return setVideoUrlsError('Please add video urls')
+    }
+
+    const convertVideoUrls = videoUrls.map((url) => convertToEmbedUrl(url))
+
+    // ** Dispatch
+    try {
+      dispatch(addActivity({ ...data, icon, details, videoUrls: convertVideoUrls, imgs }))
+
+      handleClose()
+    } catch (error: any) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Error creating new activity - onSubmit', error)
+      }
+    }
   }
 
-const handleClose = () => {
-  setDetails([''])
-  setVideoUrls([''])
-  setIcon('nrk:globe')
-  toggle()
-  reset()
-}
+  const handleClose = () => {
+    setDetails([''])
+    setVideoUrls([''])
+    setImageError('')
+    setUploadedFiles([])
+    setImgs([])
+    setIcon('nrk:globe')
+    toggle()
+    reset()
+  }
 
   return (
     <Drawer
       open={open}
-      anchor='right'
-      variant='temporary'
+      anchor="right"
+      variant="temporary"
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Add Activity</Typography>
+        <Typography variant="h5">Add Activity</Typography>
         <IconButton
-          size='small'
+          size="small"
           onClick={handleClose}
           sx={{
             p: '0.438rem',
@@ -236,13 +284,13 @@ const handleClose = () => {
             backgroundColor: 'action.selected',
           }}
         >
-          <IconifyIcon icon='tabler:x' fontSize='1.125rem' />
+          <IconifyIcon icon="tabler:x" fontSize="1.125rem" />
         </IconButton>
       </Header>
-      <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
+      <Box sx={{ p: (theme) => theme.spacing(0, 6, 6) }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name='title'
+            name="title"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -250,7 +298,7 @@ const handleClose = () => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Title'
+                label="Title"
                 onChange={onChange}
                 placeholder="eg. Sanitation"
                 error={Boolean(errors.title)}
@@ -259,7 +307,7 @@ const handleClose = () => {
             )}
           />
           <Controller
-            name='desc'
+            name="desc"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -267,49 +315,17 @@ const handleClose = () => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Description'
+                label="Description"
                 onChange={onChange}
-                placeholder='Describe the activity'
+                placeholder="Describe the activity"
                 error={Boolean(errors.desc)}
                 {...(errors.desc && { helperText: errors.desc.message })}
               />
             )}
           />
 
-            {/* Dropzone */}
-            <Box {...getRootProps()} sx={{ p: 3, border: '1px dashed gray', cursor: 'pointer', mb: 2 }}>
-              <input {...getInputProps()} />
-              <Typography>Drag & drop some images here, or click to select files</Typography>
-            </Box>
-
-            {/* Display Uploaded Images */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
-              {uploadedFiles.map((file, index) => (
-                <Box key={index} sx={{ position: 'relative' }}>
-                  <Image
-                    src={URL.createObjectURL(file)}
-                    alt={file.name}
-                    width={80}
-                    height={80}
-                     style={{ 
-                      borderRadius: 8, 
-                      objectFit: 'cover',
-                      width: 'auto',  // Ensures aspect ratio is maintained
-                      height: 'auto'  // Ensures aspect ratio is maintained
-                    }}
-                  />
-                  <IconButton
-                    onClick={() => setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))}
-                    sx={{ position: 'absolute', top: 0, right: 0, background: 'white' }}
-                  >
-                    <IconifyIcon icon='tabler:x' fontSize={16} />
-                  </IconButton>
-                </Box>
-              ))}
-            </Box>  
-
           <Controller
-            name='caption'
+            name="caption"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -317,117 +333,165 @@ const handleClose = () => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Caption'
+                label="Caption"
                 onChange={onChange}
-                placeholder='Add a caption'
+                placeholder="Add a caption"
                 error={Boolean(errors.caption)}
                 {...(errors.caption && { helperText: errors.caption.message })}
               />
             )}
           />
-          <Box sx={{mt: '5px', mb: '5px'}}>
-              <Typography sx={{mb: '5px'}}>Details</Typography>
-                {details.map((detail, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      width: '100%',
-                    }}
+
+          {/* Dropzone */}
+          {imageError && (
+            <FormHelperText error sx={{ mb: 1 }}>
+              {imageError}
+            </FormHelperText>
+          )}
+          <Box
+            {...getRootProps()}
+            sx={{ p: 3, border: '1px dashed gray', cursor: 'pointer', mb: 2 }}
+          >
+            <input {...getInputProps()} />
+            <Typography>Drag & drop some images here, or click to select files</Typography>
+          </Box>
+
+          {/* Display Uploaded Images */}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
+            {uploadedFiles.map((file, index) => (
+              <Box key={index} sx={{ position: 'relative' }}>
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  width={80}
+                  height={80}
+                  style={{
+                    borderRadius: 8,
+                    objectFit: 'cover',
+                  }}
+                />
+                <IconButton
+                  onClick={() => {
+                    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))
+                    setImgs(imgs.filter((_, i) => i !== index))
+                  }}
+                  sx={{ position: 'absolute', top: 0, right: 0, background: 'white' }}
+                >
+                  <IconifyIcon icon="tabler:x" fontSize={16} />
+                </IconButton>
+              </Box>
+            ))}
+          </Box>
+
+          {/* Details */}
+          <Box sx={{ mt: '5px', mb: '5px' }}>
+            <Typography sx={{ mb: '5px' }}>Details</Typography>
+            {details.map((detail, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  width: '100%',
+                }}
+              >
+                <CustomTextField
+                  fullWidth
+                  size="small"
+                  placeholder={`Add Detail ${index + 1}`}
+                  sx={{ mb: '3px' }}
+                  value={detail}
+                  onChange={(event) => handleDetailChange(index, event)}
+                />
+                {index === details?.length - 1 && (
+                  <IconButton
+                    color="primary"
+                    onClick={handleAddDetail}
+                    disabled={index !== details?.length - 1}
                   >
-                    <CustomTextField
-                      fullWidth
-                      size = 'small'
-                      placeholder={`Add Detail ${index + 1}`}
-                      sx={{mb: '3px' }}
-                      value={detail}
-                      onChange={(event) => handleDetailChange(index, event)}
-                    />
-                    {index === details?.length - 1 &&
-                      <IconButton
-                        color="primary"
-                        onClick={handleAddDetail}
-                        disabled={index !== details?.length - 1}
-                        >
-                        <IconifyIcon icon='tabler:plus' fontSize={20} />
-                      </IconButton>
-                    }
-                    {details?.length > 1 && (
-                      <IconButton
-                      color="secondary"
-                      onClick={() => handleRemoveDetail(index)}
-                      >
-                        <IconifyIcon icon='tabler:x' fontSize={20} />
-                      </IconButton>
-                    )}
-                  </Box>
-              ))}
-            </Box>
-          
-          <Box sx={{mt: '5px', mb: '5px'}}>
-              <Typography sx={{mb: '5px'}}>Video Urls</Typography>
-                {videoUrls.map((url, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      width: '100%',
-                    }}
+                    <IconifyIcon icon="tabler:plus" fontSize={20} />
+                  </IconButton>
+                )}
+                {details?.length > 1 && (
+                  <IconButton color="secondary" onClick={() => handleRemoveDetail(index)}>
+                    <IconifyIcon icon="tabler:x" fontSize={20} />
+                  </IconButton>
+                )}
+              </Box>
+            ))}
+          </Box>
+          {detailsError && (
+            <FormHelperText error sx={{ mt: 1 }}>
+              {detailsError}
+            </FormHelperText>
+          )}
+
+          <Box sx={{ mt: '5px', mb: '5px' }}>
+            <Typography sx={{ mb: '5px' }}>Video Urls</Typography>
+            {videoUrls.map((url, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  width: '100%',
+                }}
+              >
+                <CustomTextField
+                  fullWidth
+                  size="small"
+                  placeholder={`Add Url ${index + 1}`}
+                  sx={{ mb: '3px' }}
+                  value={url}
+                  onChange={(event) => handleVideoUrlChange(index, event)}
+                />
+                {index === videoUrls?.length - 1 && (
+                  <IconButton
+                    color="primary"
+                    onClick={handleAddVideoUrl}
+                    disabled={index !== videoUrls?.length - 1}
                   >
-                    <CustomTextField
-                      fullWidth
-                      size = 'small'
-                      placeholder={`Add Url ${index + 1}`}
-                      sx={{mb: '3px' }}
-                      value={url}
-                      onChange={(event) => handleVideoUrlChange(index, event)}
-                    />
-                    {index === videoUrls?.length - 1 &&
-                      <IconButton
-                        color="primary"
-                        onClick={handleAddVideoUrl}
-                        disabled={index !== videoUrls?.length - 1}
-                        >
-                        <IconifyIcon icon='tabler:plus' fontSize={20} />
-                      </IconButton>
-                    }
-                    {videoUrls?.length > 1 && (
-                      <IconButton
-                      color="secondary"
-                      onClick={() => handleRemoveVideoUrl(index)}
-                      >
-                        <IconifyIcon icon='tabler:x' fontSize={20} />
-                      </IconButton>
-                    )}
-                  </Box>
-              ))}
-            </Box>
+                    <IconifyIcon icon="tabler:plus" fontSize={20} />
+                  </IconButton>
+                )}
+                {videoUrls?.length > 1 && (
+                  <IconButton color="secondary" onClick={() => handleRemoveVideoUrl(index)}>
+                    <IconifyIcon icon="tabler:x" fontSize={20} />
+                  </IconButton>
+                )}
+              </Box>
+            ))}
+          </Box>
+          {videoUrlsError && (
+            <FormHelperText error sx={{ mt: 1 }}>
+              {videoUrlsError}
+            </FormHelperText>
+          )}
+
           <CustomTextField
             select
             fullWidth
             value={icon}
             sx={{ mb: 4 }}
-            label='Select Icon'
-            onChange={e => setIcon(e.target.value)}
-            SelectProps={{ value: icon, onChange: e => setIcon(e.target.value as string) }}
+            label="Select Icon"
+            onChange={(e) => setIcon(e.target.value)}
+            SelectProps={{ value: icon, onChange: (e) => setIcon(e.target.value as string) }}
           >
-            <MenuItem value='nrk:globe'>Globe</MenuItem>
-            <MenuItem value='si:heart-fill'>Heart</MenuItem>
-            <MenuItem value='mdi:lightbulb-on'>Light</MenuItem>
-            <MenuItem value='heroicons:academic-cap-solid'>Education</MenuItem>
-            <MenuItem value='octicon:sponsor-tiers-16'>Sponsor</MenuItem>
-            <MenuItem value='healthicons:i-training-class-outline'>Training</MenuItem>
-            <MenuItem value='healthicons:miner-worker-alt-outline'>Work</MenuItem>
+            <MenuItem value="nrk:globe">Globe</MenuItem>
+            <MenuItem value="si:heart-fill">Heart</MenuItem>
+            <MenuItem value="mdi:lightbulb-on">Light</MenuItem>
+            <MenuItem value="heroicons:academic-cap-solid">Education</MenuItem>
+            <MenuItem value="octicon:sponsor-tiers-16">Sponsor</MenuItem>
+            <MenuItem value="healthicons:i-training-class-outline">Training</MenuItem>
+            <MenuItem value="healthicons:miner-worker-alt-outline">Work</MenuItem>
           </CustomTextField>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button type='submit' variant='contained' sx={{ mr: 3 }}>
+            <Button type="submit" variant="contained" sx={{ mr: 3 }}>
               Submit
             </Button>
-            <Button variant='tonal' color='secondary' onClick={handleClose}>
+            <Button variant="outlined" color="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </Box>
