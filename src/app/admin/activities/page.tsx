@@ -23,11 +23,8 @@ import Icon from '@/components/icon'
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
-// ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
-
 // ** Utils Import
-import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
+import { formatDate } from '@/utils/utils'
 
 // ** Actions Imports
 import { deleteActivity, getActivities } from '@/store/activities'
@@ -38,16 +35,16 @@ import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)
 
-// ** Types 
+// ** Types
 import { AppDispatch, RootState } from '@/store'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
 
 // ** Custom Table Components Imports
 import TableHeader from '@/view/admin/activities/list/TableHeader'
-import { LinearProgress, Tooltip } from '@mui/material'
+import { CircularProgress, Tooltip } from '@mui/material'
 
 // ** Sidebar Components
-import SidebarAddDonationCampaign from '@/view/admin/activities/list/AddActivityDrawer'
+import SidebarAddAcitivity from '@/view/admin/activities/list/AddActivityDrawer'
 import SidebarEditActivity from '@/view/admin/activities/list/EditActivityDrawer'
 import { ActivityProps } from '@/types/activities'
 
@@ -62,17 +59,17 @@ interface CellType {
 const StatusObj: StatusType = {
   active: 'info',
   suspended: 'error',
-  completed: 'success'
+  completed: 'success',
 }
 
-const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps}) => {
+const RowOptions = ({ patronID, data }: { patronID: string; data: ActivityProps }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [editActivityOpen, setEditActivityOpen] = useState<boolean>(false)
-  
+
   const toggleEditActivityDrawer = () => setEditActivityOpen(!editActivityOpen)
 
   const rowOptionsOpen = Boolean(anchorEl)
@@ -99,8 +96,8 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteActivity(patronID))
-        
+        dispatch(deleteActivity({ id: patronID, imgUrls: data.imgs }))
+
         MySwal.fire({
           icon: 'success',
           title: 'Deleted!',
@@ -108,7 +105,7 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -117,62 +114,66 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: ActivityProps})
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
-  
-    handleRowOptionsClose();
-  };
+    })
+
+    handleRowOptionsClose()
+  }
 
   const handleEdit = () => {
     toggleEditActivityDrawer()
-    handleRowOptionsClose();
+    handleRowOptionsClose()
   }
 
   return (
     <>
-    <>
-      <IconButton size='small' onClick={handleRowOptionsClick}>
-        <Icon icon='tabler:dots-vertical' />
-      </IconButton>
-      <Menu
-        keepMounted
-        anchorEl={anchorEl}
-        open={rowOptionsOpen}
-        onClose={handleRowOptionsClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-        PaperProps={{ style: { minWidth: '8rem' } }}
-      >
-        <MenuItem
-          component={Link}
-          sx={{ '& svg': { mr: 2 } }}
-          href={`/admin/activities/${patronID}`}
-          onClick={handleRowOptionsClose}
+      <>
+        <IconButton size="small" onClick={handleRowOptionsClick}>
+          <Icon icon="tabler:dots-vertical" />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
         >
-          <Icon icon='tabler:eye' fontSize={20} />
-          View
-        </MenuItem>
-        <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='uil:edit' fontSize={20} />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:trash' fontSize={20} />
-          Delete
-        </MenuItem>
-      </Menu>
-    </>
-    <>
-      {/* Edit Modal */}
-      <SidebarEditActivity open={editActivityOpen} toggle={toggleEditActivityDrawer} activityData={data} />  
-    </>
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            href={`/admin/activities/${patronID}`}
+            onClick={handleRowOptionsClose}
+          >
+            <Icon icon="tabler:eye" fontSize={20} />
+            View
+          </MenuItem>
+          <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="uil:edit" fontSize={20} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="tabler:trash" fontSize={20} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
+      <>
+        {/* Edit Modal */}
+        <SidebarEditActivity
+          open={editActivityOpen}
+          toggle={toggleEditActivityDrawer}
+          activityData={data}
+        />
+      </>
     </>
   )
 }
@@ -189,32 +190,32 @@ const columns: GridColDef[] = [
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-          <Tooltip title={row.title} placement="top-start">
- <Typography
-  noWrap
-  component={Link}
-  href={`/admin/activities/${row.id}`}
-  sx={{
-    fontWeight: 500,
-    textDecoration: 'none',
-    color: 'text.secondary',
-    '&:hover': { color: 'primary.main' },
-    overflow: 'hidden',      
-    textOverflow: 'ellipsis', 
-    whiteSpace: 'nowrap',     
-    maxWidth: '200px',         
-  }}
->
-  {title}
-</Typography>
-</Tooltip>
-            <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
+            <Tooltip title={row.title} placement="top-start">
+              <Typography
+                noWrap
+                component={Link}
+                href={`/admin/activities/${row.id}`}
+                sx={{
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  color: 'text.secondary',
+                  '&:hover': { color: 'primary.main' },
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '200px',
+                }}
+              >
+                {title}
+              </Typography>
+            </Tooltip>
+            <Typography noWrap variant="body2" sx={{ color: 'text.disabled' }}>
               {id}
             </Typography>
           </Box>
         </Box>
       )
-    }
+    },
   },
   {
     flex: 0.25,
@@ -224,33 +225,35 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Tooltip title={row.desc} placement="top-start">
-             <Typography noWrap 
-             sx={{
-               fontWeight: 500, 
-               color: 'text.secondary',
-               overflow: 'hidden',      
-               textOverflow: 'ellipsis', 
-               whiteSpace: 'nowrap',     
-               maxWidth: '200px',   
-              }}>
-           {row.desc}
-        </Typography>
-          </Tooltip>
+          <Typography
+            noWrap
+            sx={{
+              fontWeight: 500,
+              color: 'text.secondary',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '200px',
+            }}
+          >
+            {row.desc}
+          </Typography>
+        </Tooltip>
       )
-    }
+    },
   },
   {
-    flex: 0.10,
+    flex: 0.1,
     minWidth: 240,
     field: 'createdAt',
     headerName: 'Date Created',
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {formatDate(row.createdAt)}
+          {formatDate(row.createdAt).date}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.03,
@@ -259,10 +262,9 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return (
-          <RowOptions patronID={row.id} data={row} />
-      )}
-  }
+      return <RowOptions patronID={row.id} data={row} />
+    },
+  },
 ]
 
 const DashActivities = () => {
@@ -274,38 +276,50 @@ const DashActivities = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.activities)
 
-  console.log('Activities', store)
+  const { activities, pending } = store
+
   useEffect(() => {
     // Fetch Activities
-    dispatch(getActivities())
-  }, [ dispatch ])
+    if (activities.length === 0) {
+      dispatch(getActivities())
+    }
+  }, [dispatch])
 
   const toggleAddActivityDrawer = () => setAddNewActivityOpen(!addNewActivityOpen)
 
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
+
   return (
     <>
-    <Grid container spacing={6} sx={{ mt: 1 }}>
-      <Grid item xs={12} lg={12}>
-        <Card>
-          <CardHeader title='List of Activities' />
-          <Divider sx={{ m: '0 !important' }} />
-          <TableHeader toggle={toggleAddActivityDrawer} />
-          <DataGrid
-            autoHeight
-            rowHeight={62}
-            rows={store.activities}
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 25, 50]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-          />
-        </Card>
+      <Grid container spacing={6} sx={{ mt: 1 }}>
+        <Grid item xs={12} lg={12}>
+          <Card>
+            <CardHeader title="List of Activities" />
+            <Divider sx={{ m: '0 !important' }} />
+            <TableHeader toggle={toggleAddActivityDrawer} />
+            <DataGrid
+              autoHeight
+              rowHeight={62}
+              rows={activities}
+              columns={columns}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 25, 50]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+            />
+          </Card>
+        </Grid>
+
+        {/* Create Modal */}
+        <SidebarAddAcitivity open={addNewActivityOpen} toggle={toggleAddActivityDrawer} />
       </Grid>
-    
-      {/* Create Modal */}
-      <SidebarAddDonationCampaign open={addNewActivityOpen} toggle={toggleAddActivityDrawer} />
-    </Grid>
     </>
   )
 }

@@ -1,25 +1,40 @@
 'use client'
-import { AppDispatch, RootState } from "@/store";
-import { singleActivity } from "@/store/activities";
-import Head from "next/head";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from '@/store'
+import { singleActivity } from '@/store/activities'
+import { formatDate } from '@/utils/utils'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import Head from 'next/head'
+import Image from 'next/image'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ActivityDetails = () => {
-  const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
-  const selectedActivity = useSelector((state: RootState) => state.activities.selectedActivity);
+  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const store = useSelector((state: RootState) => state.activities)
 
-  const { activityId } = useParams() as { activityId: string };
+  const { selectedActivity, pending } = store
+
+  const { activityId } = useParams() as { activityId: string }
 
   useEffect(() => {
-    dispatch(singleActivity(activityId));
-  }, [dispatch, activityId]);
+    if (selectedActivity.id !== activityId || !selectedActivity.id) {
+      dispatch(singleActivity(activityId))
+    }
+  }, [dispatch, activityId])
 
-  if (!selectedActivity) {
-    return <div className="text-center text-red-500">Activity not found.</div>;
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
+
+  if (!selectedActivity || Object.keys(selectedActivity).length === 0) {
+    return <div className="text-center text-red-500">Activity not found.</div>
   }
 
   return (
@@ -27,7 +42,7 @@ const ActivityDetails = () => {
       <Head>
         <title>{selectedActivity.title} | BuzStopBoys</title>
         <meta name="description" content={selectedActivity.desc} />
-        <meta property="og:image" content={selectedActivity.imgs?.[0] || ""} />
+        <meta property="og:image" content={selectedActivity.imgs?.[0] || ''} />
       </Head>
 
       <div className="max-w-4xl mx-auto p-6">
@@ -41,7 +56,12 @@ const ActivityDetails = () => {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {selectedActivity.imgs?.map((img: string, index: number) => (
             <div key={index} className="relative w-full h-64">
-              <Image src={img} alt={`Activity Image ${index + 1}`} fill className="object-cover rounded-lg" />
+              <Image
+                src={img}
+                alt={`Activity Image ${index + 1}`}
+                fill
+                className="object-cover rounded-lg"
+              />
             </div>
           ))}
         </div>
@@ -49,8 +69,18 @@ const ActivityDetails = () => {
         {/* Activity Details */}
         <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
           <p className="text-gray-700">{selectedActivity.desc}</p>
-          <p className="mt-2"><strong>🗓 Created At:</strong> {new Date(selectedActivity.createdAt).toDateString()}</p>
-          <p><strong>🔄 Updated At:</strong> {new Date(selectedActivity.updatedAt).toDateString()}</p>
+          <p className="mt-2">
+            <strong>🗓 Created At:</strong>{' '}
+            {`${formatDate(selectedActivity.createdAt).date} - ${
+              formatDate(selectedActivity.createdAt).time
+            }`}
+          </p>
+          <p>
+            <strong>🔄 Updated At:</strong>{' '}
+            {`${formatDate(selectedActivity.updatedAt).date} - ${
+              formatDate(selectedActivity.updatedAt).time
+            }`}
+          </p>
         </div>
 
         {/* YouTube Videos */}
@@ -58,26 +88,21 @@ const ActivityDetails = () => {
           <h2 className="text-xl font-bold">Related Videos</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
             {selectedActivity.videoUrls?.map((video: string, index: number) => (
-              <iframe
-                key={index}
-                src={video}
-                className="w-full h-64 rounded-lg"
-                allowFullScreen
-              />
+              <iframe key={index} src={video} className="w-full h-64 rounded-lg" allowFullScreen />
             ))}
           </div>
         </div>
 
         {/* Back Button */}
         <button
-          onClick={() => router.push("/admin/activities")}
+          onClick={() => router.push('/admin/activities')}
           className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Back to Activities
         </button>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ActivityDetails;
+export default ActivityDetails
