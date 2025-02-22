@@ -3,7 +3,7 @@ import { formatAmount } from "@/utils/utils";
 import { InboxArrowDownIcon } from "@heroicons/react/24/solid";
 import { Button, Input } from "@material-tailwind/react";
 import { useState } from "react";
-import AuthModal from "../Modals/AuthModal";
+import AuthModal from "../modals/AuthModal";
 
 const DonateCard = ({ amount }: {amount: number | null}) => {
   const [show, setShow] = useState<boolean>(false);

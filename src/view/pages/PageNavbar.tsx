@@ -16,7 +16,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { PatronWebType } from "@/types/patron";
-import PatronDropdown from "@/components/Dropdowns/patronDropdown";
+import PatronDropdown from "@/components/dropdowns/patronDropdown";
 import IconifyIcon from "@/components/icon";
 import { clientNavigation } from "@/navigation/client.navigation";
 

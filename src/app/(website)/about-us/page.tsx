@@ -4,7 +4,7 @@
 import PageHero from '@/view/about/AboutHero'
 import OurStats from '@/view/about/OurStats'
 import MoreInfo from '@/view/about/More'
-import Team from '@/components/Team'
+import Team from '@/components/team'
 import { Box } from '@mui/material'
 
 function About() {

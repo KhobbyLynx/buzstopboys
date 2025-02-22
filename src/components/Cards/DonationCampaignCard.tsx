@@ -3,9 +3,9 @@
 import { Typography, Card, CardBody, CardHeader, Button } from "@material-tailwind/react";
 import Image from "next/image";
 import { formatAmount } from "@/utils/utils"
-import AuthModal from "../Modals/AuthModal";
+import AuthModal from "../modals/AuthModal";
 import { useState } from "react";
-import DonationCampaignModal from "../Modals/DonationCampaign";
+import DonationCampaignModal from "../modals/DonationCampaign";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 

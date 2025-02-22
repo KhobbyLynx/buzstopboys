@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import PatronDropdown from "./Dropdowns/patronDropdown";
+import PatronDropdown from "./dropdowns/patronDropdown";
 import { useSelector } from "react-redux";
 import { PatronWebType } from "@/types/patron";
 import IconifyIcon from "./icon";

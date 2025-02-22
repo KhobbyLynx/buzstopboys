@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import NotificationDropdown from "../Dropdowns/NotificationDropdown";
-import UserDropdown from "../Dropdowns/UserDropdown";
+import NotificationDropdown from "../dropdowns/NotificationDropdown";
+import UserDropdown from "../dropdowns/UserDropdown";
 import { adminNavigation } from "@/navigation/admin.navigation";
 import IconifyIcon from "../icon";
 

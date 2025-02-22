@@ -1,4 +1,4 @@
-import DonateCard from "@/components/Cards/DonateCard"
+import DonateCard from "@/components/cards/DonateCard"
 import { DonationOptionsProps } from "@/types/donations"
 import { Typography } from "@material-tailwind/react"
 

@@ -1,4 +1,4 @@
-import HeaderStats from '@/components/Headers/HeaderStats'
+import HeaderStats from '@/components/headers/HeaderStats'
 import React from 'react'
 
 const DashReviews = () => {

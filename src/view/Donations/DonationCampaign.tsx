@@ -2,7 +2,7 @@
 
 import { Typography } from "@material-tailwind/react";
 
-import DonationCampaignCard from "@/components/Cards/DonationCampaignCard";
+import DonationCampaignCard from "@/components/cards/DonationCampaignCard";
 import { DonationCampaignProps } from "@/types/donations";
 
 const CAMPAIGN = [

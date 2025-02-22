@@ -1,6 +1,3 @@
-// components
-import { Navbar } from "@/components";
-
 // sections
 import Hero from "@/components/hero";
 import SponsoredBy from "@/components/sponsored-by";
