@@ -1,28 +1,38 @@
 'use client'
-import { AppDispatch, RootState } from "@/store"
-import { getDonationOptions, getDonationsCampaigns } from "@/store/donations"
-import DonationCampaign from "@/view/Donations/DonationCampaign"
-import DonationCards from "@/view/Donations/DonationCards"
-import { Box } from "@mui/material"
-import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from '@/store'
+import { getDonationOptions, getDonationsCampaigns } from '@/store/donations'
+import DonationCampaign from '@/view/donations/DonationCampaign'
+import DonationCards from '@/view/donations/DonationCards'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 function Donations() {
   const dispatch = useDispatch<AppDispatch>()
-  const donations = useSelector((state : RootState) => state.donations)
-  
+  const store = useSelector((state: RootState) => state.donations)
+  const { pending, donationOptions, donationCampaigns } = store
+
   useEffect(() => {
-    // Fetch Donation Campaigns 
-    dispatch(getDonationsCampaigns())
+    // Fetch Donation Campaigns
+    if (donationCampaigns.length === 0) dispatch(getDonationsCampaigns())
 
     // Fetch Donation Options
-    dispatch(getDonationOptions())
-  }, [ dispatch ])
+    if (donationOptions.length === 0) dispatch(getDonationOptions())
+  }, [dispatch])
+
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
 
   return (
     <Box className="px-8 md:px-16 mb-20 lg:mb-30">
-        <DonationCards donationOptions={donations.donationOptions} />
-        <DonationCampaign donationCampaign={donations.donationCampaigns} />
+      <DonationCards donationOptions={donationOptions} />
+      <DonationCampaign donationCampaign={donationCampaigns} />
     </Box>
   )
 }
