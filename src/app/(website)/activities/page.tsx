@@ -1,43 +1,47 @@
-"use client"
-import React, { useRef, useState } from 'react';
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-
-// import required modules
-import { Autoplay, EffectCube, Pagination } from 'swiper/modules';
-
-import ActivitiesCollage from "@/view/Activiteis/ActivitiesCollage"
-import EventHighlight from "@/view/events/EventHighlight"
-import { Box } from "@mui/material"
-import VideoSwiper from "@/components/Carousel/VideoSwiper"
-import { useDispatch, useSelector } from "react-redux"
-import { AppDispatch, RootState } from "@/store"
-import { useEffect } from "react"
-import { getActivities } from "@/store/activities"
+'use client'
+import React from 'react'
+import ActivitiesCollage from '@/view/activiteis/ActivitiesCollage'
+import EventHighlight from '@/view/events/EventHighlight'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import VideoSwiper from '@/components/carousel/VideoSwiper'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/store'
+import { useEffect } from 'react'
+import { getActivities } from '@/store/activities'
 
 function Activities() {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state : RootState) => state.activities)
+  const store = useSelector((state: RootState) => state.activities)
+
+  const { pending, activities } = store
 
   // ** useEffect
   useEffect(() => {
-    dispatch(getActivities())
+    if (activities.length === 0) dispatch(getActivities())
   }, [dispatch])
+
+  if (pending) {
+    return (
+      <>
+        <Box sx={{ mt: 6, mb: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+          <CircularProgress sx={{ mb: 4 }} />
+          <Typography>Loading...</Typography>
+        </Box>
+        <VideoSwiper />
+        <EventHighlight />
+      </>
+    )
+  }
 
   return (
     <>
-    <Box className="px-8">
-      <ActivitiesCollage data={store.activities}/>
-    </Box>
+      <Box className="px-8">
+        <ActivitiesCollage data={activities} />
+      </Box>
       <VideoSwiper />
       <EventHighlight />
     </>
-    
   )
 }
 

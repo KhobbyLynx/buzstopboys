@@ -1,122 +1,96 @@
-'use client';
+'use client'
+import { AppDispatch, RootState } from '@/store'
+import { singleActivity } from '@/store/activities'
+import { formatDate } from '@/utils/utils'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import Head from 'next/head'
+import Image from 'next/image'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-import React, { useEffect } from 'react';
-import { Box, Typography, Container, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { ActivityProps } from '@/types/activities';
-import IconifyIcon from '@/components/icon';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '@/store';
-import { singleActivity } from '@/store/activities';
-import { useParams } from "next/navigation";
+const ActivityDetails = () => {
+  const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const store = useSelector((state: RootState) => state.activities)
 
-const ActivityDetailsPage: React.FC = () => {
-  const { activityId } = useParams() as { activityId: string };
+  const { selectedActivity, pending } = store
 
-  const dispatch: AppDispatch = useDispatch();
-  const store = useSelector((state: RootState) => state.activities);
+  const { activityId } = useParams() as { activityId: string }
 
   useEffect(() => {
-    dispatch(singleActivity(activityId));
-  }, [dispatch, activityId]);
+    if (selectedActivity.id !== activityId || !selectedActivity.id) {
+      dispatch(singleActivity(activityId))
+    }
+  }, [dispatch, activityId])
 
-  const activityData: ActivityProps | null = store.selectedActivity;
-
-  if (!activityData || !activityData.details || !activityData.imgs || !activityData.videoUrls) {
-    return <Typography variant="h6">Activity not found. {activityId}</Typography>;
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
   }
-  
+
+  if (!selectedActivity || Object.keys(selectedActivity).length === 0) {
+    return <div className="text-center text-red-500">Activity not found.</div>
+  }
+
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Title and Caption */}
-      <Box textAlign="center" mb={4}>
-        <Typography variant="h2" className="my-3 text-blue-gray" gutterBottom>
-          {activityData.title}
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
-          {activityData.caption}
-        </Typography>
-      </Box>
+    <>
+      <Head>
+        <title>{selectedActivity.title} | BuzStopBoys</title>
+        <meta name="description" content={selectedActivity.desc} />
+        <meta property="og:image" content={selectedActivity.imgs?.[0] || ''} />
+      </Head>
 
-      {/* Icon and Description */}
-      <Box display="flex" flexDirection='column' alignItems="center" mb={4}>
-        <IconifyIcon fontSize='2rem' icon={activityData.icon} className='text-red-400' /> 
-        <Typography variant="body1">{activityData.desc}</Typography>
-      </Box>
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Activity Title */}
+        <h1 className="text-3xl font-bold mt-6">{selectedActivity.title}</h1>
 
-      <Divider sx={{ my: 4 }} />
+        {/* Caption */}
+        <p className="text-lg italic text-gray-600 mt-2">{selectedActivity.caption}</p>
 
-      {/* Details (Bullet Points) */}
-      <Box mb={4}>
-        <Typography variant="h5">
-          Key Details
-        </Typography>
-        <List>
-          {activityData.details.map((detail: string, index: number) => (
-            <ListItem key={index}>
-              <ListItemIcon>•</ListItemIcon>
-              <ListItemText primary={detail} />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-
-      <Divider sx={{ my: 4 }} />
-
-      {/* Image Carousel */}
-      <Box mb={4}>
-        <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Gallery
-        </Typography>
-        <Swiper
-          pagination={{ clickable: true }}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
-          modules={[Pagination, Autoplay]}
-          className="mySwiper"
-        >
-          {activityData.imgs.map((img: string, index: number) => (
-            <SwiperSlide key={index}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  paddingTop: '56.25%', // 16:9 aspect ratio
-                  background: `url(${img}) center center no-repeat`,
-                  backgroundSize: 'cover',
-                  borderRadius: 2,
-                  boxShadow: 3,
-                }}
+        {/* Activity Images */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {selectedActivity.imgs?.map((img: string, index: number) => (
+            <div key={index} className="relative w-full h-64">
+              <Image
+                src={img}
+                alt={`Activity Image ${index + 1}`}
+                fill
+                className="object-cover rounded-lg"
               />
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
-      </Box>
+        </div>
 
-      <Divider sx={{ my: 4 }} />
+        {/* Activity Details */}
+        <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md">
+          <p className="text-gray-700">{selectedActivity.desc}</p>
+        </div>
 
-      {/* Video Section */}
-      <Box mb={4}>
-        <Typography variant="h5" gutterBottom>
-          Videos
-        </Typography>
-        {activityData.videoUrls.map((videoUrl: string, index: number) => (
-          <Box key={index} mb={4}>
-            <iframe
-              width="100%"
-              height="415"
-              src={videoUrl}
-              title={`Video ${index + 1}`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </Box>
-        ))}
-      </Box>
-    </Container>
-  );
-};
+        {/* YouTube Videos */}
+        <div className="mt-6">
+          <h2 className="text-xl font-bold">Related Videos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+            {selectedActivity.videoUrls?.map((video: string, index: number) => (
+              <iframe key={index} src={video} className="w-full h-64 rounded-lg" allowFullScreen />
+            ))}
+          </div>
+        </div>
 
-export default ActivityDetailsPage;
+        {/* Back Button */}
+        <button
+          onClick={() => router.push('/activities')}
+          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Back to Activities
+        </button>
+      </div>
+    </>
+  )
+}
+
+export default ActivityDetails
