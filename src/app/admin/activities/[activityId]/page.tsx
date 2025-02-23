@@ -22,7 +22,7 @@ const ActivityDetails = () => {
     if (selectedActivity.id !== activityId || !selectedActivity.id) {
       dispatch(singleActivity(activityId))
     }
-  }, [dispatch, activityId])
+  }, [dispatch, activityId, selectedActivity.id])
 
   if (pending) {
     return (
@@ -34,7 +34,7 @@ const ActivityDetails = () => {
   }
 
   if (!selectedActivity || Object.keys(selectedActivity).length === 0) {
-    return <div className="text-center text-red-500">Activity not found.</div>
+    return <div className="text-center text-red-500 mt-10">Activity not found.</div>
   }
 
   return (
