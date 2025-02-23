@@ -36,6 +36,7 @@ import IconifyIcon from '@/components/icon'
 import { useRouter } from 'next/navigation'
 import { CircularProgress } from '@mui/material'
 import FallbackSpinner from '@/components/spinner'
+import Image from 'next/image'
 
 // ** Demo Imports
 const AuthIllustrationV1Wrapper = styled(Box)({
@@ -66,11 +67,6 @@ const AuthIllustrationV1Wrapper = styled(Box)({
   },
 })
 
-interface State {
-  password: string
-  showPassword: boolean
-}
-
 // ** Styled Components
 const Card = styled(MuiCard)({
   width: '25rem',
@@ -82,7 +78,6 @@ const Card = styled(MuiCard)({
 const LinkStyled = styled(Link)({
   textDecoration: 'none',
   color: '#7367F0',
-  fontWeight: 'bold',
 })
 
 const FormControlLabel = styled(MuiFormControlLabel)({
@@ -209,24 +204,22 @@ const Login = () => {
     >
       <AuthIllustrationV1Wrapper>
         <Card>
-          <CardContent style={{ padding: '2rem 2.5rem' }}>
+          <CardContent sx={{ padding: '2rem 2.5rem' }}>
             <Box
-              style={{
-                marginBottom: '2rem',
+              sx={{
+                mb: 1,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
               <Link href="/">
-                <Typography variant="h3" style={{ marginLeft: '0.5rem', fontWeight: 700 }}>
-                  BuzStopBoys
-                </Typography>
+                <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
               </Link>
             </Box>
-            <Box style={{ marginBottom: '1.5rem' }}>
-              <Typography variant="h4" style={{ marginBottom: '0.5rem', fontWeight: 600 }}>
-                Welcome to BuzStopBoys! 👋🏻
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+                Welcome to BuzStopBoys!
               </Typography>
               <Typography style={{ color: '#6B7280' }}>Enter your credentials to login</Typography>
             </Box>
@@ -326,9 +319,7 @@ const Login = () => {
                   Create an account
                 </Typography>
               </Box>
-              <Divider style={{ color: '#9CA3AF', fontSize: '0.8125rem', margin: '1.5rem 0' }}>
-                or
-              </Divider>
+              <Divider sx={{ marginY: 2, fontSize: '14px', color: '#6b7280' }}>or</Divider>
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <IconButton
                   href="/"
