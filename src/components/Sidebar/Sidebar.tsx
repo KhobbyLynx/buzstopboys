@@ -3,33 +3,38 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import UserDropdown from '../dropdowns/UserDropdown'
 import { adminNavigation } from '@/navigation/admin.navigation'
 import IconifyIcon from '../icon'
+import { Avatar, Box } from '@mui/material'
+import { Icon } from '@iconify/react'
 
 const Sidebar = () => {
   const [collapseShow, setCollapseShow] = useState('hidden')
   const pathname = usePathname()
 
+  const handleShow = () => {
+    if (collapseShow.includes('hidden')) {
+      setCollapseShow('bg-white py-3')
+    } else {
+      setCollapseShow('hidden')
+    }
+  }
+
   return (
-    <nav className="md:fixed md:top-0 md:bottom-0 md:w-64 shadow-xl bg-white flex flex-col py-4 px-6 z-10">
+    <nav className="md:fixed md:top-0 md:bottom-0 md:w-64 shadow-xl bg-white flex flex-col py-2 px-2 z-10">
       {/* Brand */}
-      <Link href="/admin/dashboard" className="text-sm uppercase font-bold p-4 cursor-pointer">
-        BuzStopBoys
-      </Link>
+      <Box className="flex justify-between items-center">
+        <Link href="/admin/dashboard" className="sm:pb-2 md:pb-4 cursor-pointer">
+          <Avatar src="/images/logos/logo_black.png" alt="logo" sx={{ width: 82, height: 82 }} />
+        </Link>
 
-      {/* User Icons */}
-      <ul className="md:hidden flex items-center gap-4">
-        <UserDropdown />
-      </ul>
-
-      {/* Sidebar Collapse Button */}
-      <button
-        className="md:hidden px-3 py-1 text-xl border border-transparent"
-        onClick={() => setCollapseShow('bg-white m-2 py-3 px-6')}
-      >
-        <i className="fas fa-bars"></i>
-      </button>
+        {/* Sidebar Collapse Icon */}
+        <Icon
+          icon={collapseShow === 'hidden' ? 'la:circle' : 'la:dot-circle'}
+          className="w-8 h-8 md:hidden"
+          onClick={handleShow}
+        />
+      </Box>
 
       {/* Collapsible Menu */}
       <div className={`md:flex md:flex-col ${collapseShow}`}>
