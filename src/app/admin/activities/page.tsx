@@ -99,9 +99,9 @@ const RowOptions = ({ patronID, data }: { patronID: string; data: ActivityProps 
         dispatch(deleteActivity({ id: patronID, imgUrls: data.imgs }))
 
         MySwal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Activity has been deleted.',
+          icon: 'warning',
+          title: 'Delete!',
+          text: 'Deleting Activity...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
@@ -283,7 +283,7 @@ const DashActivities = () => {
     if (activities.length === 0) {
       dispatch(getActivities())
     }
-  }, [dispatch])
+  }, [dispatch, activities.length])
 
   const toggleAddActivityDrawer = () => setAddNewActivityOpen(!addNewActivityOpen)
 
