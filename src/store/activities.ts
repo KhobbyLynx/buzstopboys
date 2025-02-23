@@ -118,7 +118,7 @@ export const deleteActivity = createAsyncThunk(
       // Start progress bar
       BProgress.start()
 
-      // Encode the image URLs as a comma-separated string
+      // Encode image URLs as a comma-separated string
       const urlsParam = encodeURIComponent(imgUrls.join(','))
 
       // Send Delete request
