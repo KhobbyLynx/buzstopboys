@@ -16,11 +16,13 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { CircularProgress, LinearProgress, Tooltip } from '@mui/material'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
 
 // ** Store Imports
+import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
@@ -30,7 +32,11 @@ import CustomChip from '@/components/mui/chip'
 import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteDonationCampaign, getDonationOptions, getDonationsCampaigns } from '@/store/donations'
+import {
+  deleteDonationCampaign,
+  getDonationOptions,
+  getDonationsCampaigns,
+} from '@/store/donations'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -38,50 +44,35 @@ import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)
 
-// ** Types 
-import { AppDispatch, RootState } from '@/store'
-type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
-type CampaignStatus = 'active' | 'suspended' | 'completed'
-
-type CampaignsType = {
-  id: string
-  title: string
-  desc: string
-  img: string
-  raised: number
-  target: number
-  status: CampaignStatus
-  createdAt: string
-  updatedAt: string
-  subText?: string
-}
-
 // ** Custom Table Components Imports
+import CardLineChart from '@/components/cards/CardLineChart'
+import CardOptionsList from '@/components/cards/CardOptionsList'
 import TableHeader from '@/view/admin/donations/list/TableHeader'
-import { Button, LinearProgress, Tooltip } from '@mui/material'
 
 // ** Sidebar Components
 import SidebarAddDonationCampaign from '@/view/admin/donations/list/AddDonationCampaignDrawer'
 import SidebarEditDonationCampaign from '@/view/admin/donations/list/EditDonationCampaignDrawer'
-import CardLineChart from '@/components/Cards/CardLineChart'
-import CardOptionsList from '@/components/Cards/CardOptionsList'
+
+// ** Types
+import { DonationCampaignProps } from '@/types/donations'
+type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
 
 interface StatusType {
   [key: string]: ThemeColor
 }
 
 interface CellType {
-  row: CampaignsType
+  row: DonationCampaignProps
 }
 
 const StatusObj: StatusType = {
   active: 'info',
   suspended: 'error',
-  completed: 'success'
+  completed: 'success',
 }
 
-const ProgressBar = ({ percentage, color } : {percentage: number, color: string}) => (
-  <Box sx={{ display: "flex", alignItems: "center" }}>
+const ProgressBar = ({ percentage, color }: { percentage: number; color: string }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
     <Box sx={{ width: 96, mr: 1 }}>
       <LinearProgress
         variant="determinate"
@@ -90,7 +81,7 @@ const ProgressBar = ({ percentage, color } : {percentage: number, color: string}
           height: 8,
           borderRadius: 5,
           backgroundColor: `${color}.100`,
-          "& .MuiLinearProgress-bar": {
+          '& .MuiLinearProgress-bar': {
             backgroundColor: `${color}.500`,
           },
         }}
@@ -100,16 +91,16 @@ const ProgressBar = ({ percentage, color } : {percentage: number, color: string}
       <Typography variant="body2" color="text.secondary">{`${percentage}%`}</Typography>
     </Box>
   </Box>
-);
+)
 
-const RowOptions = ({ patronID, data}: { patronID: string, data: CampaignsType}) => {
+const RowOptions = ({ patronID, data }: { patronID: string; data: DonationCampaignProps }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
   // ** State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [editCampaignOpen, setEditCampaignOpen] = useState<boolean>(false)
-  
+
   const toggleEditCampaignDrawer = () => setEditCampaignOpen(!editCampaignOpen)
 
   const rowOptionsOpen = Boolean(anchorEl)
@@ -136,16 +127,16 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: CampaignsType})
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteDonationCampaign(patronID))
-        
+        dispatch(deleteDonationCampaign({ id: patronID, imgUrls: data.imgs }))
+
         MySwal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Donation Campaign has been deleted.',
+          icon: 'warning',
+          title: 'Delete!',
+          text: 'Deleting Donation Campaign...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -154,62 +145,66 @@ const RowOptions = ({ patronID, data}: { patronID: string, data: CampaignsType})
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
-  
-    handleRowOptionsClose();
-  };
+    })
+
+    handleRowOptionsClose()
+  }
 
   const handleEdit = () => {
     toggleEditCampaignDrawer()
-    handleRowOptionsClose();
+    handleRowOptionsClose()
   }
 
   return (
     <>
-    <>
-      <IconButton size='small' onClick={handleRowOptionsClick}>
-        <Icon icon='tabler:dots-vertical' />
-      </IconButton>
-      <Menu
-        keepMounted
-        anchorEl={anchorEl}
-        open={rowOptionsOpen}
-        onClose={handleRowOptionsClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-        PaperProps={{ style: { minWidth: '8rem' } }}
-      >
-        <MenuItem
-          component={Link}
-          sx={{ '& svg': { mr: 2 } }}
-          href={`/admin/donations/${patronID}`}
-          onClick={handleRowOptionsClose}
+      <>
+        <IconButton size="small" onClick={handleRowOptionsClick}>
+          <Icon icon="tabler:dots-vertical" />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
         >
-          <Icon icon='tabler:eye' fontSize={20} />
-          View
-        </MenuItem>
-        <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='uil:edit' fontSize={20} />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:trash' fontSize={20} />
-          Delete
-        </MenuItem>
-      </Menu>
-    </>
-    <>
-      {/* Edit Modal */}
-      <SidebarEditDonationCampaign open={editCampaignOpen} toggle={toggleEditCampaignDrawer} campaignData={data} />  
-    </>
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            href={`/admin/donations/${patronID}`}
+            onClick={handleRowOptionsClose}
+          >
+            <Icon icon="tabler:eye" fontSize={20} />
+            View
+          </MenuItem>
+          <MenuItem onClick={handleEdit} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="uil:edit" fontSize={20} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="tabler:trash" fontSize={20} />
+            Delete
+          </MenuItem>
+        </Menu>
+      </>
+      <>
+        {/* Edit Modal */}
+        <SidebarEditDonationCampaign
+          open={editCampaignOpen}
+          toggle={toggleEditCampaignDrawer}
+          campaignData={data}
+        />
+      </>
     </>
   )
 }
@@ -226,32 +221,32 @@ const columns: GridColDef[] = [
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-          <Tooltip title={row.title} placement="top-start">
- <Typography
-  noWrap
-  component={Link}
-  href={`/admin/donations/${row.id}`}
-  sx={{
-    fontWeight: 500,
-    textDecoration: 'none',
-    color: 'text.secondary',
-    '&:hover': { color: 'primary.main' },
-    overflow: 'hidden',      
-    textOverflow: 'ellipsis', 
-    whiteSpace: 'nowrap',     
-    maxWidth: '200px',         
-  }}
->
-  {title}
-</Typography>
-</Tooltip>
-            <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
+            <Tooltip title={row.title} placement="top-start">
+              <Typography
+                noWrap
+                component={Link}
+                href={`/admin/donations/${row.id}`}
+                sx={{
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  color: 'text.secondary',
+                  '&:hover': { color: 'primary.main' },
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '200px',
+                }}
+              >
+                {title}
+              </Typography>
+            </Tooltip>
+            <Typography noWrap variant="body2" sx={{ color: 'text.disabled' }}>
               {id}
             </Typography>
           </Box>
         </Box>
       )
-    }
+    },
   },
   {
     flex: 0.25,
@@ -261,20 +256,22 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Tooltip title={row.desc} placement="top-start">
-             <Typography noWrap 
-             sx={{
-               fontWeight: 500, 
-               color: 'text.secondary',
-               overflow: 'hidden',      
-               textOverflow: 'ellipsis', 
-               whiteSpace: 'nowrap',     
-               maxWidth: '200px',   
-              }}>
-           {row.desc}
-        </Typography>
-          </Tooltip>
+          <Typography
+            noWrap
+            sx={{
+              fontWeight: 500,
+              color: 'text.secondary',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '200px',
+            }}
+          >
+            {row.desc}
+          </Typography>
+        </Tooltip>
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -287,7 +284,7 @@ const columns: GridColDef[] = [
           {formatAmount(row.target)}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -300,7 +297,7 @@ const columns: GridColDef[] = [
           {formatAmount(row.raised)}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.12,
@@ -309,15 +306,15 @@ const columns: GridColDef[] = [
     headerName: 'Status',
     renderCell: ({ row }: CellType) => {
       return (
-          <CustomChip
-            rounded
-            skin='light'
-            size='small'
-            label={row.status}
-            color={StatusObj[row.status]}
-          />
+        <CustomChip
+          rounded
+          skin="light"
+          size="small"
+          label={row.status}
+          color={StatusObj[row.status]}
+        />
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -326,22 +323,25 @@ const columns: GridColDef[] = [
     headerName: 'Progress',
     renderCell: ({ row }: CellType) => {
       return (
-        <ProgressBar percentage={calculatePercentage(row.target, row.raised)} color={StatusObj[row.status]} />
+        <ProgressBar
+          percentage={calculatePercentage(row.target, row.raised)}
+          color={StatusObj[row.status]}
+        />
       )
-    }
+    },
   },
   {
-    flex: 0.10,
+    flex: 0.1,
     minWidth: 240,
     field: 'createdAt',
     headerName: 'Date Created',
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {formatDate(row.createdAt)}
+          {formatDate(row.createdAt).date}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.03,
@@ -350,10 +350,9 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return (
-          <RowOptions patronID={row.id} data={row} />
-      )}
-  }
+      return <RowOptions patronID={row.id} data={row} />
+    },
+  },
 ]
 
 const DashDonations = () => {
@@ -363,48 +362,63 @@ const DashDonations = () => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const donations = useSelector((state: RootState) => state.donations)
+  const store = useSelector((state: RootState) => state.donations)
+
+  const { donationOptions, donationCampaigns, pending } = store
 
   useEffect(() => {
-    // Fetch Donation Campaigns 
-    dispatch(getDonationsCampaigns())
+    // Fetch Donation Campaigns
+    if (donationCampaigns.length === 0) {
+      dispatch(getDonationsCampaigns())
+    }
 
     // Fetch Donation Options
-    dispatch(getDonationOptions())
-  }, [ dispatch ])
+    if (donationOptions.length === 0) {
+      dispatch(getDonationOptions())
+    }
+  }, [dispatch, donationCampaigns.length, donationOptions.length])
 
   const toggleAddCampaignDrawer = () => setAddNewCampaignOpen(!addNewCampaignOpen)
 
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
+
   return (
     <>
-    <Grid container spacing={6} sx={{ mt: 1 }}>
-      <Grid item md={6} xs={12} lg={6}>
-        <CardLineChart />
+      <Grid container spacing={6} sx={{ mt: 1 }}>
+        <Grid item md={6} xs={12} lg={6}>
+          <CardLineChart />
+        </Grid>
+        <Grid item md={6} xs={12} lg={6}>
+          <CardOptionsList data={donationOptions} />
+        </Grid>
+        <Grid item xs={12} lg={12}>
+          <Card>
+            <CardHeader title="List of Donation Campaigns" />
+            <Divider sx={{ m: '0 !important' }} />
+            <TableHeader toggle={toggleAddCampaignDrawer} />
+            <DataGrid
+              autoHeight
+              rowHeight={62}
+              rows={donationCampaigns}
+              columns={columns}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 25, 50]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+            />
+          </Card>
+        </Grid>
+
+        {/* Create Modal */}
+        <SidebarAddDonationCampaign open={addNewCampaignOpen} toggle={toggleAddCampaignDrawer} />
       </Grid>
-      <Grid item md={6} xs={12} lg={6}>
-        <CardOptionsList data={donations.donationOptions}/>
-      </Grid>
-      <Grid item xs={12} lg={12}>
-        <Card>
-          <CardHeader title='List of Donation Campaigns' />
-          <Divider sx={{ m: '0 !important' }} />
-          <TableHeader toggle={toggleAddCampaignDrawer} />
-          <DataGrid
-            autoHeight
-            rowHeight={62}
-            rows={donations.donationCampaigns}
-            columns={columns}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 25, 50]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-          />
-        </Card>
-      </Grid>
-    
-      {/* Create Modal */}
-      <SidebarAddDonationCampaign open={addNewCampaignOpen} toggle={toggleAddCampaignDrawer} />
-    </Grid>
     </>
   )
 }
