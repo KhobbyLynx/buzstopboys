@@ -37,16 +37,11 @@ export async function POST(request: NextRequest) {
 
     // Get the activity data from the request body
     const data = await request.json()
-    const { title, desc, videoUrls, icon, details, caption, imgs } = data
+    const { title, desc, videoUrls, icon, imgs, details } = data
 
     if (process.env.NODE_ENV === 'development') {
       console.log('Create Activity data', data)
     }
-
-    // Upload images to Cloudinary
-    const uploadResponse = await axiosRequest.post('/upload', { images: imgs })
-    const imgUrls = uploadResponse.data.urls
-
     // Check if the required fields are provided
     if (!title || !desc || !icon) {
       return new Response(JSON.stringify({ message: 'Title, Description and Icon are required' }), {
@@ -77,18 +72,24 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Check for details
+    if (!details || details.length === 0) {
+      return new Response(JSON.stringify({ mesage: 'At least one detail is required' }), {
+        status: 400,
+      })
+    }
+
+    // Upload images to Cloudinary
+    const uploadResponse = await axiosRequest.post('/upload', { images: imgs })
+    const imgUrls = uploadResponse.data.urls
+
     // Generate Random Id
     const id = generateRandomId()
 
     // Create a new activity
     const newActivity = await Activity.create({
       id,
-      title,
-      desc,
-      videoUrls,
-      icon,
-      details,
-      caption,
+      ...data,
       imgs: imgUrls,
     })
 
@@ -112,9 +113,6 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    // Connect to MongoDB
-    await connectMongoDB()
-
     // Get the activity data from the request body
     const data = await request.json()
     const { modifiedData, removedImages } = data
@@ -153,6 +151,9 @@ export async function PUT(request: NextRequest) {
       })
     }
 
+    // Connect to MongoDB
+    await connectMongoDB()
+
     // Check if some images were removed
     if (removedImages.length !== 0) {
       // Encode the image URLs as a comma-separated string
@@ -176,9 +177,6 @@ export async function PUT(request: NextRequest) {
       (img: string) => !img.includes('https://res.cloudinary.com')
     )
 
-    console.log('--------new images addedd', newImages)
-    console.log('--------unchangedImages', unchangedImages)
-
     // Upload new images
     if (newImages.length !== 0) {
       // Upload image
@@ -196,7 +194,7 @@ export async function PUT(request: NextRequest) {
     // Find the activity by ID and update it
     const updatedActivity = await Activity.findOneAndUpdate(
       { id },
-      { $set: { ...modifiedActivity } },
+      { $set: modifiedActivity },
       { new: true }
     )
 
@@ -221,9 +219,6 @@ export async function PUT(request: NextRequest) {
 // DELETE
 export async function DELETE(request: NextRequest) {
   try {
-    // Connect to MongoDB
-    await connectMongoDB()
-
     // Get the activity ID from the query parameters
     const id = request.nextUrl.searchParams.get('id')
     const imgUrls = request.nextUrl.searchParams.get('imgUrls')
@@ -242,6 +237,9 @@ export async function DELETE(request: NextRequest) {
       // Delete removed images
       await axiosRequest.delete(`/upload?urls=${imgUrls}`)
     }
+
+    // Connect to MongoDB
+    await connectMongoDB()
 
     // Delete the activity
     await Activity.findOneAndDelete({ id })
