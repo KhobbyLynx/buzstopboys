@@ -1,6 +1,6 @@
 'use client'
-import { Box, Typography, Button } from '@mui/material';
-import Link from 'next/link';
+import { Box, Typography, Button } from '@mui/material'
+import Link from 'next/link'
 
 export default function ErrorPage() {
   return (
@@ -15,7 +15,7 @@ export default function ErrorPage() {
         padding: 2,
         background: `
           linear-gradient(135deg, #FF9A8B 0%, #FF6A88 50%, #FF99AC 100%),
-          url('/patterns/waves.svg') repeat
+          url('/images/patterns/waves.svg') repeat
         `,
         backgroundSize: 'cover',
         color: 'white',
@@ -43,5 +43,5 @@ export default function ErrorPage() {
         </Button>
       </Link>
     </Box>
-  );
+  )
 }
