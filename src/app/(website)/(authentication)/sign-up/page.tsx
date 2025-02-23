@@ -36,6 +36,7 @@ import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'
 import { CircularProgress } from '@mui/material'
 import FallbackSpinner from '@/components/spinner'
+import Image from 'next/image'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(() => ({
@@ -46,8 +47,7 @@ const Card = styled(MuiCard)<CardProps>(() => ({
 
 const LinkStyled = styled(Link)(() => ({
   textDecoration: 'none',
-  color: '#1976d2',
-  fontWeight: 500,
+  color: '#7367F0',
 }))
 
 const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(() => ({
@@ -173,16 +173,20 @@ const Register = () => {
       }}
     >
       <Card>
-        <CardContent sx={{ padding: '40px' }}>
-          <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
+        <CardContent sx={{ px: 4 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <Link href="/">
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                BuzStopBoys
-              </Typography>
+              <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
             </Link>
           </Box>
-          <Box sx={{ marginBottom: '24px', textAlign: 'center' }}>
-            <Typography variant="h4" sx={{ marginBottom: '12px' }}>
+          <Box sx={{ mb: 2, textAlign: 'center' }}>
+            <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
               Create a new account
             </Typography>
             <Typography sx={{ color: '#6b7280' }}>Join BuzStopBoys now!</Typography>
@@ -311,7 +315,7 @@ const Register = () => {
                 Sign in instead
               </Typography>
             </Box>
-            <Divider sx={{ marginY: '24px', fontSize: '14px', color: '#6b7280' }}>or</Divider>
+            <Divider sx={{ marginY: 2, fontSize: '14px', color: '#6b7280' }}>or</Divider>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <IconButton
                 href="/"
