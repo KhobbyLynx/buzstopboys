@@ -26,28 +26,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
 
-
 // ** Types Imports
 import { RootState, AppDispatch } from '@/store'
 import { PatronMDBType, PatronType } from '@/types/patron'
 import { getPatrons, handleAdminRegisterPatron } from '@/store/users'
-import { generateRandomId, generateRandomPassword } from '@/utils/utils'
-
-interface FormData {
-  email: string
-  firstname: string
-  lastname: string
-  username: string
-  contact: number
-  role: 'admin' | 'patron' | 'agent'
-  address?: string
-}
-
-interface ShoErrorType {
-  field: string
-  valueLen: number
-  min: number
-}
 
 interface SidebarAddUserType {
   open: boolean
@@ -68,32 +50,22 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(6),
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }))
 
 const AddPatronSchema = yup.object().shape({
-  email: yup
-  .string()
-  .email('Invalid email address')
-  .required('Email is required'),
-  address: yup
-  .string(),
+  email: yup.string().email('Invalid email address').required('Email is required'),
+  address: yup.string(),
   contact: yup
     .number()
-    .typeError('Contact Number field is required')
-    .min(10, (obj: any) => showErrors('Contact Number', obj.value.length, obj.min)),
-  firstname: yup
-    .string()
-    .min(2, (obj: any) => showErrors('First Name', obj.value.length, obj.min)),
-  lastname: yup
-    .string()
-    .min(2, (obj: any) => showErrors('Last Name', obj.value.length, obj.min)),
+    .typeError('Contact must be a number')
+    .min(9, (obj: any) => showErrors('Contact Number', obj.value.length, obj.min)),
+  firstname: yup.string().min(2, (obj: any) => showErrors('First Name', obj.value.length, obj.min)),
+  lastname: yup.string().min(2, (obj: any) => showErrors('Last Name', obj.value.length, obj.min)),
   username: yup
     .string()
     .min(3, (obj: any) => showErrors('Username', obj.value.length, obj.min))
     .required(),
-  avatar: yup
-    .string()
 })
 
 const defaultValues = {
@@ -103,7 +75,6 @@ const defaultValues = {
   username: '',
   contact: 0,
   address: '',
-  avatar: ''
 }
 
 const SidebarAddPatron = (props: SidebarAddUserType) => {
@@ -120,94 +91,50 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
   const {
     reset,
     control,
-    setValue,
     setError,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues,
     mode: 'onChange',
-    resolver: yupResolver(AddPatronSchema)
+    resolver: yupResolver(AddPatronSchema),
   })
 
-  // const onSubmit = (data: PatronType) => {
-  //   console.log('Data From Patron Form', data)
-  //   console.log('Role', role)
-
-  //   // Check if users exist in store, if not fetch them
-  //   if(store.numberOfUsers === 0) { dispatch(getPatrons()) }
-
-  //   // Check if user already exists
-  //   if (store.users.some((u: PatronMDBType) => u.email === data.email || u.username === data.username)) {
-  //     store.users.forEach((u: PatronMDBType) => {
-  //       if (u.email === data.email) {
-  //         setError('email', {
-  //           message: 'Email already exists!'
-  //         })
-  //       }
-  //       if (u.username === data.username) {
-  //         setError('username', {
-  //           message: 'Username already exists!'
-  //         })
-  //       }
-  //     })
-  //   } else {
-  //     try {
-  //       const requiredUserData = {
-  //         ...data,
-  //         role,
-  //         password: generateRandomPassword()
-  //       } 
-  //     dispatch(handleAdminRegisterPatron(requiredUserData)) // Register user
-  //     setRole('patron')
-  //     reset()
-  //     toggle()
-  //     if (!store.users.length) {
-  //        dispatch(getPatrons()) // Fetch users after adding new user
-  //     } 
-  //     } catch (error) {
-  //       console.log('Error Adding Patron', error)
-  //     }
-  //   }
-  // }
-
   const onSubmit = (data: PatronType) => {
-    console.log('Data From Patron Form', data);
-    console.log('Role', role);
-  
     // Check if users exist in store, if not fetch them
     if (store.numberOfUsers === 0) {
-      dispatch(getPatrons());
+      dispatch(getPatrons())
     }
-  
-    // Use a Set for faster lookups
-    const emails = new Set(store.users.map((u: PatronMDBType) => u.email));
-    const usernames = new Set(store.users.map((u: PatronMDBType) => u.username));
-  
+
+    // Set for faster lookups
+    const emails = new Set(store.users.map((u: PatronMDBType) => u.email))
+    const usernames = new Set(store.users.map((u: PatronMDBType) => u.username))
+
     if (emails.has(data.email)) {
-      setError('email', { message: 'Email already exists!' });
+      setError('email', { message: 'Email already exists!' })
     }
     if (usernames.has(data.username)) {
-      setError('username', { message: 'Username already exists!' });
+      setError('username', { message: 'Username already exists!' })
     }
-  
+
     if (!emails.has(data.email) && !usernames.has(data.username)) {
       try {
         const requiredUserData = {
           ...data,
           role,
-          password: generateRandomPassword(),
-        };
-        dispatch(handleAdminRegisterPatron(requiredUserData)); // Register user
-        setRole('patron');
-        reset();
-        toggle();
-        dispatch(getPatrons()); // Fetch users after adding new user
+        }
+
+        dispatch(handleAdminRegisterPatron(requiredUserData)) // Register user
       } catch (error) {
-        console.log('Error Adding Patron', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Error Adding Patron', error)
+        }
+      } finally {
+        // Reset Form
+        handleClose()
       }
     }
-  };
+  }
 
   const handleClose = () => {
     setRole('patron')
@@ -218,16 +145,16 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
   return (
     <Drawer
       open={open}
-      anchor='right'
-      variant='temporary'
+      anchor="right"
+      variant="temporary"
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Add Patron</Typography>
+        <Typography variant="h5">Add Patron</Typography>
         <IconButton
-          size='small'
+          size="small"
           onClick={handleClose}
           sx={{
             p: '0.438rem',
@@ -236,13 +163,13 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
             backgroundColor: 'action.selected',
           }}
         >
-          <IconifyIcon icon='tabler:x' fontSize='1.125rem' />
+          <IconifyIcon icon="tabler:x" fontSize="1.125rem" />
         </IconButton>
       </Header>
-      <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
+      <Box sx={{ p: (theme) => theme.spacing(0, 6, 6) }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name='firstname'
+            name="firstname"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -250,16 +177,16 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='First Name'
+                label="First Name"
                 onChange={onChange}
-                placeholder='Samuel Kofi'
+                placeholder="Samuel Kofi"
                 error={Boolean(errors.firstname)}
                 {...(errors.firstname && { helperText: errors.firstname.message })}
               />
             )}
           />
           <Controller
-            name='lastname'
+            name="lastname"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -267,16 +194,16 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Last Name'
+                label="Last Name"
                 onChange={onChange}
-                placeholder='Tetteh'
+                placeholder="Tetteh"
                 error={Boolean(errors.lastname)}
                 {...(errors.lastname && { helperText: errors.lastname.message })}
               />
             )}
           />
           <Controller
-            name='username'
+            name="username"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -284,52 +211,52 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Username'
+                label="Username"
                 onChange={onChange}
-                placeholder='lynx'
+                placeholder="lynx"
                 error={Boolean(errors.username)}
                 {...(errors.username && { helperText: errors.username.message })}
               />
             )}
           />
           <Controller
-            name='email'
+            name="email"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
-                type='email'
-                label='Email'
+                type="email"
+                label="Email"
                 value={value}
                 sx={{ mb: 4 }}
                 onChange={onChange}
                 error={Boolean(errors.email)}
-                placeholder='khobbylynx55@email.com'
+                placeholder="khobbylynx55@email.com"
                 {...(errors.email && { helperText: errors.email.message })}
               />
             )}
           />
           <Controller
-            name='contact'
+            name="contact"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
               <CustomTextField
                 fullWidth
-                type='number'
+                type="number"
                 value={value}
                 sx={{ mb: 4 }}
-                label='Contact'
+                label="Contact"
                 onChange={onChange}
-                placeholder='053-715-1049'
+                placeholder="053-715-1049"
                 error={Boolean(errors.contact)}
                 {...(errors.contact && { helperText: errors.contact.message })}
               />
             )}
           />
           <Controller
-            name='address'
+            name="address"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -337,32 +264,32 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Address'
+                label="Address"
                 onChange={onChange}
-                placeholder='Kasoa, Downtown'
+                placeholder="Kasoa, Downtown"
                 error={Boolean(errors.address)}
                 {...(errors.address && { helperText: errors.address.message })}
               />
             )}
           />
           <CustomTextField
-  select
-  fullWidth
-  value={role}
-  sx={{ mb: 4 }}
-  label='Select Role'
-  onChange={e => setRole(e.target.value)}
-  SelectProps={{ value: role, onChange: e => setRole(e.target.value as string) }}
->
-  <MenuItem value='patron'>Patron</MenuItem>
-  <MenuItem value='admin'>Admin</MenuItem>
-  <MenuItem value='agent'>Agent</MenuItem>
-</CustomTextField>
+            select
+            fullWidth
+            value={role}
+            sx={{ mb: 4 }}
+            label="Select Role"
+            onChange={(e) => setRole(e.target.value)}
+            SelectProps={{ value: role, onChange: (e) => setRole(e.target.value as string) }}
+          >
+            <MenuItem value="patron">Patron</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="agent">Agent</MenuItem>
+          </CustomTextField>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button type='submit' variant='contained' sx={{ mr: 3 }}>
+            <Button type="submit" variant="contained" sx={{ mr: 3 }}>
               Submit
             </Button>
-            <Button variant='tonal' color='secondary' onClick={handleClose}>
+            <Button variant="outlined" color="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </Box>
