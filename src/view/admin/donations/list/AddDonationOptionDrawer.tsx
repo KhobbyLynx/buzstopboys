@@ -36,16 +36,12 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(6),
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
 }))
 
 const AddDonationOptionSchema = yup.object().shape({
-  amount: yup
-  .number()
-  .required('Amount is required'),
-  name: yup
-  .string()
-  .required('Option name is required'),
+  amount: yup.number().required('Amount is required'),
+  name: yup.string().required('Option name is required'),
 })
 
 const defaultValues = {
@@ -66,61 +62,40 @@ const SidebarAddDonationOption = (props: SidebarAddDonationOptionType) => {
     setValue,
     setError,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     defaultValues,
     mode: 'onChange',
-    resolver: yupResolver(AddDonationOptionSchema)
+    resolver: yupResolver(AddDonationOptionSchema),
   })
 
-//   const onSubmit = (data: DonationOptionType) => {
-//     console.log('Data From Donation Option Add Form', data)
-//     if (store.donationOptions.some((u: DonationOptionType) => u.name === data.name || u.amount === data.amount)) {
-//       store.donationOptions.forEach((u: DonationOptionType) => {
-//         if (u.name === data.name) {
-//           setError('name', {
-//             message: 'Option name already exists!'
-//           })
-//         }
-//         if (u.amount === data.amount) {
-//           setError('amount', {
-//             message: 'Can not use same amount!'
-//           })
-//         }
-//       })
-//     } else {
-//       dispatch(addDonationOption(data))
-//       reset()
-//       toggle()
-//     }
-// }
+  const onSubmit = (data: DonationOptionType) => {
+    // Validation
+    const names = new Set(store.donationOptions.map((u) => u.name))
+    const amounts = new Set(store.donationOptions.map((u) => u.amount))
 
-const onSubmit = (data: DonationOptionType) => {
-  console.log('Data From Donation Option Add Form', data);
+    if (names.has(data.name)) return setError('name', { message: 'Option name already exists!' })
+    if (amounts.has(data.amount)) return setError('amount', { message: 'Can not use same amount!' })
 
-  let nameError = '';
-  let amountError = '';
-
-  for (const u of store.donationOptions) {
-    if (u.name === data.name) {
-      nameError = 'Option name already exists!';
-    }
-    if (u.amount === data.amount) {
-      amountError = 'Can not use same amount!';
+    try {
+      dispatch(addDonationOption(data))
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(
+          `${
+            error instanceof Error
+              ? error.message
+              : 'An error occurred submitting new donation option data'
+          }`
+        )
+      }
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 
-  if (nameError) setError('name', { message: nameError });
-  if (amountError) setError('amount', { message: amountError });
-
-  if (!nameError && !amountError) {
-    dispatch(addDonationOption(data));
-    reset();
-    toggle();
-  }
-};
-
-const handleClose = () => {
+  const handleClose = () => {
     toggle()
     reset()
   }
@@ -128,16 +103,16 @@ const handleClose = () => {
   return (
     <Drawer
       open={open}
-      anchor='right'
-      variant='temporary'
+      anchor="right"
+      variant="temporary"
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <Header>
-        <Typography variant='h5'>Add New Option</Typography>
+        <Typography variant="h5">Add New Option</Typography>
         <IconButton
-          size='small'
+          size="small"
           onClick={handleClose}
           sx={{
             p: '0.438rem',
@@ -146,13 +121,13 @@ const handleClose = () => {
             backgroundColor: 'action.selected',
           }}
         >
-          <IconifyIcon icon='tabler:x' fontSize='1.125rem' />
+          <IconifyIcon icon="tabler:x" fontSize="1.125rem" />
         </IconButton>
       </Header>
-      <Box sx={{ p: theme => theme.spacing(0, 6, 6) }}>
+      <Box sx={{ p: (theme) => theme.spacing(0, 6, 6) }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name='name'
+            name="name"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -160,7 +135,7 @@ const handleClose = () => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Name'
+                label="Name"
                 onChange={onChange}
                 placeholder="Option's name"
                 error={Boolean(errors.name)}
@@ -169,7 +144,7 @@ const handleClose = () => {
             )}
           />
           <Controller
-            name='amount'
+            name="amount"
             control={control}
             rules={{ required: true }}
             render={({ field: { value, onChange } }) => (
@@ -177,19 +152,19 @@ const handleClose = () => {
                 fullWidth
                 value={value}
                 sx={{ mb: 4 }}
-                label='Amount'
+                label="Amount"
                 onChange={onChange}
-                placeholder='eg.GHS 100'
+                placeholder="eg.GHS 100"
                 error={Boolean(errors.amount)}
                 {...(errors.amount && { helperText: errors.amount.message })}
               />
             )}
           />
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button type='submit' variant='contained' sx={{ mr: 3 }}>
+            <Button type="submit" variant="contained" sx={{ mr: 3 }}>
               Submit
             </Button>
-            <Button variant='tonal' color='secondary' onClick={handleClose}>
+            <Button variant="outlined" color="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </Box>
