@@ -243,21 +243,26 @@ const SidebarEditEvent = (props: SidebarEditEventType) => {
       // Check if image was updated
       const removedImage = img === eventData.img ? '' : eventData.img
 
-      console.log('Removed Image - Event Update', removedImage)
-
       dispatch(updateEvent({ modifiedData, removedImage }))
-      reset()
-      toggle()
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.log('Error updating event', error)
       }
 
       throw new Error(error instanceof Error ? error.message : 'An error occurred updating event')
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 
   const handleClose = () => {
+    setStartDate(new Date(eventData.startDate))
+    setEndDate(doneDate ? new Date(doneDate) : null)
+    setStartTime(new Date(eventData.startTime))
+    setEndTime(doneTime ? new Date(doneTime) : null)
+    setHashTags(eventData.hashTags)
+    setImg(eventData.img)
     toggle()
     reset()
   }
