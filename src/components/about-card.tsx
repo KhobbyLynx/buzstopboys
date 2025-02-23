@@ -1,15 +1,10 @@
-import {
-  Card,
-  CardBody,
-  Typography,
-  Button,
-} from "@material-tailwind/react";
+import { Card, CardBody, Typography, Button } from '@material-tailwind/react'
 
 interface AboutCardProp {
-  title: string;
-  subTitle: string;
-  description: string;
-  coverImage: string;
+  title: string
+  subTitle: string
+  description: string
+  coverImage: string
 }
 
 export function AboutCard({ title, description, subTitle, coverImage }: AboutCardProp) {
@@ -17,7 +12,7 @@ export function AboutCard({ title, description, subTitle, coverImage }: AboutCar
     backgroundImage: coverImage ? `url('/images/banner/${coverImage}.svg')` : 'none',
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
-  };
+  }
 
   return (
     <Card shadow={false}>
@@ -42,7 +37,7 @@ export function AboutCard({ title, description, subTitle, coverImage }: AboutCar
         </Button>
       </CardBody>
     </Card>
-  );
+  )
 }
 
-export default AboutCard;
+export default AboutCard
