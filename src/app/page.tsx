@@ -1,10 +1,10 @@
 // sections
-import Hero from "./src/components/hero";
-import SponsoredBy from "./src/components/sponsored-by";
-import AboutSection from "./src/components/about-section";
-import OurStats from "./src/components/our-stats";
-import Faq from "./src/components/faq";
-import Feedback from "./src/view/FeedBack";
+import Hero from "@/components/hero";
+import SponsoredBy from "@/components/sponsored-by";
+import AboutSection from "@/components/about-section";
+import OurStats from "@/components/our-stats";
+import Faq from "@/components/faq";
+import Feedback from "@/view/FeedBack";
 import { Box } from "@mui/material";
 
 export default function Portfolio() {

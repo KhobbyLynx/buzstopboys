@@ -11,8 +11,8 @@ import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import { Button } from '@mui/material'
 import Link from 'next/link'
-import { EventProps } from './src/types/events'
-import { formatDate } from './src/utils/utils'
+import { EventProps } from '@/types/events'
+import { formatDate } from '@/utils/utils'
 
 // Styled component for the image container
 const ImageContainer = styled(Box)({

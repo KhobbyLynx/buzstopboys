@@ -7,12 +7,12 @@ import {
   DonationOptionsProps,
   DonationOptionType,
   EditDonationOptionType,
-} from './src/types/donations'
+} from '@/types/donations'
 
 // ** Axios
-import axiosRequest from './src/utils/axiosRequest'
+import axiosRequest from '@/utils/axiosRequest'
 import { BProgress } from '@bprogress/core'
-import { Toast } from './src/utils/toast'
+import { Toast } from '@/utils/toast'
 
 // ** FETCH DONATION CAMPAIGN
 export const getDonationsCampaigns = createAsyncThunk(

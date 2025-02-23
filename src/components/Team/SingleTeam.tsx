@@ -1,4 +1,4 @@
-import { TeamType } from "./src/types/team";
+import { TeamType } from "@/types/team";
 import Image from "next/image";
 import Link from "next/link";
 

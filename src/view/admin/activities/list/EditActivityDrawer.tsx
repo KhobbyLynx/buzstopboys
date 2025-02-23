@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from './src/components/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -19,21 +19,21 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
-import IconifyIcon from './src/components/icon'
+import IconifyIcon from '@/components/icon'
 
 // ** Store Imports
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { updateActivity } from './src/store/activities'
+import { updateActivity } from '@/store/activities'
 
 // ** Types Imports
-import { AppDispatch } from './src/store'
-import { ActivityProps, EditActivityType } from './src/types/activities'
+import { AppDispatch } from '@/store'
+import { ActivityProps, EditActivityType } from '@/types/activities'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { FormHelperText } from '@mui/material'
-import { convertToEmbedUrl } from './src/utils/utils'
+import { convertToEmbedUrl } from '@/utils/utils'
 
 interface SidebarEditActivityType {
   open: boolean

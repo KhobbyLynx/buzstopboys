@@ -3,10 +3,10 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
 // ** Icon Imports
-import Icon from './src/components/icon'
+import Icon from '@/components/icon'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from './src/store'
-import { getDonationsCampaigns } from './src/store/donations'
+import { AppDispatch } from '@/store'
+import { getDonationsCampaigns } from '@/store/donations'
 import { setRef } from '@mui/material'
 import { useState } from 'react'
 

@@ -1,10 +1,10 @@
 "use client"
 
 // ** COMPONENTS
-import PageHero from './src/view/about/AboutHero'
-import OurStats from './src/view/about/OurStats'
-import MoreInfo from './src/view/about/More'
-import Team from './src/components/team'
+import PageHero from '@/view/about/AboutHero'
+import OurStats from '@/view/about/OurStats'
+import MoreInfo from '@/view/about/More'
+import Team from '@/components/team'
 import { Box } from '@mui/material'
 
 function About() {

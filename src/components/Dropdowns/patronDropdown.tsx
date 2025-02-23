@@ -3,18 +3,18 @@
 import { useState, SyntheticEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from './src/store'
-import { handleLogout } from './src/store/auth'
-import { getAuthenticatedUserData, logoutFirebase } from './src/utils/utils'
+import { AppDispatch } from '@/store'
+import { handleLogout } from '@/store/auth'
+import { getAuthenticatedUserData, logoutFirebase } from '@/utils/utils'
 
 // ** MUI Imports
 import { Box, Menu, Badge, Avatar, Divider, MenuItem, Typography, styled } from '@mui/material'
 
 // ** Icons
-import IconifyIcon from './src/components/icon'
+import IconifyIcon from '@/components/icon'
 
 // ** Types
-import { PatronWebType } from './src/types/patron'
+import { PatronWebType } from '@/types/patron'
 import Link from 'next/link'
 
 const BadgeContent = styled('span')(({ theme }) => ({

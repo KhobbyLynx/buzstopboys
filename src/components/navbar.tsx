@@ -12,9 +12,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import PatronDropdown from "./dropdowns/patronDropdown";
 import { useSelector } from "react-redux";
-import { PatronWebType } from "./src/types/patron";
+import { PatronWebType } from "@/types/patron";
 import IconifyIcon from "./icon";
-import { clientNavigation } from "./src/navigation/client.navigation";
+import { clientNavigation } from "@/navigation/client.navigation";
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false);

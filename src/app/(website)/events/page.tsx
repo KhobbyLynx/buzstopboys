@@ -1,9 +1,9 @@
 'use client'
 
-import { AppDispatch, RootState } from './src/store'
-import { getEvents } from './src/store/events'
-import EventCard from './src/view/events/EventsCard'
-import EventsHeader from './src/view/events/EventsHeader'
+import { AppDispatch, RootState } from '@/store'
+import { getEvents } from '@/store/events'
+import EventCard from '@/view/events/EventsCard'
+import EventsHeader from '@/view/events/EventsHeader'
 import { Typography } from '@material-tailwind/react'
 import { Box, CircularProgress } from '@mui/material'
 import React, { useEffect } from 'react'

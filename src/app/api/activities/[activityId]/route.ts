@@ -1,4 +1,4 @@
-import Activity from "./src/models/activity.model";
+import Activity from "@/models/activity.model";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, context: { params: Promise<{ activityId: string }> }) {

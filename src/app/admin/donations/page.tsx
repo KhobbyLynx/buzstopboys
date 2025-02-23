@@ -19,24 +19,24 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { CircularProgress, LinearProgress, Tooltip } from '@mui/material'
 
 // ** Icon Imports
-import Icon from './src/components/icon'
+import Icon from '@/components/icon'
 
 // ** Store Imports
-import { AppDispatch, RootState } from './src/store'
+import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from './src/components/mui/chip'
+import CustomChip from '@/components/mui/chip'
 
 // ** Utils Import
-import { calculatePercentage, formatAmount, formatDate } from './src/utils/utils'
+import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
 
 // ** Actions Imports
 import {
   deleteDonationCampaign,
   getDonationOptions,
   getDonationsCampaigns,
-} from './src/store/donations'
+} from '@/store/donations'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -45,16 +45,16 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Custom Table Components Imports
-// import CardLineChart from './src/components/cards/CardLineChart'
-import CardOptionsList from './src/components/cards/CardOptionsList'
-import TableHeader from './src/view/admin/donations/list/TableHeader'
+// import CardLineChart from '@/components/cards/CardLineChart'
+import CardOptionsList from '@/components/cards/CardOptionsList'
+import TableHeader from '@/view/admin/donations/list/TableHeader'
 
 // ** Sidebar Components
-import SidebarAddDonationCampaign from './src/view/admin/donations/list/AddDonationCampaignDrawer'
-import SidebarEditDonationCampaign from './src/view/admin/donations/list/EditDonationCampaignDrawer'
+import SidebarAddDonationCampaign from '@/view/admin/donations/list/AddDonationCampaignDrawer'
+import SidebarEditDonationCampaign from '@/view/admin/donations/list/EditDonationCampaignDrawer'
 
 // ** Types
-import { DonationCampaignProps } from './src/types/donations'
+import { DonationCampaignProps } from '@/types/donations'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
 
 interface StatusType {

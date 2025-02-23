@@ -1,4 +1,4 @@
-import { PatronWebType } from './src/types/patron'
+import { PatronWebType } from '@/types/patron'
 import axios from 'axios'
 
 const BASE_URL = 'http://localhost:3000/api/set-cookie'

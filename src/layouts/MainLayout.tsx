@@ -2,8 +2,8 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import { usePathname } from 'next/navigation'
-import { Footer, Navbar } from './src/components'
-import PageNavbar from './src/view/pages/PageNavbar'
+import { Footer, Navbar } from '@/components'
+import PageNavbar from '@/view/pages/PageNavbar'
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()

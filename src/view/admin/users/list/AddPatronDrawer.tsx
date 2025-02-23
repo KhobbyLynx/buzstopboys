@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from './src/components/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -19,7 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
-import IconifyIcon from './src/components/icon'
+import IconifyIcon from '@/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,9 +27,9 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Actions Imports
 
 // ** Types Imports
-import { RootState, AppDispatch } from './src/store'
-import { PatronMDBType, PatronType } from './src/types/patron'
-import { getPatrons, handleAdminRegisterPatron } from './src/store/users'
+import { RootState, AppDispatch } from '@/store'
+import { PatronMDBType, PatronType } from '@/types/patron'
+import { getPatrons, handleAdminRegisterPatron } from '@/store/users'
 
 interface SidebarAddUserType {
   open: boolean

@@ -2,8 +2,8 @@
 
 import { Typography } from '@material-tailwind/react'
 
-import DonationCampaignCard from './src/components/cards/DonationCampaignCard'
-import { DonationCampaignProps } from './src/types/donations'
+import DonationCampaignCard from '@/components/cards/DonationCampaignCard'
+import { DonationCampaignProps } from '@/types/donations'
 
 export function DonationCampaign({
   donationCampaign,

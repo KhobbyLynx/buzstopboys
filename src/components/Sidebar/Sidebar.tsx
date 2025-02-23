@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NotificationDropdown from "../dropdowns/NotificationDropdown";
 import UserDropdown from "../dropdowns/UserDropdown";
-import { adminNavigation } from "./src/navigation/admin.navigation";
+import { adminNavigation } from "@/navigation/admin.navigation";
 import IconifyIcon from "../icon";
 
 const Sidebar = () => {

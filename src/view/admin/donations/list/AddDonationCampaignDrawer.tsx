@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { FormHelperText } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from './src/components/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -21,14 +21,14 @@ import { useForm, Controller } from 'react-hook-form'
 import { useDropzone } from 'react-dropzone'
 
 // ** Icon Imports
-import IconifyIcon from './src/components/icon'
+import IconifyIcon from '@/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from './src/store'
+import { AppDispatch, RootState } from '@/store'
 
 // ** Actions Imports
-import { addDonationCampaign } from './src/store/donations'
+import { addDonationCampaign } from '@/store/donations'
 
 // ** Next Imports
 import Image from 'next/image'

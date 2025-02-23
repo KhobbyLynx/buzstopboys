@@ -1,9 +1,9 @@
 import React from 'react'
 
 // Components
-import AdminNavbar from './src/components/navbars/AdminNavbar'
-import Sidebar from './src/components/sidebar/Sidebar'
-import FooterAdmin from './src/components/footers/FooterAdmin'
+import AdminNavbar from '@/components/navbars/AdminNavbar'
+import Sidebar from '@/components/sidebar/Sidebar'
+import FooterAdmin from '@/components/footers/FooterAdmin'
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (

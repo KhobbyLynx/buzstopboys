@@ -19,10 +19,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Custom Component Import
-import CustomTextField from './src/components/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** IconifyIcon Imports
-import IconifyIcon from './src/components/icon'
+import IconifyIcon from '@/components/icon'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -30,13 +30,13 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { handleRegisterPatron } from './src/store/auth'
+import { handleRegisterPatron } from '@/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from './src/store'
+import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'
-import { Toast } from './src/utils/toast'
+import { Toast } from '@/utils/toast'
 import { CircularProgress } from '@mui/material'
-import FallbackSpinner from './src/components/spinner'
+import FallbackSpinner from '@/components/spinner'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(() => ({

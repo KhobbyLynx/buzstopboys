@@ -15,9 +15,9 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-import CollageCard from "./src/components/cards/CollageCard";
+import CollageCard from "@/components/cards/CollageCard";
 import Image from "next/image";
-import { ActivityProps } from "./src/types/activities";
+import { ActivityProps } from "@/types/activities";
 import Link from 'next/link';
 
 

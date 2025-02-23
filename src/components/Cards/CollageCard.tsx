@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Card, CardBody, Typography } from "@material-tailwind/react";
 import IconifyIcon from "../icon";
-import { ActivityProps } from "./src/types/activities";
+import { ActivityProps } from "@/types/activities";
 import { Box } from "@mui/material";
 import Link from "next/link";
 

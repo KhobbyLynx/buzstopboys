@@ -1,7 +1,7 @@
 import React from 'react'
 
 import './globals.css'
-import './src/styles/styles.scss'
+import '@/styles/styles.scss'
 
 // Swiper styles
 import 'swiper/css'
@@ -13,8 +13,8 @@ import 'swiper/css/effect-coverflow'
 import type { Metadata } from 'next'
 
 // ** COMPONENTS
-import { ThemeProviderLayout } from './src/components'
-import Layout from './src/layouts'
+import { ThemeProviderLayout } from '@/components'
+import Layout from '@/layouts'
 
 export const metadata: Metadata = {
   title: {
