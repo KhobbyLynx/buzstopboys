@@ -25,12 +25,10 @@ import IconifyIcon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { addActivity, updateActivity } from '@/store/activities'
+import { addActivity } from '@/store/activities'
 
 // ** Types Imports
 import { AppDispatch } from '@/store'
-import { ActivityProps, AddActivityType } from '@/types/activities'
-import { Toast } from '@/utils/toast'
 import Image from 'next/image'
 import { useDropzone } from 'react-dropzone'
 import { FormHelperText } from '@mui/material'
@@ -62,7 +60,6 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
   const [icon, setIcon] = useState<string>('nrk:globe')
 
   // ** File Upload State
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [imgs, setImgs] = useState<string[]>([])
   const [imageError, setImageError] = useState<string>('')
 
@@ -105,11 +102,7 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
     },
     onDrop: async (acceptedFiles) => {
       try {
-        const validatedImages = await Promise.all(
-          acceptedFiles.map((file) => readAndValidateImage(file))
-        )
-
-        setUploadedFiles((prevFiles) => [...prevFiles, ...validatedImages])
+        await Promise.all(acceptedFiles.map((file) => readAndValidateImage(file)))
       } catch (error) {
         if (process.env.NODE_ENV === 'development') {
           console.error('Error uploading image - OnDrop', error)
@@ -242,13 +235,18 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
 
     // ** Dispatch
     try {
-      dispatch(addActivity({ ...data, icon, details, videoUrls: convertVideoUrls, imgs }))
+      // Organise required data
+      const requiredData = { ...data, icon, details, videoUrls: convertVideoUrls, imgs }
 
-      handleClose()
+      // dispatch with required data
+      dispatch(addActivity(requiredData))
     } catch (error: any) {
       if (process.env.NODE_ENV === 'development') {
         console.log('Error creating new activity - onSubmit', error)
       }
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 
@@ -256,7 +254,6 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
     setDetails([''])
     setVideoUrls([''])
     setImageError('')
-    setUploadedFiles([])
     setImgs([])
     setIcon('nrk:globe')
     toggle()
@@ -358,11 +355,11 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
 
           {/* Display Uploaded Images */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
-            {uploadedFiles.map((file, index) => (
+            {imgs.map((img, index) => (
               <Box key={index} sx={{ position: 'relative' }}>
                 <Image
-                  src={URL.createObjectURL(file)}
-                  alt={file.name}
+                  src={img}
+                  alt={`Image ${index + 1}`}
                   width={80}
                   height={80}
                   style={{
@@ -372,7 +369,6 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
                 />
                 <IconButton
                   onClick={() => {
-                    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index))
                     setImgs(imgs.filter((_, i) => i !== index))
                   }}
                   sx={{ position: 'absolute', top: 0, right: 0, background: 'white' }}
