@@ -3,10 +3,10 @@ import {
   adminDeleteFirebaseUser,
   adminReinstateFirebaseUser,
   adminSuspendFirebaseUser,
-} from '@/configs/adminFirebase'
-import connectMongoDB from '@/libs/mongodb'
-import Patron from '@/models/patron.model'
-import { generateRandomId, generateRandomPassword, splitEmail } from '@/utils/utils'
+} from './src/configs/adminFirebase'
+import connectMongoDB from './src/libs/mongodb'
+import Patron from './src/models/patron.model'
+import { generateRandomId, generateRandomPassword, splitEmail } from './src/utils/utils'
 import { getAuth } from 'firebase/auth'
 import { NextRequest, NextResponse } from 'next/server'
 

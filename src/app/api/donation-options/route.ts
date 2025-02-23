@@ -1,6 +1,6 @@
-import connectMongoDB from "@/libs/mongodb";
-import DonationOptions from "@/models/donationOptions.models";
-import { generateRandomId } from "@/utils/utils";
+import connectMongoDB from "./src/libs/mongodb";
+import DonationOptions from "./src/models/donationOptions.models";
+import { generateRandomId } from "./src/utils/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {

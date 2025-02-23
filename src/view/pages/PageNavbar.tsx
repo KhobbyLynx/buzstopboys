@@ -15,10 +15,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
-import { PatronWebType } from "@/types/patron";
-import PatronDropdown from "@/components/dropdowns/patronDropdown";
-import IconifyIcon from "@/components/icon";
-import { clientNavigation } from "@/navigation/client.navigation";
+import { PatronWebType } from "./src/types/patron";
+import PatronDropdown from "./src/components/dropdowns/patronDropdown";
+import IconifyIcon from "./src/components/icon";
+import { clientNavigation } from "./src/navigation/client.navigation";
 
 export function PageNavbar() {
   // ** States

@@ -1,13 +1,13 @@
 'use client'
 import React from 'react'
-import ActivitiesCollage from '@/view/activiteis/ActivitiesCollage'
-import EventHighlight from '@/view/events/EventHighlight'
+import ActivitiesCollage from './src/view/activiteis/ActivitiesCollage'
+import EventHighlight from './src/view/events/EventHighlight'
 import { Box, CircularProgress, Typography } from '@mui/material'
-import VideoSwiper from '@/components/carousel/VideoSwiper'
+import VideoSwiper from './src/components/carousel/VideoSwiper'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/store'
+import { AppDispatch, RootState } from './src/store'
 import { useEffect } from 'react'
-import { getActivities } from '@/store/activities'
+import { getActivities } from './src/store/activities'
 
 function Activities() {
   // ** Hooks

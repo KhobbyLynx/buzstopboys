@@ -18,19 +18,19 @@ import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 // ** Icon Imports
-import Icon from '@/components/icon'
+import Icon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
+import CustomChip from './src/components/mui/chip'
 
 // ** Utils Import
-import { getInitials } from '@/utils/utils'
+import { getInitials } from './src/utils/utils'
 
 // ** Actions Imports
-import { deleteUser, getPatrons, reinstateUser, suspendUser } from '@/store/users'
+import { deleteUser, getPatrons, reinstateUser, suspendUser } from './src/store/users'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -39,14 +39,14 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Types
-import { PatronMDBType } from '@/types/patron'
+import { PatronMDBType } from './src/types/patron'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'default'
 
-import { RootState, AppDispatch } from '@/store'
+import { RootState, AppDispatch } from './src/store'
 
 // ** Custom Table Components Imports
-import TableHeader from '@/view/admin/users/list/TableHeader'
-import SidebarAddPatron from '@/view/admin/users/list/AddPatronDrawer'
+import TableHeader from './src/view/admin/users/list/TableHeader'
+import SidebarAddPatron from './src/view/admin/users/list/AddPatronDrawer'
 import { Avatar, CircularProgress } from '@mui/material'
 
 interface UserRoleType {

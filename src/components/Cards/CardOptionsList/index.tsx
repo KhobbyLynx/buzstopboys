@@ -14,18 +14,18 @@ import {
   MenuItem,
 } from '@mui/material'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/store'
+import { AppDispatch } from './src/store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { deleteDonationOption } from '@/store/donations'
+import { deleteDonationOption } from './src/store/donations'
 
 // ** Icon Imports
-import Icon from '@/components/icon'
+import Icon from './src/components/icon'
 
-import EditDonationOptionDrawer from '@/view/admin/donations/list/EditDonationOptionDrawer'
-import AddDonationOptionDrawer from '@/view/admin/donations/list/AddDonationOptionDrawer'
-import { formatAmount } from '@/utils/utils'
-import { DonationOptionsProps, DonationOptionType, EditDonationOptionType } from '@/types/donations'
+import EditDonationOptionDrawer from './src/view/admin/donations/list/EditDonationOptionDrawer'
+import AddDonationOptionDrawer from './src/view/admin/donations/list/AddDonationOptionDrawer'
+import { formatAmount } from './src/utils/utils'
+import { DonationOptionsProps, DonationOptionType, EditDonationOptionType } from './src/types/donations'
 
 const MySwal = withReactContent(Swal)
 

@@ -3,7 +3,7 @@
 import { Box, Button, Slide, Divider, Modal, Typography } from "@mui/material";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import { formatAmount } from "@/utils/utils";
+import { formatAmount } from "./src/utils/utils";
 import AuthModal from "./AuthModal";
 import { useState } from "react";
 

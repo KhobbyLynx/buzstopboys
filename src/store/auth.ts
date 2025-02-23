@@ -3,7 +3,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // ** Axios
-import axiosRequest from '@/utils/axiosRequest'
+import axiosRequest from './src/utils/axiosRequest'
 
 // ** UseJWT import to get config
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
@@ -13,12 +13,12 @@ import { auth } from '../configs/firebase'
 // import DefaultAvatar from '/images/avatars/avatar-blank.png'
 
 // ** Utils
-import { logoutFirebase, splitEmail } from '@/utils/utils'
+import { logoutFirebase, splitEmail } from './src/utils/utils'
 
 // ** Toast
-import { Toast } from '@/utils/toast'
-import { PatronWebType } from '@/types/patron'
-import { setCookie, deleteCookie } from '@/utils/setCookie'
+import { Toast } from './src/utils/toast'
+import { PatronWebType } from './src/types/patron'
+import { setCookie, deleteCookie } from './src/utils/setCookie'
 import { BProgress } from '@bprogress/core'
 import { capitalize } from '@mui/material'
 

@@ -1,4 +1,4 @@
-import Event from "@/models/events.model";
+import Event from "./src/models/events.model";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, context: { params: Promise<{ eventId: string }> }) {

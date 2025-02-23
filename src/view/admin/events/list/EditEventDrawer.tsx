@@ -15,7 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from './src/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -23,17 +23,17 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
-import IconifyIcon from '@/components/icon'
+import IconifyIcon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { updateEvent } from '@/store/events'
+import { updateEvent } from './src/store/events'
 
 // ** Types Imports
-import { AppDispatch } from '@/store'
-import { EventProps } from '@/types/events'
+import { AppDispatch } from './src/store'
+import { EventProps } from './src/types/events'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { FormHelperText } from '@mui/material'

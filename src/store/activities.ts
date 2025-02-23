@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // ** Types
-import { ActivityProps, AddActivityType, EditActivityType } from '@/types/activities'
-import axiosRequest from '@/utils/axiosRequest'
+import { ActivityProps, AddActivityType, EditActivityType } from './src/types/activities'
+import axiosRequest from './src/utils/axiosRequest'
 import { BProgress } from '@bprogress/core'
-import { Toast } from '@/utils/toast'
+import { Toast } from './src/utils/toast'
 
 // ** FETCH ACTIVITIES
 export const getActivities = createAsyncThunk(

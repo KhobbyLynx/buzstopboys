@@ -3,11 +3,11 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 
 // ** Icon Imports
-import Icon from '@/components/icon'
+import Icon from './src/components/icon'
 import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/store'
+import { AppDispatch } from './src/store'
 import { useState } from 'react'
-import { getEvents } from '@/store/events'
+import { getEvents } from './src/store/events'
 
 interface TableHeaderProps {
   toggle: () => void

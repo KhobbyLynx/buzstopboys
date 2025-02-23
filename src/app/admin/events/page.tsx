@@ -19,19 +19,19 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { CircularProgress, Tooltip } from '@mui/material'
 
 // ** Icon Imports
-import Icon from '@/components/icon'
+import Icon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
+import CustomChip from './src/components/mui/chip'
 
 // ** Utils Import
-import { formatDate } from '@/utils/utils'
+import { formatDate } from './src/utils/utils'
 
 // ** Actions Imports
-import { deleteEvent, getEvents } from '@/store/events'
+import { deleteEvent, getEvents } from './src/store/events'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -40,16 +40,16 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Types
-import { AppDispatch, RootState } from '@/store'
-import { EventProps } from '@/types/events'
+import { AppDispatch, RootState } from './src/store'
+import { EventProps } from './src/types/events'
 
 // ** Custom Table Components Imports
-import TableHeader from '@/view/admin/events/list/TableHeader'
+import TableHeader from './src/view/admin/events/list/TableHeader'
 
 // ** Sidebar Components
-import SidebarAddEvent from '@/view/admin/events/list/AddEventDrawer'
-import SidebarEditEvent from '@/view/admin/events/list/EditEventDrawer'
-import { ThemeColor } from '@/layouts/types'
+import SidebarAddEvent from './src/view/admin/events/list/AddEventDrawer'
+import SidebarEditEvent from './src/view/admin/events/list/EditEventDrawer'
+import { ThemeColor } from './src/layouts/types'
 import { useRouter } from 'next/navigation'
 
 interface StatusType {

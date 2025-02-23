@@ -5,13 +5,13 @@ import React, { useEffect } from 'react'
 import { Avatar, Box, Button, Chip, CircularProgress, Typography } from '@mui/material'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/store'
-import { singleCampaign } from '@/store/donations'
+import { AppDispatch, RootState } from './src/store'
+import { singleCampaign } from './src/store/donations'
 import { SwiperSlide, Swiper } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
 import Head from 'next/head'
-import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
-import IconifyIcon from '@/components/icon'
+import { calculatePercentage, formatAmount, formatDate } from './src/utils/utils'
+import IconifyIcon from './src/components/icon'
 
 const DonationCampaignDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()

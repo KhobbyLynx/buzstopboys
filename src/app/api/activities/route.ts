@@ -1,7 +1,7 @@
-import connectMongoDB from '@/libs/mongodb'
-import Activity from '@/models/activity.model'
-import axiosRequest from '@/utils/axiosRequest'
-import { generateRandomId } from '@/utils/utils'
+import connectMongoDB from './src/libs/mongodb'
+import Activity from './src/models/activity.model'
+import axiosRequest from './src/utils/axiosRequest'
+import { generateRandomId } from './src/utils/utils'
 import { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {

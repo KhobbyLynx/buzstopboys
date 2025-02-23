@@ -5,11 +5,11 @@ import MainLayout from './MainLayout'
 import BlankLayout from './BlankLayout'
 import AdminLayout from './AdminLayout'
 import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '@/configs/firebase'
+import { auth } from './src/configs/firebase'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/store'
-import { handleAutoLogin } from '@/store/auth'
-import FallbackSpinner from '@/components/spinner'
+import { AppDispatch, RootState } from './src/store'
+import { handleAutoLogin } from './src/store/auth'
+import FallbackSpinner from './src/components/spinner'
 
 interface DataType {
   id: string

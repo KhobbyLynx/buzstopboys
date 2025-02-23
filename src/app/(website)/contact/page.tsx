@@ -1,8 +1,8 @@
 'use client'
 
-import Faq from '@/components/faq'
-import Team from '@/components/team'
-import ContactForm from '@/view/contact/ContactForm'
+import Faq from './src/components/faq'
+import Team from './src/components/team'
+import ContactForm from './src/view/contact/ContactForm'
 import { Box } from '@mui/material'
 
 function Contact() {

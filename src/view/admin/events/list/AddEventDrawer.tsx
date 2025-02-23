@@ -15,7 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from './src/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -24,18 +24,18 @@ import { useForm, Controller } from 'react-hook-form'
 import { useDropzone } from 'react-dropzone'
 
 // ** Icon Imports
-import IconifyIcon from '@/components/icon'
+import IconifyIcon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { addEvent } from '@/store/events'
+import { addEvent } from './src/store/events'
 
 // ** Types Imports
-import { AppDispatch } from '@/store'
+import { AppDispatch } from './src/store'
 import Image from 'next/image'
-import { Toast } from '@/utils/toast'
+import { Toast } from './src/utils/toast'
 import { FormHelperText } from '@mui/material'
 
 type EventStatusType = 'upcoming' | 'past' | 'suspended'

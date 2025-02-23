@@ -1,5 +1,5 @@
-import DonateCard from "@/components/cards/DonateCard"
-import { DonationOptionsProps } from "@/types/donations"
+import DonateCard from "./src/components/cards/DonateCard"
+import { DonationOptionsProps } from "./src/types/donations"
 import { Typography } from "@material-tailwind/react"
 
 function DonationCards({ donationOptions } : { donationOptions: DonationOptionsProps[] }) {

@@ -1,6 +1,6 @@
-import { AddEventType, EditEventType, EventProps } from '@/types/events'
-import axiosRequest from '@/utils/axiosRequest'
-import { Toast } from '@/utils/toast'
+import { AddEventType, EditEventType, EventProps } from './src/types/events'
+import axiosRequest from './src/utils/axiosRequest'
+import { Toast } from './src/utils/toast'
 import { BProgress } from '@bprogress/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 

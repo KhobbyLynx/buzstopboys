@@ -1,13 +1,13 @@
 import React from 'react'
 
 // components
-// import CardLineChart from "@/components/cards/CardLineChart";
-// import CardBarChart from "@/components/cards/CardBarChart";
-// import CardPageVisits from '@/components/cards/CardPageVisits'
-// import CardSocialTraffic from '@/components/cards/CardSocialTraffic'
+// import CardLineChart from "./src/components/cards/CardLineChart";
+// import CardBarChart from "./src/components/cards/CardBarChart";
+// import CardPageVisits from './src/components/cards/CardPageVisits'
+// import CardSocialTraffic from './src/components/cards/CardSocialTraffic'
 
 // layout for page
-import AdminLayout from '@/layouts/AdminLayout'
+import AdminLayout from './src/layouts/AdminLayout'
 
 export default function Dashboard() {
   return (

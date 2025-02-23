@@ -1,7 +1,7 @@
-import connectMongoDB from '@/libs/mongodb'
-import Campaign from '@/models/campaign.model'
-import axiosRequest from '@/utils/axiosRequest'
-import { generateRandomId } from '@/utils/utils'
+import connectMongoDB from './src/libs/mongodb'
+import Campaign from './src/models/campaign.model'
+import axiosRequest from './src/utils/axiosRequest'
+import { generateRandomId } from './src/utils/utils'
 import { NextRequest, NextResponse } from 'next/server'
 
 //** GET  */

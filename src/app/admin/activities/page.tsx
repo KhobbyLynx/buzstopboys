@@ -18,16 +18,16 @@ import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 // ** Icon Imports
-import Icon from '@/components/icon'
+import Icon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Utils Import
-import { formatDate } from '@/utils/utils'
+import { formatDate } from './src/utils/utils'
 
 // ** Actions Imports
-import { deleteActivity, getActivities } from '@/store/activities'
+import { deleteActivity, getActivities } from './src/store/activities'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -36,17 +36,17 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Types
-import { AppDispatch, RootState } from '@/store'
+import { AppDispatch, RootState } from './src/store'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success'
 
 // ** Custom Table Components Imports
-import TableHeader from '@/view/admin/activities/list/TableHeader'
+import TableHeader from './src/view/admin/activities/list/TableHeader'
 import { CircularProgress, Tooltip } from '@mui/material'
 
 // ** Sidebar Components
-import SidebarAddAcitivity from '@/view/admin/activities/list/AddActivityDrawer'
-import SidebarEditActivity from '@/view/admin/activities/list/EditActivityDrawer'
-import { ActivityProps } from '@/types/activities'
+import SidebarAddAcitivity from './src/view/admin/activities/list/AddActivityDrawer'
+import SidebarEditActivity from './src/view/admin/activities/list/EditActivityDrawer'
+import { ActivityProps } from './src/types/activities'
 
 interface StatusType {
   [key: string]: ThemeColor

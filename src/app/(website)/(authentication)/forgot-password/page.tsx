@@ -14,10 +14,10 @@ import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from './src/components/mui/text-field'
 
 // ** IconifyIcon Imports
-import IconifyIcon from '@/components/icon'
+import IconifyIcon from './src/components/icon'
 
 // ** Demo Imports
 const AuthIllustrationV1Wrapper = styled(Box)({

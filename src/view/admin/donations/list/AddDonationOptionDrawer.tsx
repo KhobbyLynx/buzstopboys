@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from './src/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -15,17 +15,17 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
 // ** Icon Imports
-import IconifyIcon from '@/components/icon'
+import IconifyIcon from './src/components/icon'
 
 // ** Store Imports
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { addDonationOption } from '@/store/donations'
+import { addDonationOption } from './src/store/donations'
 
 // ** Types Imports
-import { DonationOptionType } from '@/types/donations'
-import { AppDispatch, RootState } from '@/store'
+import { DonationOptionType } from './src/types/donations'
+import { AppDispatch, RootState } from './src/store'
 
 interface SidebarAddDonationOptionType {
   open: boolean

@@ -5,7 +5,7 @@ import React from "react";
 
 // ** Store
 import { Provider } from "react-redux";
-import { store } from "@/store";
+import { store } from "./src/store";
 
 // ** Loader Import
 import { AppProgressProvider as ProgressProvider } from '@bprogress/next';

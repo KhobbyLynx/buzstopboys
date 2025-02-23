@@ -1,6 +1,6 @@
 import { Box, Typography, Modal, IconButton, Avatar } from '@mui/material'
-import IconifyIcon from '@/components/icon'
-import { EventProps } from '@/types/events'
+import IconifyIcon from './src/components/icon'
+import { EventProps } from './src/types/events'
 
 interface EventDetailsModalProps {
   open: boolean

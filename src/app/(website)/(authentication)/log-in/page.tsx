@@ -24,18 +24,18 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { handleLoginPatron } from '@/store/auth'
+import { handleLoginPatron } from './src/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/store'
+import { AppDispatch, RootState } from './src/store'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from './src/components/mui/text-field'
 
 // ** Icon Imports
-import IconifyIcon from '@/components/icon'
+import IconifyIcon from './src/components/icon'
 import { useRouter } from 'next/navigation'
 import { CircularProgress } from '@mui/material'
-import FallbackSpinner from '@/components/spinner'
+import FallbackSpinner from './src/components/spinner'
 
 // ** Demo Imports
 const AuthIllustrationV1Wrapper = styled(Box)({
