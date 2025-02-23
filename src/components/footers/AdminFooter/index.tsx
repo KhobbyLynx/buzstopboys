@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Container, Divider, Link, Typography, Stack } from '@mui/material'
 
-export default function FooterAdmin() {
+export default function AdminFooter() {
   return (
     <Box component="footer" py={4} bgcolor="background.default">
       <Container>

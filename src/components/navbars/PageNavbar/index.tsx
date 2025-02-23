@@ -10,6 +10,7 @@ import { PatronWebType } from '@/types/patron'
 import PatronDropdown from '@/components/dropdowns/patronDropdown'
 import IconifyIcon from '@/components/icon'
 import { clientNavigation } from '@/navigation/client.navigation'
+import { Box } from '@mui/material'
 
 export function PageNavbar() {
   // ** States
@@ -37,7 +38,13 @@ export function PageNavbar() {
       <div className="mx-auto container">
         <MTNavbar blurred color="blue" className="z-50 mt-6 relative border-0 pr-3 py-3 pl-6">
           <div className="flex items-center justify-between">
-            <Image src="/images/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80} />
+            <Image
+              src="/images/logos/logo_black.png"
+              alt="BuzStopBoys"
+              className="hidden lg:block"
+              width={80}
+              height={80}
+            />
             <ul className="ml-10 hidden items-center gap-8 lg:flex text-gray-900">
               {clientNavigation.map(({ name, icon, href }) => (
                 <Link
@@ -53,7 +60,9 @@ export function PageNavbar() {
               ))}
             </ul>
             {auth && isLoggedIn ? (
-              <PatronDropdown patronData={auth} />
+              <div className="hidden lg:inline-block">
+                <PatronDropdown patronData={auth} />
+              </div>
             ) : (
               <div className="hidden items-center gap-4 lg:flex">
                 <Link href="/log-in">
@@ -66,18 +75,19 @@ export function PageNavbar() {
                 </Link>
               </div>
             )}
-            <IconButton
-              variant="text"
-              color="gray"
-              onClick={handleOpen}
-              className="ml-auto inline-block lg:hidden"
-            >
-              {open ? (
-                <XMarkIcon strokeWidth={2} className="h-6 w-6" />
-              ) : (
-                <Bars3Icon strokeWidth={2} className="h-6 w-6" />
-              )}
-            </IconButton>
+
+            {/* SHOW IMAGE IN MIDDLE OF NAV ON SMALL SCREENS */}
+            <Box className="flex  justify-between items-center w-full lg:hidden">
+              {auth && isLoggedIn ? <PatronDropdown patronData={auth} /> : null}
+              <Image src="/images/logos/logo_black.png" alt="BuzStopBoys" width={80} height={80} />
+
+              <IconButton variant="text" color={'gray'} onClick={handleOpen}>
+                <IconifyIcon
+                  icon={open ? 'iconamoon:close-bold' : 'flowbite:bars-outline'}
+                  className="h-6 w-6"
+                />
+              </IconButton>
+            </Box>
           </div>
           <Collapse open={open}>
             <div className="container mx-auto mt-4 rounded-lg bg-white px-6 py-5">
