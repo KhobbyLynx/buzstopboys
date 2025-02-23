@@ -1,37 +1,37 @@
-import { NextResponse } from 'next/server';
-import { serialize, parse  } from 'cookie';
+import { NextResponse } from 'next/server'
+import { serialize, parse } from 'cookie'
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { name, value } = body;
+  const body = await request.json()
+  const { name, value } = body
 
-  if (!name || !value) {
-    return NextResponse.json({ message: 'Name and value are required' }, { status: 400 });
+  if (!name) {
+    return NextResponse.json({ message: 'Name and value are required' }, { status: 400 })
   }
 
-  const cookie = serialize(name, value, {
+  const cookie = serialize(name, value || '', {
     httpOnly: true, // Secure the cookie
     secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production
     sameSite: 'strict', // Protect against CSRF
     path: '/', // Cookie accessible throughout the app
     maxAge: 60 * 60 * 24 * 7, // 7 days, duration
-  });
+  })
 
-  const response = NextResponse.json({ message: 'Cookie set!' });
-  response.headers.set('Set-Cookie', cookie);
+  const response = NextResponse.json({ message: 'Cookie set!' })
+  response.headers.set('Set-Cookie', cookie)
 
-  return response;
+  return response
 }
 
 export async function GET(request: Request) {
-    const cookieHeader = request.headers.get('cookie') || '';
-    const cookies = parse(cookieHeader);
-  
-    const userData = cookies.userData ? JSON.parse(cookies.userData) : null;
-    
-    if (!userData) {
-      return NextResponse.json({ message: 'No user data found @ GET COOKIE' }, { status: 404 });
-    }
-  
-    return NextResponse.json(userData);
+  const cookieHeader = request.headers.get('cookie') || ''
+  const cookies = parse(cookieHeader)
+
+  const userData = cookies.userData ? JSON.parse(cookies.userData) : null
+
+  if (!userData) {
+    return NextResponse.json({ message: 'No user data found @ GET COOKIE' }, { status: 404 })
   }
+
+  return NextResponse.json(userData)
+}
