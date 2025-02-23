@@ -22,7 +22,7 @@ const ActivityDetails = () => {
     if (selectedActivity.id !== activityId || !selectedActivity.id) {
       dispatch(singleActivity(activityId))
     }
-  }, [dispatch, activityId])
+  }, [dispatch, activityId, selectedActivity])
 
   if (pending) {
     return (
