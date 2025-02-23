@@ -245,11 +245,13 @@ const SidebarEditActivity = (props: SidebarEditActivityType) => {
       }
 
       dispatch(updateActivity({ modifiedData, removedImages }))
-      handleClose()
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.error('Error updating activity - onSubmit', error)
       }
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 
