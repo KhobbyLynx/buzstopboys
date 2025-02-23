@@ -29,10 +29,17 @@ function Donations() {
     )
   }
 
+  const allSuspended = donationCampaigns.every((campaign) => campaign.status === 'suspended')
+
+  console.log('--------allSuspended----------')
+  console.log('--------allSuspended----------', allSuspended)
+  console.log('--------allSuspended----------')
   return (
     <Box className="px-8 md:px-16 mb-20 lg:mb-30">
-      <DonationCards donationOptions={donationOptions} />
-      <DonationCampaign donationCampaign={donationCampaigns} />
+      {donationOptions.length !== 0 ? <DonationCards donationOptions={donationOptions} /> : null}
+      {donationCampaigns.length !== 0 && !allSuspended ? (
+        <DonationCampaign donationCampaign={donationCampaigns} />
+      ) : null}
     </Box>
   )
 }
