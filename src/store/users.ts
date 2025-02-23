@@ -4,6 +4,7 @@ import axiosRequest from '@/utils/axiosRequest'
 import { Toast } from '@/utils/toast'
 import { splitEmail } from '@/utils/utils'
 import { BProgress } from '@bprogress/core'
+import { capitalize } from '@mui/material'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 
@@ -26,7 +27,6 @@ export const getPatrons = createAsyncThunk<PatronsPayload, void, { rejectValue: 
       const patrons = users.filter((u: PatronMDBType) => u.role === 'patron')
       const usersCount = users.length
 
-      console.log('Users @ getPatrons', users)
       return {
         users,
         admins,
@@ -36,7 +36,9 @@ export const getPatrons = createAsyncThunk<PatronsPayload, void, { rejectValue: 
         patronsCount: patrons.length,
       }
     } catch (error) {
-      console.log('Error Fetching Users', error)
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error Fetching Users', error)
+      }
       return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
     }
   }
@@ -68,7 +70,7 @@ export const deleteUser = createAsyncThunk(
         text: 'User not deleted!',
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error Deleting User', error)
       }
       return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
@@ -82,7 +84,7 @@ export const deleteUser = createAsyncThunk(
 // ** SUSPEND USER
 export const suspendUser = createAsyncThunk(
   'patrons/suspendUser',
-  async (userId: string, { rejectWithValue }) => {
+  async ({ username, userId }: { username: string; userId: string }, { rejectWithValue }) => {
     try {
       // Start Progress bar
       BProgress.start()
@@ -95,7 +97,7 @@ export const suspendUser = createAsyncThunk(
       Toast.fire({
         icon: 'success',
         title: 'Patrons',
-        text: 'User suspended!',
+        text: `${capitalize(username)} suspended!`,
       })
 
       return updatePatronInfo
@@ -104,10 +106,10 @@ export const suspendUser = createAsyncThunk(
       Toast.fire({
         icon: 'error',
         title: 'Patrons',
-        text: 'User not suspended!',
+        text: `${capitalize(username)} not suspended!`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error Suspending User', error)
       }
 
@@ -122,7 +124,7 @@ export const suspendUser = createAsyncThunk(
 // ** REINSTATE USER
 export const reinstateUser = createAsyncThunk(
   'patrons/reinstate',
-  async (userId: string, { rejectWithValue }) => {
+  async ({ username, userId }: { username: string; userId: string }, { rejectWithValue }) => {
     try {
       // Start Progress bar
       BProgress.start()
@@ -135,7 +137,7 @@ export const reinstateUser = createAsyncThunk(
       Toast.fire({
         icon: 'success',
         title: 'Patrons',
-        text: 'User Reinstated!',
+        text: `${capitalize(username)} reinstated!`,
       })
 
       return updatePatronInfo
@@ -144,10 +146,10 @@ export const reinstateUser = createAsyncThunk(
       Toast.fire({
         icon: 'error',
         title: 'Patrons',
-        text: 'User not reinstated!',
+        text: `${capitalize(username)} not reinstated!`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error Reinstating User', error)
       }
       return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
@@ -179,21 +181,14 @@ export const handleAdminRegisterPatron = createAsyncThunk(
 
       // ** Write Data to Mongo DB
       const newPatron = await axiosRequest.post('/patrons', userData)
-      const { role } = newPatron.data
+      const { username } = newPatron.data
 
       // Success Toast
       Toast.fire({
         icon: 'success',
-        title: 'Patron created successfully',
-        text: `Role: ${role}`,
+        title: 'Patron',
+        text: `${capitalize(username)} created successfully!`,
       })
-
-      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-        console.log('--------- new Patron Data ------------')
-        console.log('--------- new Patron Data ------------', newPatron)
-        console.log('--------- new Patron Data ------------', newPatron.data)
-        console.log('--------- new Patron Data ------------')
-      }
 
       return newPatron.data
     } catch (error) {
@@ -248,6 +243,9 @@ export const patronSlice = createSlice({
       })
       .addCase(getPatrons.pending, (state) => {
         state.pending = true
+      })
+      .addCase(getPatrons.rejected, (state) => {
+        state.pending = false
       })
 
       // ** Delete User

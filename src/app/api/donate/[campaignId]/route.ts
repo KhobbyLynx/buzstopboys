@@ -5,10 +5,6 @@ export async function GET(req: NextRequest, context: { params: Promise<{ campaig
   try {
     const { campaignId } = await context.params // Await params
 
-    console.log('========campaign ID============')
-    console.log('Campaign Id', campaignId)
-    console.log('========campaign ID============')
-
     if (!campaignId) {
       return new Response(JSON.stringify({ message: 'Campaign Id is required' }), {
         status: 400,

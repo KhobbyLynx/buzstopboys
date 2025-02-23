@@ -1,66 +1,25 @@
-import {
-  adminCreateFirebaseUser,
-  adminDeleteFirebaseUser,
-  adminReinstateFirebaseUser,
-  adminSuspendFirebaseUser,
-} from '@/configs/adminFirebase'
 import connectMongoDB from '@/libs/mongodb'
 import Patron from '@/models/patron.model'
-import { generateRandomId, generateRandomPassword, splitEmail } from '@/utils/utils'
-import { getAuth } from 'firebase/auth'
+import { generateRandomPassword } from '@/utils/utils'
 import { NextRequest, NextResponse } from 'next/server'
 
-//** GET All or Single PATRON */
-export async function GET(request: NextRequest) {
-  try {
-    // Connect to MongoDB
-    await connectMongoDB()
+import admin from 'firebase-admin'
 
-    // Get the ID from the request query (if provided)
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
-
-    if (id) {
-      // Fetch a single patron by ID
-      const patron = await Patron.findOne({ id })
-
-      if (!patron) {
-        return new Response(JSON.stringify({ message: 'Patron not found' }), {
-          status: 404,
-          headers: {
-            'content-type': 'application/json',
-          },
-        })
-      }
-
-      // Return the single patron
-      return new Response(JSON.stringify(patron), {
-        headers: {
-          'content-type': 'application/json',
-        },
-        status: 200,
-      })
-    }
-
-    // Fetch all patrons if no ID is provided
-    const patrons = await Patron.find()
-
-    // Return all patrons
-    return new Response(JSON.stringify(patrons), {
-      headers: {
-        'content-type': 'application/json',
-      },
-      status: 200,
-    })
-  } catch (error: any) {
-    console.error('Error fetching patrons:', error)
-    return new Response(JSON.stringify({ message: error.message }), {
-      status: 500,
-      headers: {
-        'content-type': 'application/json',
-      },
+const getAdminAuth = async () => {
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      }),
     })
   }
+
+  // Get Firebase Auth instance
+  const auth = admin.auth()
+
+  return auth
 }
 
 //** POST - Create Patron */
@@ -94,10 +53,13 @@ export async function POST(request: NextRequest) {
 
     const password = generateRandomPassword()
 
-    const patronCredentials = await adminCreateFirebaseUser({
+    // Initialize firebase admin sdk
+    const auth = await getAdminAuth()
+
+    const patronCredentials = await auth.createUser({
       email,
-      password,
       emailVerified,
+      password,
     })
 
     const { uid, disabled } = patronCredentials
@@ -134,7 +96,7 @@ export async function POST(request: NextRequest) {
       status: 201,
     })
   } catch (error: any) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('Error creating user', error)
     }
 
@@ -144,12 +106,59 @@ export async function POST(request: NextRequest) {
   }
 }
 
-//** DELETE  */
-export async function DELETE(request: NextRequest) {
+//** PATCH  */
+export async function PATCH(request: NextRequest) {
   try {
+    // Get the ID from the request query (if provided)
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+
+    // Check if the patron ID is provided
+    if (!id) {
+      return NextResponse.json({ message: 'Patron ID is required' }, { status: 400 })
+    }
+
+    // Validate the request body
+    const { suspended } = await request.json()
+
+    // Initialize firebase admin sdk
+    const auth = await getAdminAuth()
+
+    if (suspended) {
+      await auth.updateUser(id, { disabled: true })
+    } else {
+      await auth.updateUser(id, { disabled: false })
+    }
+
     // Connect to MongoDB
     await connectMongoDB()
 
+    // Update the patron
+    const patron = await Patron.findOneAndUpdate(
+      { id },
+      { $set: { suspended } },
+      { new: true } // return the updated document
+    )
+    console.log(patron)
+
+    // Return a success response
+    return NextResponse.json(patron, {
+      headers: {
+        'content-type': 'application/json',
+      },
+      status: 200,
+    })
+  } catch (error: any) {
+    console.error('Error updating patron:', error)
+    return new Response(JSON.stringify({ message: error.message }), {
+      status: 500,
+    })
+  }
+}
+
+//** DELETE  */
+export async function DELETE(request: NextRequest) {
+  try {
     const id = request.nextUrl.searchParams.get('id')
 
     // Check if the patron ID is provided
@@ -157,8 +166,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ message: 'Patron ID is required' }, { status: 400 })
     }
 
+    // Initialize firebase admin sdk
+    const auth = await getAdminAuth()
+
     // Delete the patron from Firebase
-    await adminDeleteFirebaseUser(id)
+    await auth.deleteUser(id)
+
+    // Connect to MongoDB
+    await connectMongoDB()
 
     // Delete the patron from MongoDB
     const deletedPatron = await Patron.findOneAndDelete({ id })
@@ -216,49 +231,55 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-//** PATCH  */
-export async function PATCH(request: NextRequest) {
+//** GET All or Single PATRON */
+export async function GET(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await connectMongoDB()
+
     // Get the ID from the request query (if provided)
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
-    // Check if the patron ID is provided
-    if (!id) {
-      return NextResponse.json({ message: 'Patron ID is required' }, { status: 400 })
+    if (id) {
+      // Fetch a single patron by ID
+      const patron = await Patron.findOne({ id })
+
+      if (!patron) {
+        return new Response(JSON.stringify({ message: 'Patron not found' }), {
+          status: 404,
+          headers: {
+            'content-type': 'application/json',
+          },
+        })
+      }
+
+      // Return the single patron
+      return new Response(JSON.stringify(patron), {
+        headers: {
+          'content-type': 'application/json',
+        },
+        status: 200,
+      })
     }
 
-    // Validate the request body
-    const { suspended } = await request.json()
+    // Fetch all patrons if no ID is provided
+    const patrons = await Patron.find()
 
-    // Connect to MongoDB
-    await connectMongoDB()
-
-    if (suspended) {
-      await adminSuspendFirebaseUser(id)
-    } else {
-      await adminReinstateFirebaseUser(id)
-    }
-
-    // Update the patron
-    const patron = await Patron.findOneAndUpdate(
-      { id },
-      { $set: { suspended } },
-      { new: true } // return the updated document
-    )
-    console.log(patron)
-
-    // Return a success response
-    return NextResponse.json(patron, {
+    // Return all patrons
+    return new Response(JSON.stringify(patrons), {
       headers: {
         'content-type': 'application/json',
       },
       status: 200,
     })
   } catch (error: any) {
-    console.error('Error updating patron:', error)
+    console.error('Error fetching patrons:', error)
     return new Response(JSON.stringify({ message: error.message }), {
       status: 500,
+      headers: {
+        'content-type': 'application/json',
+      },
     })
   }
 }

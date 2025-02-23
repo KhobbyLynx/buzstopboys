@@ -24,7 +24,7 @@ export const getDonationsCampaigns = createAsyncThunk(
 
       return donations
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching donations campaigns', error)
       }
       return rejectWithValue(
@@ -90,7 +90,7 @@ export const addDonationCampaign = createAsyncThunk(
         }`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new donation campaign', error)
       }
       return rejectWithValue(
@@ -133,7 +133,7 @@ export const updateDonationCampaign = createAsyncThunk(
         text: `${error instanceof Error ? error.message : 'An error occurred updating campaign'}`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error updating donation campaign', error)
       }
 
@@ -152,7 +152,7 @@ export const getDonationOptions = createAsyncThunk(
 
       return donationOptions
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching donation options', error)
       }
       return rejectWithValue(
@@ -193,7 +193,7 @@ export const deleteDonationCampaign = createAsyncThunk(
         title: 'Donation Campaign',
         text: `${error instanceof Error ? error.message : 'An error occurred deleting campaign'}`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error deleting donation campaign', error)
       }
 
@@ -215,7 +215,7 @@ export const singleCampaign = createAsyncThunk(
 
       return campaignData
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching single activity', error)
       }
       return rejectWithValue(
@@ -255,7 +255,7 @@ export const addDonationOption = createAsyncThunk(
         title: 'Donation Options',
         text: `${error instanceof Error ? error.message : 'An error occurred creating new option'}`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new donation option', error)
       }
 
@@ -298,7 +298,7 @@ export const updateDonationOption = createAsyncThunk(
           error instanceof Error ? error.message : 'An error occurred updating donation option'
         }`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error updating donation option', error)
       }
 
@@ -339,7 +339,7 @@ export const deleteDonationOption = createAsyncThunk(
         }`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error deleting donation option', error)
       }
 
@@ -375,6 +375,9 @@ export const donationSlice = createSlice({
           ...state,
           pending: true,
         }
+      })
+      .addCase(getDonationsCampaigns.rejected, (state) => {
+        state.pending = false
       })
 
       // ** ADD NEW DONATION CAMPAIGN
@@ -438,6 +441,9 @@ export const donationSlice = createSlice({
           donationOptions: action.payload,
           pending: false,
         }
+      })
+      .addCase(getDonationOptions.rejected, (state) => {
+        state.pending = false
       })
 
       // ** ADD NEW DONATION OPTION

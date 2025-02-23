@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** Icon Imports
 import IconifyIcon from '@/components/icon'

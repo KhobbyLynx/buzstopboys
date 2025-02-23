@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
   const cookie = serialize(name, value || '', {
     httpOnly: true, // Secure the cookie
-    secure: process.env.NODE_ENV === 'production', // Send only over HTTPS in production
+    secure: process.env.NEXT_PUBLIC_NODE_ENV === 'production', // Send only over HTTPS in production
     sameSite: 'strict', // Protect against CSRF
     path: '/', // Cookie accessible throughout the app
     maxAge: 60 * 60 * 24 * 7, // 7 days, duration

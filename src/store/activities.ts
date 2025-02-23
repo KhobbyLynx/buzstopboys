@@ -16,7 +16,7 @@ export const getActivities = createAsyncThunk(
 
       return activities
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching activities', error)
       }
       return rejectWithValue(
@@ -58,7 +58,7 @@ export const addActivity = createAsyncThunk(
         text: `${error instanceof Error ? error.message : 'Error creating Activity'}`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new activity', error)
       }
       return rejectWithValue(
@@ -100,7 +100,7 @@ export const updateActivity = createAsyncThunk(
         title: 'Activity',
         text: `${error instanceof Error ? error.message : 'Error updating activity'}`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error updating activity', error)
       }
       return rejectWithValue(
@@ -142,7 +142,7 @@ export const deleteActivity = createAsyncThunk(
         title: 'Activity',
         text: `${error instanceof Error ? error.message : 'An error occurred deleting activity'}`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error deleting activity', error)
       }
       return rejectWithValue(
@@ -162,7 +162,7 @@ export const singleActivity = createAsyncThunk(
 
       return activityData
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching single activity', error)
       }
       return rejectWithValue(
@@ -189,6 +189,9 @@ export const activitiesSlice = createSlice({
       })
       .addCase(getActivities.pending, (state) => {
         state.pending = true
+      })
+      .addCase(getActivities.rejected, (state) => {
+        state.pending = false
       })
 
       // ** Add Activity

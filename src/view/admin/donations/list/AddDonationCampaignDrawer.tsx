@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { FormHelperText } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -127,7 +127,7 @@ const SidebarAddDonationCampaign = (props: SidebarAddCampaignType) => {
       try {
         await Promise.all(acceptedFiles.map((file) => readAndValidateImage(file)))
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
           console.error('Error uploading image - OnDrop', error)
         }
       }
@@ -135,7 +135,7 @@ const SidebarAddDonationCampaign = (props: SidebarAddCampaignType) => {
     onDropRejected: (fileRejections) => {
       fileRejections.forEach((rejection) => {
         rejection.errors.forEach((error) => {
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
             console.error('Error uploading image - onDropRejected', error)
           }
 
@@ -241,7 +241,7 @@ const SidebarAddDonationCampaign = (props: SidebarAddCampaignType) => {
       // dispatch with required data
       dispatch(addDonationCampaign(requiredData))
     } catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new campaign', error)
       }
     } finally {

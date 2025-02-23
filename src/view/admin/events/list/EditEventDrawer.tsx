@@ -15,7 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -131,7 +131,7 @@ const SidebarEditEvent = (props: SidebarEditEventType) => {
       try {
         await readAndValidateImage(acceptedFiles[0])
       } catch (error: any) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
           console.log('Error uploading image - OnDrop', error)
         }
       }
@@ -139,7 +139,7 @@ const SidebarEditEvent = (props: SidebarEditEventType) => {
     onDropRejected: (fileRejections) => {
       fileRejections.forEach((rejection) => {
         rejection.errors.forEach((error) => {
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
             console.log('Error uploading image - onDropRejected', error)
           }
 
@@ -245,7 +245,7 @@ const SidebarEditEvent = (props: SidebarEditEventType) => {
 
       dispatch(updateEvent({ modifiedData, removedImage }))
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error updating event', error)
       }
 

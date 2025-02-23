@@ -14,7 +14,7 @@ import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** IconifyIcon Imports
 import IconifyIcon from '@/components/icon'
@@ -45,7 +45,7 @@ const AuthIllustrationV1Wrapper = styled(Box)({
     position: 'absolute',
     backgroundColor: '#C7D2FE',
     borderRadius: '50%',
-  }
+  },
 })
 
 // ** Styled Components
@@ -54,7 +54,7 @@ const Card = styled(MuiCard)<CardProps>(() => ({
   margin: '0 auto',
   boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
   borderRadius: '8px',
-  overflow: 'hidden'
+  overflow: 'hidden',
 }))
 
 const LinkStyled = styled(Link)(() => ({
@@ -63,45 +63,71 @@ const LinkStyled = styled(Link)(() => ({
   textDecoration: 'none',
   justifyContent: 'center',
   color: '#1976d2',
-  fontSize: '16px'
+  fontSize: '16px',
 }))
 
 const ForgotPassword = () => {
   return (
-    <Box className='content-center' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#f4f5fa' }}>
+    <Box
+      className="content-center"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        backgroundColor: '#f4f5fa',
+      }}
+    >
       <AuthIllustrationV1Wrapper>
         <Card>
           <CardContent sx={{ padding: '40px' }}>
             <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
-           <Link href={'/'}>
-              <Typography variant='h3' sx={{ fontWeight: '700', marginTop: '16px' }}>
-                BuzStopBoys
-              </Typography>
-           </Link>
+              <Link href={'/'}>
+                <Typography variant="h3" sx={{ fontWeight: '700', marginTop: '16px' }}>
+                  BuzStopBoys
+                </Typography>
+              </Link>
             </Box>
             <Box sx={{ marginBottom: '24px' }}>
-              <Typography variant='h4' sx={{ marginBottom: '16px', fontWeight: '600' }}>
+              <Typography variant="h4" sx={{ marginBottom: '16px', fontWeight: '600' }}>
                 Forgot Password? 🔒
               </Typography>
               <Typography sx={{ color: '#6c757d', fontSize: '14px' }}>
                 Enter your email and we’ll send you instructions to reset your password
               </Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
+            <form noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()}>
               <CustomTextField
                 autoFocus
                 fullWidth
-                type='email'
-                label='Email'
+                type="email"
+                label="Email"
                 sx={{ marginBottom: '24px' }}
-                placeholder='khobbylynx55@gmail.com'
+                placeholder="khobbylynx55@gmail.com"
               />
-              <Button fullWidth type='submit' variant='contained' sx={{ marginBottom: '24px', padding: '12px', fontSize: '16px', backgroundColor: '#1976d2' }}>
+              <Button
+                fullWidth
+                type="submit"
+                variant="contained"
+                sx={{
+                  marginBottom: '24px',
+                  padding: '12px',
+                  fontSize: '16px',
+                  backgroundColor: '#1976d2',
+                }}
+              >
                 Send reset link
               </Button>
-              <Typography sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
-                <LinkStyled href='/log-in'>
-                  <IconifyIcon fontSize='1.25rem' icon='tabler:chevron-left' />
+              <Typography
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                }}
+              >
+                <LinkStyled href="/log-in">
+                  <IconifyIcon fontSize="1.25rem" icon="tabler:chevron-left" />
                   <span>Back to login</span>
                 </LinkStyled>
               </Typography>

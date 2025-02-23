@@ -25,7 +25,7 @@ import Icon from '@/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
+import CustomChip from '@/components/modals/mui/chip'
 
 // ** Utils Import
 import { formatDate } from '@/utils/utils'

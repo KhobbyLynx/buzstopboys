@@ -24,7 +24,7 @@ import Icon from '@/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
+import CustomChip from '@/components/modals/mui/chip'
 
 // ** Utils Import
 import { getInitials } from '@/utils/utils'
@@ -108,9 +108,11 @@ const renderClient = (row: PatronMDBType) => {
 const RowOptions = ({
   patronID,
   suspended,
+  username,
 }: {
   patronID: string
   suspended: boolean | undefined
+  username: string
 }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -142,7 +144,7 @@ const RowOptions = ({
     }).then(async function (result) {
       if (result.value) {
         // Run Suspend action
-        dispatch(suspendUser(patronID))
+        dispatch(suspendUser({ userId: patronID, username }))
 
         MySwal.fire({
           icon: 'warning',
@@ -182,7 +184,7 @@ const RowOptions = ({
     }).then(async function (result) {
       if (result.value) {
         // Run Suspend action
-        dispatch(reinstateUser(patronID))
+        dispatch(reinstateUser({ userId: patronID, username }))
 
         MySwal.fire({
           icon: 'warning',
@@ -443,7 +445,7 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return <RowOptions patronID={row.id} suspended={row.suspended} />
+      return <RowOptions patronID={row.id} suspended={row.suspended} username={row.username} />
     },
   },
 ]

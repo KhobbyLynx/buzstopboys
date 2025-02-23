@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
     const { title, desc, videoUrls, icon, imgs, details } = data
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('Create Activity data', data)
     }
     // Check if the required fields are provided

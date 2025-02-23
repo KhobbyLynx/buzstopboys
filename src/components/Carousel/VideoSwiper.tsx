@@ -1,7 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 import { Navigation, Autoplay } from 'swiper/modules'
-import { Grid, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 export default function VideoSwiper() {
   const videoData = [

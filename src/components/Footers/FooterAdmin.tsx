@@ -1,56 +1,45 @@
-import React from "react";
+import React from 'react'
+import { Box, Container, Divider, Link, Typography, Stack } from '@mui/material'
 
 export default function FooterAdmin() {
   return (
-    <>
-      <footer className="block py-4">
-        <div className="container mx-auto px-4">
-          <hr className="mb-4 border-b-1 border-blueGray-200" />
-          <div className="flex flex-wrap items-center md:justify-between justify-center">
-            <div className="w-full md:w-4/12 px-4">
-              <div className="text-sm text-blueGray-500 font-semibold py-1 text-center md:text-left">
-                Copyright © {new Date().getFullYear()}{" "}
-                <a
-                  href="https:/samueltetteh.netlify.app"
-                  className="text-blueGray-500 hover:text-blueGray-700 text-sm font-semibold py-1"
-                >
-                  Lynx
-                </a>
-              </div>
-            </div>
-            <div className="w-full md:w-8/12 px-4">
-              <ul className="flex flex-wrap list-none md:justify-end  justify-center">
-                <li>
-                  <a
-                    href="https:/samueltetteh.netlify.app/#about"
-                    target="_blank"
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
-                    >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
-                    target="_blank"
-                    href="https://samueltetteh.netlify.app/#contact"
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
-                  >
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href=""
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
-                  >
-                    MIT License
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </>
-  );
+    <Box component="footer" py={4} bgcolor="background.default">
+      <Container>
+        <Divider sx={{ mb: 2 }} />
+
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="body2" color="text.secondary">
+            © {new Date().getFullYear()}{' '}
+            <Link href="https://samueltetteh.netlify.app" underline="hover">
+              Lynx
+            </Link>
+          </Typography>
+
+          <Stack direction="row" spacing={3}>
+            <Link
+              href="https://samueltetteh.netlify.app/#about"
+              underline="hover"
+              color="text.secondary"
+            >
+              About Us
+            </Link>
+            <Link
+              href="https://samueltetteh.netlify.app/#contact"
+              underline="hover"
+              color="text.secondary"
+            >
+              Contact
+            </Link>
+            <Link href="#" underline="hover" color="text.secondary">
+              MIT License
+            </Link>
+          </Stack>
+        </Stack>
+      </Container>
+    </Box>
+  )
 }

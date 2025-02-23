@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** IconifyIcon Imports
 import IconifyIcon from '@/components/icon'
@@ -34,7 +34,6 @@ import { handleRegisterPatron } from '@/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'
-import { Toast } from '@/utils/toast'
 import { CircularProgress } from '@mui/material'
 import FallbackSpinner from '@/components/spinner'
 
@@ -118,16 +117,9 @@ const Register = () => {
     try {
       const resultAction = await dispatch(handleRegisterPatron(data))
 
-      // Check if action was fulfilled or rejected
+      // Check if action was fulfilled
       if (handleRegisterPatron.fulfilled.match(resultAction)) {
         router.push('/')
-
-        //  // Success Toast
-        //     Toast.fire({
-        //       icon: "success",
-        //       title: "Signed up successfully",
-        //       text: `Welcome ${resultAction.payload.username}!`
-        //     });
       } else {
         // Handle the case where the action was rejected
         if (
@@ -166,13 +158,7 @@ const Register = () => {
   }
 
   if (pending) {
-    return (
-      // <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-      //   <CircularProgress sx={{ mb: 4 }} />
-      //   <Typography>Loading...</Typography>
-      // </Box>
-      <FallbackSpinner />
-    )
+    return <FallbackSpinner />
   }
 
   return (

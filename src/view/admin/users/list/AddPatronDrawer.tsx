@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -126,7 +126,7 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
 
         dispatch(handleAdminRegisterPatron(requiredUserData)) // Register user
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
           console.log('Error Adding Patron', error)
         }
       } finally {

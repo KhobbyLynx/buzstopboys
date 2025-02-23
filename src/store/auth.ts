@@ -1,4 +1,3 @@
-'use client'
 // ** Redux Imports
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
@@ -107,7 +106,7 @@ export const handleLoginPatron = createAsyncThunk(
         text: `${error instanceof Error ? error.message : 'An unknown error occurred'}`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         if (error instanceof Error) {
           console.log('Error Signing in account', error.message)
         } else {
@@ -135,6 +134,8 @@ export const handleLogout = createAsyncThunk<
       onlineStatus: false,
     })
 
+    await logoutFirebase()
+
     // Delete User Data Cookie
     deleteCookie('userData')
 
@@ -156,7 +157,7 @@ export const handleLogout = createAsyncThunk<
       text: 'Logout unsuccessful!',
     })
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.error('Error logging out @ Handle Logout', error)
     }
 
@@ -180,7 +181,7 @@ export const handleAutoLogin = createAsyncThunk(
         throw new Error('No userData found in cookies')
       }
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('User Data found in cookies:', userData)
       }
 
@@ -201,7 +202,7 @@ export const handleAutoLogin = createAsyncThunk(
         title: 'Auto Authentication',
         text: `${error instanceof Error ? error.message : 'An error occurred - Auto Auth'}`,
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching patron data - handleAutoLogin', error)
       }
 

@@ -29,11 +29,9 @@ function Donations() {
     )
   }
 
+  // Check if all campaign are suspended if true dont display
   const allSuspended = donationCampaigns.every((campaign) => campaign.status === 'suspended')
 
-  console.log('--------allSuspended----------')
-  console.log('--------allSuspended----------', allSuspended)
-  console.log('--------allSuspended----------')
   return (
     <Box className="px-8 md:px-16 mb-20 lg:mb-30">
       {donationOptions.length !== 0 ? <DonationCards donationOptions={donationOptions} /> : null}

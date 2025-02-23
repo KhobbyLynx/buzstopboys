@@ -1,24 +1,24 @@
 import { PatronWebType } from '@/types/patron'
 import axios from 'axios'
 
-const BASE_URL = 'http://localhost:3000/api/set-cookie'
+const NEXT_PUBLIC_BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/set-cookie`
 
 export const setCookie = async (name: string, value: PatronWebType) => {
   try {
-    const response = await axios.post(BASE_URL, {
+    const response = await axios.post(NEXT_PUBLIC_BASE_URL, {
       name,
       value: typeof value === 'object' ? JSON.stringify(value) : value,
     })
 
     const result = response.data
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('UerData cookie set:', result)
     }
 
     return result
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('Error setting user data cookie:', error)
     }
 
@@ -28,7 +28,7 @@ export const setCookie = async (name: string, value: PatronWebType) => {
 
 export const deleteCookie = async (name: String) => {
   try {
-    await axios.post(BASE_URL, {
+    await axios.post(NEXT_PUBLIC_BASE_URL, {
       name,
       value: '',
       options: {
@@ -36,11 +36,11 @@ export const deleteCookie = async (name: String) => {
       },
     })
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('User Data Cookie deleted!')
     }
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.error('Error deleting cookie:', error)
     }
 

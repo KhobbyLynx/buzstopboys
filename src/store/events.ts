@@ -12,7 +12,7 @@ export const getEvents = createAsyncThunk('events/getEvents', async (_, { reject
 
     return events
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.log('Error fetching events', error)
     }
     return rejectWithValue(
@@ -55,7 +55,7 @@ export const addEvent = createAsyncThunk(
         text: `${error instanceof Error ? error.message : 'Error creating Event'}`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new event', error)
       }
       return rejectWithValue(
@@ -102,7 +102,7 @@ export const updateEvent = createAsyncThunk(
         text: `${error instanceof Error ? error.message : 'Error updating Event'}`,
       })
 
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error updating event', error)
       }
       return rejectWithValue(
@@ -138,7 +138,7 @@ export const deleteEvent = createAsyncThunk(
         title: 'Event',
         text: 'Error Deleting Event!',
       })
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error deleting event', error)
       }
       return rejectWithValue(
@@ -158,7 +158,7 @@ export const singleEvent = createAsyncThunk(
 
       return eventData
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error fetching single event', error)
       }
       return rejectWithValue(
@@ -178,6 +178,7 @@ export const eventSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // **FETCH EVENTS
       .addCase(getEvents.fulfilled, (state, action) => {
         state.events = action.payload
         state.pending = false
@@ -185,10 +186,17 @@ export const eventSlice = createSlice({
       .addCase(getEvents.pending, (state) => {
         state.pending = true
       })
+      .addCase(getEvents.rejected, (state) => {
+        state.pending = false
+      })
+
+      // ** ADD EVENT
       .addCase(addEvent.fulfilled, (state, action: { payload: EventProps }) => {
         state.events.push(action.payload)
         state.pending = false
       })
+
+      // ** UPDATE EVENT
       .addCase(updateEvent.fulfilled, (state, action) => {
         const { id } = action.payload
         state.events = state.events.map((event) =>
@@ -196,16 +204,23 @@ export const eventSlice = createSlice({
         )
         state.pending = false
       })
+
+      // ** DELETE EVENT
       .addCase(deleteEvent.fulfilled, (state, action) => {
         state.events = state.events.filter((event) => event.id !== action.payload)
         state.pending = false
       })
+
+      // ** FETCH SINGLE EVENT
       .addCase(singleEvent.fulfilled, (state, action) => {
         state.selectedEvent = action.payload
         state.pending = false
       })
       .addCase(singleEvent.pending, (state) => {
         state.pending = true
+      })
+      .addCase(singleEvent.rejected, (state) => {
+        state.pending = false
       })
   },
 })

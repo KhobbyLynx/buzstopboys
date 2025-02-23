@@ -26,7 +26,7 @@ import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/mui/chip'
+import CustomChip from '@/components/modals/mui/chip'
 
 // ** Utils Import
 import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
@@ -45,7 +45,6 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Custom Table Components Imports
-// import CardLineChart from '@/components/cards/CardLineChart'
 import CardOptionsList from '@/components/cards/CardOptionsList'
 import TableHeader from '@/view/admin/donations/list/TableHeader'
 

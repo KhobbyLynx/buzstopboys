@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/mui/text-field'
+import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -104,7 +104,7 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
       try {
         await Promise.all(acceptedFiles.map((file) => readAndValidateImage(file)))
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
           console.error('Error uploading image - OnDrop', error)
         }
       }
@@ -112,7 +112,7 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
     onDropRejected: (fileRejections) => {
       fileRejections.forEach((rejection) => {
         rejection.errors.forEach((error) => {
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
             console.error('Error uploading image - onDropRejected', error)
           }
 
@@ -241,7 +241,7 @@ const SidebarAddActivity = (props: SidebarEditActivityType) => {
       // dispatch with required data
       dispatch(addActivity(requiredData))
     } catch (error: any) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log('Error creating new activity - onSubmit', error)
       }
     } finally {

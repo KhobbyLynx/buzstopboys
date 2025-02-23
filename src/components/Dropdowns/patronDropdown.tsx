@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import { handleLogout } from '@/store/auth'
-import { getAuthenticatedUserData, logoutFirebase } from '@/utils/utils'
+import { logoutFirebase } from '@/utils/utils'
 
 // ** MUI Imports
 import { Box, Menu, Badge, Avatar, Divider, MenuItem, Typography, styled } from '@mui/material'
@@ -45,12 +45,13 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
     try {
       if (id) {
         await dispatch(handleLogout(id))
-        await logoutFirebase()
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.error('Error during signout:', error)
       }
+
+      throw new Error(error instanceof Error ? error.message : 'An error occurred sigining out')
     }
 
     handleDropdownClose()
