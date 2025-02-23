@@ -1,12 +1,7 @@
-import HeaderStats from '@/components/headers/HeaderStats'
 import React from 'react'
 
 const DashReviews = () => {
-  return (
-    <div>
-      <HeaderStats />
-    </div>
-  )
+  return <div>Reviewa</div>
 }
 
 export default DashReviews

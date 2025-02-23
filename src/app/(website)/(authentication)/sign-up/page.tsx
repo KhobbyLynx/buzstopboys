@@ -32,7 +32,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Hooks
 import { handleRegisterPatron } from '@/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch } from '@/store'
+import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'
 import { Toast } from '@/utils/toast'
 import { CircularProgress } from '@mui/material'

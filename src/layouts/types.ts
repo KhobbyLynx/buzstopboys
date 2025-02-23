@@ -2,7 +2,6 @@
 import { ReactNode } from 'react'
 import { AppBarProps } from '@mui/material/AppBar'
 import { Theme, SxProps, PaletteMode } from '@mui/material'
-import { Settings } from 'src/@core/context/settingsContext'
 import { SwipeableDrawerProps } from '@mui/material/SwipeableDrawer'
 
 export type Layout = 'vertical' | 'horizontal' | 'blank' | 'blankWithAppBar'
@@ -103,12 +102,10 @@ export type HorizontalLayoutProps = {
 
 export type LayoutProps = {
   hidden: boolean
-  settings: Settings
   children: ReactNode
   footerProps?: FooterProps
   contentHeightFixed?: boolean
   scrollToTop?: (props?: any) => ReactNode
-  saveSettings: (values: Settings) => void
   verticalLayoutProps: VerticalLayoutProps
   horizontalLayoutProps?: HorizontalLayoutProps
 }

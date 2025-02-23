@@ -26,7 +26,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Hooks
 import { handleLoginPatron } from '@/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch } from '@/store'
+import { AppDispatch, RootState } from '@/store'
 
 // ** Custom Component Import
 import CustomTextField from '@/components/mui/text-field'
@@ -193,13 +193,7 @@ const Login = () => {
   }
 
   if (pending) {
-    return (
-      // <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-      //   <CircularProgress sx={{ mb: 4 }} />
-      //   <Typography>Loading...</Typography>
-      // </Box>
-      <FallbackSpinner />
-    )
+    return <FallbackSpinner />
   }
 
   return (

@@ -36,7 +36,7 @@ const EventDetails = () => {
     if (selectedEvent.id !== eventId || !selectedEvent.id) {
       dispatch(singleEvent(eventId))
     }
-  }, [dispatch])
+  }, [dispatch, eventId, selectedEvent.id])
 
   if (pending) {
     return (

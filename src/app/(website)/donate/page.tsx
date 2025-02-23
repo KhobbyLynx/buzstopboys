@@ -18,7 +18,7 @@ function Donations() {
 
     // Fetch Donation Options
     if (donationOptions.length === 0) dispatch(getDonationOptions())
-  }, [dispatch])
+  }, [dispatch, donationCampaigns.length, donationOptions.length])
 
   if (pending) {
     return (

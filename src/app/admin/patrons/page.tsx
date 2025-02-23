@@ -16,7 +16,6 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import MuiAvatar from '@mui/material/Avatar'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
@@ -48,7 +47,7 @@ import { RootState, AppDispatch } from '@/store'
 // ** Custom Table Components Imports
 import TableHeader from '@/view/admin/users/list/TableHeader'
 import SidebarAddPatron from '@/view/admin/users/list/AddPatronDrawer'
-import { CircularProgress } from '@mui/material'
+import { Avatar, CircularProgress } from '@mui/material'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -88,10 +87,10 @@ const verificationStatusObj: verificationStatusType = {
 // ** renders client column
 const renderClient = (row: PatronMDBType) => {
   if (row.avatar) {
-    return <MuiAvatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
+    return <Avatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
     return (
-      <MuiAvatar
+      <Avatar
         sx={{
           mr: 2.5,
           width: 38,
@@ -101,7 +100,7 @@ const renderClient = (row: PatronMDBType) => {
         }}
       >
         {getInitials(row.username ? row.username : 'X X')}
-      </MuiAvatar>
+      </Avatar>
     )
   }
 }
@@ -339,7 +338,7 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <MuiAvatar
+          <Avatar
             sx={{
               mr: 4,
               width: 30,
@@ -348,7 +347,7 @@ const columns: GridColDef[] = [
             }}
           >
             <Icon icon={userRoleObj[row.role].icon} />
-          </MuiAvatar>
+          </Avatar>
           <Typography noWrap sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
             {row.role}
           </Typography>
@@ -460,7 +459,7 @@ const UserList = () => {
   const { pending, numberOfUsers, users } = store
 
   useEffect(() => {
-    if (users.length === 0) {
+    if (numberOfUsers === 0) {
       dispatch(getPatrons())
     }
   }, [dispatch, numberOfUsers])

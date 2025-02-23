@@ -311,7 +311,7 @@ const DashEvents = () => {
     if (events.length === 0) {
       dispatch(getEvents())
     }
-  }, [dispatch])
+  }, [dispatch, events.length])
 
   const toggleAddEventDrawer = () => setAddNewEventOpen(!addNewEventOpen)
 

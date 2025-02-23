@@ -19,7 +19,7 @@ function Activities() {
   // ** useEffect
   useEffect(() => {
     if (activities.length === 0) dispatch(getActivities())
-  }, [dispatch])
+  }, [dispatch, activities.length])
 
   if (pending) {
     return (

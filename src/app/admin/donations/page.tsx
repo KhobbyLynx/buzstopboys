@@ -45,7 +45,7 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Custom Table Components Imports
-import CardLineChart from '@/components/cards/CardLineChart'
+// import CardLineChart from '@/components/cards/CardLineChart'
 import CardOptionsList from '@/components/cards/CardOptionsList'
 import TableHeader from '@/view/admin/donations/list/TableHeader'
 
@@ -392,9 +392,9 @@ const DashDonations = () => {
   return (
     <>
       <Grid container spacing={6} sx={{ mt: 1 }}>
-        <Grid item md={6} xs={12} lg={6}>
+        {/* <Grid item md={6} xs={12} lg={6}>
           <CardLineChart />
-        </Grid>
+        </Grid> */}
         <Grid item md={6} xs={12} lg={6}>
           <CardOptionsList data={donationOptions} />
         </Grid>
