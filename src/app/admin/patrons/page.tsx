@@ -39,7 +39,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 const MySwal = withReactContent(Swal)
 
-// ** Types 
+// ** Types
 import { PatronMDBType } from '@/types/patron'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'default'
 
@@ -48,6 +48,7 @@ import { RootState, AppDispatch } from '@/store'
 // ** Custom Table Components Imports
 import TableHeader from '@/view/admin/users/list/TableHeader'
 import SidebarAddPatron from '@/view/admin/users/list/AddPatronDrawer'
+import { CircularProgress } from '@mui/material'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -71,17 +72,17 @@ const userRoleObj: UserRoleType = {
   author: { icon: 'ic:outline-book', color: 'success' },
   editor: { icon: 'tabler:edit', color: 'secondary' },
   agent: { icon: 'mdi:face-agent', color: 'primary' },
-  patron: { icon: 'tabler:user', color: 'warning' }
+  patron: { icon: 'tabler:user', color: 'warning' },
 }
 
 const userStatusObj: UserStatusType = {
   Online: 'info',
-  Offline: 'default'
+  Offline: 'default',
 }
 
 const verificationStatusObj: verificationStatusType = {
   Verified: 'success',
-  Unverified: 'warning'
+  Unverified: 'warning',
 }
 
 // ** renders client column
@@ -91,7 +92,13 @@ const renderClient = (row: PatronMDBType) => {
   } else {
     return (
       <MuiAvatar
-        sx={{ mr: 2.5, width: 38, height: 38, fontWeight: 500, fontSize: theme => theme.typography.body1.fontSize }}
+        sx={{
+          mr: 2.5,
+          width: 38,
+          height: 38,
+          fontWeight: 500,
+          fontSize: (theme) => theme.typography.body1.fontSize,
+        }}
       >
         {getInitials(row.username ? row.username : 'X X')}
       </MuiAvatar>
@@ -99,7 +106,13 @@ const renderClient = (row: PatronMDBType) => {
   }
 }
 
-const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: boolean | undefined }) => {
+const RowOptions = ({
+  patronID,
+  suspended,
+}: {
+  patronID: string
+  suspended: boolean | undefined
+}) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
 
@@ -131,17 +144,15 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
       if (result.value) {
         // Run Suspend action
         dispatch(suspendUser(patronID))
-        
-        dispatch(getPatrons()) // Fetch users to get update
 
         MySwal.fire({
-          icon: 'success',
+          icon: 'warning',
           title: 'Suspend!',
-          text: 'Account has been Suspended.',
+          text: 'Suspending Account...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -150,10 +161,10 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
-  
+    })
+
     handleRowOptionsClose()
   }
 
@@ -173,17 +184,15 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
       if (result.value) {
         // Run Suspend action
         dispatch(reinstateUser(patronID))
-        
-        dispatch(getPatrons()) // Fetch users to get update
 
         MySwal.fire({
-          icon: 'success',
+          icon: 'warning',
           title: 'Reinstate!',
-          text: 'Account has been Reinstated.',
+          text: 'Reinstating Account...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -192,10 +201,10 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
-  
+    })
+
     handleRowOptionsClose()
   }
 
@@ -216,16 +225,14 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
         // Run delete action
         dispatch(deleteUser(patronID))
 
-        dispatch(getPatrons()) // Fetch users after deleting user
-        
         MySwal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Account has been deactivated.',
+          icon: 'warning',
+          title: 'Delete!',
+          text: 'Deactivating Account...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       } else if (result.dismiss === MySwal.DismissReason.cancel) {
         MySwal.fire({
           title: 'Cancelled',
@@ -234,18 +241,17 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
-        });
+        })
       }
-    });
-  
-    handleRowOptionsClose();
-  };
-  
+    })
+
+    handleRowOptionsClose()
+  }
 
   return (
     <>
-      <IconButton size='small' onClick={handleRowOptionsClick}>
-        <Icon icon='tabler:dots-vertical' />
+      <IconButton size="small" onClick={handleRowOptionsClick}>
+        <Icon icon="tabler:dots-vertical" />
       </IconButton>
       <Menu
         keepMounted
@@ -254,11 +260,11 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
         onClose={handleRowOptionsClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right'
+          horizontal: 'right',
         }}
         PaperProps={{ style: { minWidth: '8rem' } }}
       >
@@ -268,21 +274,22 @@ const RowOptions = ({ patronID, suspended }: { patronID: string, suspended: bool
           href={`/admin/patrons/${patronID}`}
           onClick={handleRowOptionsClose}
         >
-          <Icon icon='tabler:eye' fontSize={20} />
+          <Icon icon="tabler:eye" fontSize={20} />
           View
         </MenuItem>
-       {suspended ?
-       (<MenuItem onClick={handleReinstate} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='lsicon:play-outline' fontSize={20} />
-          Reinstate
-        </MenuItem>) :
-       (<MenuItem onClick={handleSuspend} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='lsicon:suspend-outline' fontSize={20} />
-          Suspend
-        </MenuItem>)
-        }
+        {suspended ? (
+          <MenuItem onClick={handleReinstate} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="lsicon:play-outline" fontSize={20} />
+            Reinstate
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={handleSuspend} sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon="lsicon:suspend-outline" fontSize={20} />
+            Suspend
+          </MenuItem>
+        )}
         <MenuItem onClick={handleDelete} sx={{ '& svg': { mr: 2 } }}>
-          <Icon icon='tabler:trash' fontSize={20} />
+          <Icon icon="tabler:trash" fontSize={20} />
           Delete
         </MenuItem>
       </Menu>
@@ -311,18 +318,18 @@ const columns: GridColDef[] = [
                 fontWeight: 500,
                 textDecoration: 'none',
                 color: 'text.secondary',
-                '&:hover': { color: 'primary.main' }
+                '&:hover': { color: 'primary.main' },
               }}
             >
               {username}
             </Typography>
-            <Typography noWrap variant='body2' sx={{ color: 'text.disabled' }}>
+            <Typography noWrap variant="body2" sx={{ color: 'text.disabled' }}>
               {email}
             </Typography>
           </Box>
         </Box>
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -333,7 +340,12 @@ const columns: GridColDef[] = [
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <MuiAvatar
-             sx={{ mr: 4, width: 30, height: 30, backgroundColor: `${row.role === 'admin'? 'success' : 'info'}.main` }}
+            sx={{
+              mr: 4,
+              width: 30,
+              height: 30,
+              backgroundColor: `${row.role === 'admin' ? 'success' : 'info'}.main`,
+            }}
           >
             <Icon icon={userRoleObj[row.role].icon} />
           </MuiAvatar>
@@ -342,7 +354,7 @@ const columns: GridColDef[] = [
           </Typography>
         </Box>
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -350,12 +362,16 @@ const columns: GridColDef[] = [
     headerName: 'Full Name',
     field: 'firstname',
     renderCell: ({ row }: CellType) => {
+      const { firstname, lastname } = row
       return (
-        <Typography noWrap sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}>
-          {`${row.firstname} ${row.lastname}`}
+        <Typography
+          noWrap
+          sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}
+        >
+          {firstname || lastname ? `${firstname} ${lastname}` : '-'}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.15,
@@ -365,10 +381,10 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.contact ?? '-'}
+          {row.contact ? `0${row.contact}` : '-'}
         </Typography>
       )
-    }
+    },
   },
   {
     flex: 0.1,
@@ -378,10 +394,10 @@ const columns: GridColDef[] = [
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.address?? '-'}
+          {row.address ?? '-'}
         </Typography>
       )
-    }
+    },
   },
 
   {
@@ -393,14 +409,14 @@ const columns: GridColDef[] = [
       return (
         <CustomChip
           rounded
-          skin='light'
-          size='small'
-          label={row.verified? 'Verified' : 'Unverified'}
+          skin="light"
+          size="small"
+          label={row.verified ? 'Verified' : 'Unverified'}
           color={verificationStatusObj[row.verified ? 'Verified' : 'Unverified']}
           sx={{ textTransform: 'capitalize', textAlign: 'center' }}
         />
       )
-    }
+    },
   },
 
   {
@@ -410,16 +426,16 @@ const columns: GridColDef[] = [
     headerName: 'Status',
     renderCell: ({ row }: CellType) => {
       return (
-          <CustomChip
-            rounded
-            skin='light'
-            size='small'
-            label={row.onlineStatus ? 'Online' : 'Offline'}
-            color={userStatusObj[row.onlineStatus ? 'Online' : 'Offline']}
-            sx={{ textTransform: 'capitalize' }}
-          />
+        <CustomChip
+          rounded
+          skin="light"
+          size="small"
+          label={row.onlineStatus ? 'Online' : 'Offline'}
+          color={userStatusObj[row.onlineStatus ? 'Online' : 'Offline']}
+          sx={{ textTransform: 'capitalize' }}
+        />
       )
-    }
+    },
   },
   {
     flex: 0.1,
@@ -428,11 +444,9 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return (
-          <RowOptions patronID={row.id} suspended={row.suspended}
-        />
-      )}
-  }
+      return <RowOptions patronID={row.id} suspended={row.suspended} />
+    },
+  },
 ]
 
 const UserList = () => {
@@ -443,26 +457,36 @@ const UserList = () => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.users)
+  const { pending, numberOfUsers, users } = store
 
   useEffect(() => {
-    dispatch(
-      getPatrons()
-    )
-  }, [dispatch, store.numberOfUsers])
+    if (users.length === 0) {
+      dispatch(getPatrons())
+    }
+  }, [dispatch, numberOfUsers])
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
+  if (pending) {
+    return (
+      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+        <CircularProgress sx={{ mb: 4 }} />
+        <Typography>Loading...</Typography>
+      </Box>
+    )
+  }
+
   return (
-    <Grid container spacing={6.5}>
+    <Grid container spacing={6.5} sx={{ mt: 1 }}>
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='List of Patrons' />
+          <CardHeader title="List of Patrons" />
           <Divider sx={{ m: '0 !important' }} />
           <TableHeader toggle={toggleAddUserDrawer} />
           <DataGrid
             autoHeight
             rowHeight={62}
-            rows={store.users}
+            rows={users}
             columns={columns}
             disableRowSelectionOnClick
             pageSizeOptions={[10, 25, 50]}
