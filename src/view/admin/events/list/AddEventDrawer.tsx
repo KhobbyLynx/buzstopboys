@@ -240,8 +240,6 @@ const SidebarAddEvent = (props: SidebarAddEventType) => {
       }
 
       dispatch(addEvent(eventData))
-      reset()
-      toggle()
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
         console.log('Error submitting Add event form', error)
@@ -250,6 +248,9 @@ const SidebarAddEvent = (props: SidebarAddEventType) => {
       throw new Error(
         error instanceof Error ? error.message : 'An error occurred creating new event'
       )
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 
