@@ -18,6 +18,7 @@ import CustomTextField from '@/components/modals/mui/text-field'
 
 // ** IconifyIcon Imports
 import IconifyIcon from '@/components/icon'
+import Image from 'next/image'
 
 // ** Demo Imports
 const AuthIllustrationV1Wrapper = styled(Box)({
@@ -81,15 +82,19 @@ const ForgotPassword = () => {
       <AuthIllustrationV1Wrapper>
         <Card>
           <CardContent sx={{ padding: '40px' }}>
-            <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
-              <Link href={'/'}>
-                <Typography variant="h3" sx={{ fontWeight: '700', marginTop: '16px' }}>
-                  BuzStopBoys
-                </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Link href="/">
+                <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
               </Link>
             </Box>
-            <Box sx={{ marginBottom: '24px' }}>
-              <Typography variant="h4" sx={{ marginBottom: '16px', fontWeight: '600' }}>
+            <Box sx={{ mb: 2, textAlign: 'center' }}>
+              <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
                 Forgot Password? 🔒
               </Typography>
               <Typography sx={{ color: '#6c757d', fontSize: '14px' }}>
