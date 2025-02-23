@@ -105,8 +105,8 @@ const RowOptions = ({ eventID, data }: { eventID: string; data: EventProps }) =>
 
         MySwal.fire({
           icon: 'success',
-          title: 'Deleted!',
-          text: 'Event has been deleted.',
+          title: 'Delete!',
+          text: 'Deleting Event...',
           customClass: {
             confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
           },
