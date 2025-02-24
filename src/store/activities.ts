@@ -219,6 +219,9 @@ export const activitiesSlice = createSlice({
       .addCase(singleActivity.pending, (state) => {
         state.pending = true
       })
+      .addCase(singleActivity.rejected, (state) => {
+        state.pending = false
+      })
       .addCase(singleActivity.fulfilled, (state, action) => {
         state.selectedActivity = action.payload
         state.pending = false
