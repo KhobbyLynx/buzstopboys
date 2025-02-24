@@ -1,5 +1,12 @@
 @forward "globals";
 
+// MUI styles
+.MuiInputBase-input::placeholder {
+    font-size: "10px";
+    font-style: italic;
+    color: gray;
+}
+
 .swiper {
     width: 100%;
     height: 100%;
