@@ -1,42 +1,164 @@
-"use client";
+'use client'
 
+import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/solid'
+import IconifyIcon from '@/components/icon'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+import * as yup from 'yup'
 import {
+  TextField,
+  Button,
   Typography,
   Card,
-  CardBody,
-  Radio,
-  Input,
-  Textarea,
-  Button,
+  CardContent,
   IconButton,
-} from "@material-tailwind/react";
-import { EnvelopeIcon, PhoneIcon, TicketIcon } from "@heroicons/react/24/solid";
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormHelperText,
+} from '@mui/material'
+import CustomTextField from '@/components/modals/mui/text-field'
+import { useState } from 'react'
+import { Icon } from '@iconify/react'
+import { MessageSubmitType, MessageSource, SenderStatusType } from '@/types/messages'
+import { createMessage } from '@/store/messages'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/store'
+import { Toast } from '@/utils/toast'
 
 export function ContactForm() {
+  // ** Yup Schema
+  const contactSchema = yup.object().shape({
+    firstname: yup.string().required('First name is required'),
+    lastname: yup.string(),
+    email: yup.string().email('Invalid email address').required('Email is required'),
+    message: yup.string().required('Message is required'),
+    interest: yup.string().required('Please select an option'),
+    contact: yup.number().typeError('Contact must be a number').min(9, 'Contact must be a number'),
+  })
+
+  // ** Dispatch
+  const dispatch = useDispatch<AppDispatch>()
+
+  // ** Store
+  const store = useSelector((state: RootState) => state)
+
+  // ** Loader state for sending a message
+  const { sending } = store.messages
+
+  const { isLoggedIn, data } = store.auth
+
+  const handleAdminSubit = () => {
+    Toast.fire({
+      icon: 'info',
+      title: 'Send Message',
+      text: 'Admin can not send a message through the contact form',
+    })
+  }
+
+  // Check if user is logged in and is an admin
+  const userIsAdmin = data && data.role === 'admin'
+
+  // Check if app is in dev mode
+  const devMode = process.env.NEXT_PUBLIC_NODE_ENV === 'development'
+
+  // ** Default values
+  const defaultValues = {
+    firstname: isLoggedIn && data?.firstname ? data.firstname : '',
+    lastname: isLoggedIn && data?.lastname ? data.lastname : '',
+    email: isLoggedIn && data?.email ? data.email : '',
+    contact: isLoggedIn && data?.contact ? Number(data.contact) : 0,
+    message: '',
+    interest: '',
+  }
+
+  const {
+    reset,
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(contactSchema),
+  })
+
+  const onSubmit = (formData: MessageSubmitType) => {
+    try {
+      // Convert number to string
+      const contact = String(formData.contact)
+
+      // Sender Details
+      const senderId = isLoggedIn && data ? data.id : null
+      const senderStatus: SenderStatusType = isLoggedIn && data ? 'patron' : 'unregistered'
+      const senderInfo = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        contact,
+      }
+      const source: MessageSource = 'contact' // "inbox" | "contact"
+
+      const requiredData = {
+        senderId,
+        senderStatus,
+        senderInfo,
+        source,
+        interest: formData.interest,
+        content: formData.message,
+      }
+
+      // dispatch
+      dispatch(createMessage(requiredData))
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log(
+          `${error instanceof Error ? error.message : 'An error occurred submitting message'}`
+        )
+      }
+      setError('message', {
+        message: `${
+          error instanceof Error ? error.message : 'An error occurred submitting message'
+        }`,
+      })
+    } finally {
+      // Reset Form
+      handleReset()
+    }
+  }
+
+  const handleReset = () => {
+    if (!sending) {
+      reset()
+    }
+  }
+
   return (
     <section className="mb-20 lg:mb-40 px-0 pt-[64px]">
       <div className="container mx-auto mb-20 text-center">
-        <Typography variant="h1" color="blue-gray" className="mb-4 px-4">
+        <Typography variant="h4" color="blue-gray " className="mb-4 px-4 font-extrabold text-2xl">
           Get in Touch with Us
         </Typography>
         <Typography
-          variant="lead"
-          className="mx-auto w-full lg:w-5/12 !text-gray-500"
+          variant="subtitle1"
+          className="mx-auto ml-auto w-full lg:w-5/12 !text-gray-500 text-center"
         >
-          Have questions, suggestions, or want to collaborate with us? Reach out! We value your feedback and are always excited to connect with like-minded individuals and organizations.
+          Have questions, suggestions, or want to collaborate with us? Reach out! We value your
+          feedback and are always excited to connect with like-minded individuals and organizations.
         </Typography>
       </div>
       <div>
-        <Card shadow={true} className="container mx-auto border border-gray/50">
-          <CardBody className="grid grid-cols-1 lg:grid-cols-7 md:gap-10">
+        <Card className="container mx-auto border border-gray/50">
+          <CardContent className="grid grid-cols-1 lg:grid-cols-7 md:gap-10">
             <div className="w-full col-span-3 rounded-lg h-full py-8 p-5 md:p-16 bg-gray-900 bg-[url('/images/banner/event.jpeg')] bg-cover">
               <Typography variant="h4" color="white" className="mb-2">
-              Send Us a Message
+                Send Us a Message
               </Typography>
-              <Typography
-                variant="lead"
-                className="mx-auto mb-8 text-base !text-gray-100"
-              >
+              <Typography variant="body2" className="mx-auto mb-8 text-base !text-gray-100">
                 Fill out the volunteer/Support form or contact us directly via email.
               </Typography>
               <div className="flex gap-5">
@@ -52,106 +174,203 @@ export function ContactForm() {
                 </Typography>
               </div>
               <div className="flex items-center gap-5">
-                <IconButton variant="text" color="white">
-                  <i className="fa-brands fa-twitter text-lg" />
-                </IconButton>
-                <IconButton variant="text" color="white">
-                  <i className="fa-brands fa-youtube text-lg" />
-                </IconButton>
-                <IconButton variant="text" color="white">
-                  <i className="fa-brands fa-facebook text-lg" />
-                </IconButton>
-                <IconButton variant="text" color="white">
-                  <i className="fa-brands fa-instagram text-lg" />
-                </IconButton>
-                <IconButton variant="text" color="white">
-                  <i className="fa-brands fa-tiktok text-lg" />
-                </IconButton>
+                <IconifyIcon icon="fa6-brands:square-x-twitter" className="w-6 h-6 text-gray-100" />
+                <IconifyIcon icon="fa-brands:facebook" className="w-6 h-6 text-gray-100" />
+                <IconifyIcon icon="ri:instagram-fill" className="w-6 h-6 text-gray-100" />
+                <IconifyIcon icon="ix:youtube-filled" className="w-6 h-6 text-gray-100" />
+                <IconifyIcon icon="ic:round-tiktok" className="w-6 h-6 text-gray-100" />
               </div>
             </div>
             <div className="w-full mt-8 md:mt-0 md:px-10 col-span-4 h-full p-5">
-              <form action="#">
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-8 grid gap-4 lg:grid-cols-2">
-                  {/* @ts-ignore */}
-                  <Input
-                    color="gray"
-                    size="lg"
-                    variant="static"
-                    label="First Name"
-                    name="first-name"
-                    placeholder="eg. Lucas Kwame"
-                    containerProps={{
-                      className: "!min-w-full mb-3 md:mb-0",
+                  <Controller
+                    name="firstname"
+                    control={control}
+                    rules={{
+                      required: true,
                     }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextField
+                        name="firstname"
+                        label="First name"
+                        variant="standard"
+                        placeholder="eg. Samuel"
+                        size="medium"
+                        className="!min-w-full mb-3 md:mb-0"
+                        onBlur={onBlur}
+                        onChange={onChange}
+                        value={value}
+                        disabled={sending}
+                        InputLabelProps={{ shrink: true }}
+                        error={Boolean(errors.firstname)}
+                        {...(errors.firstname && { helperText: errors.firstname.message })}
+                      />
+                    )}
                   />
-                  {/* @ts-ignore */}
-                  <Input
-                    color="gray"
-                    size="lg"
-                    variant="static"
-                    label="Last Name"
-                    name="last-name"
-                    placeholder="eg. Tetteh"
-                    containerProps={{
-                      className: "!min-w-full",
-                    }}
+
+                  <Controller
+                    name="lastname"
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextField
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        label="Last name"
+                        variant="standard"
+                        placeholder="eg. Tetteh"
+                        color="primary"
+                        size="medium"
+                        disabled={sending}
+                        className="!min-w-full mb-3 md:mb-0"
+                        InputLabelProps={{ shrink: true }}
+                        error={Boolean(errors.lastname)}
+                        {...(errors.lastname && { helperText: errors.lastname.message })}
+                      />
+                    )}
                   />
                 </div>
-                {/* @ts-ignore */}
-                <Input
-                  color="gray"
-                  size="lg"
-                  variant="static"
-                  label="Email"
-                  name="first-name"
-                  placeholder="eg. lucas@mail.com"
-                  containerProps={{
-                    className: "!min-w-full mb-8",
-                  }}
-                />
-                <Typography
-                  variant="lead"
-                  className="!text-blue-gray-500 text-sm mb-2"
-                >
-                  What are you interested on?
-                </Typography>
-                <div className="-ml-3 mb-10">
-                  {/* @ts-ignore */}
-                  <Radio
-                    color="gray"
-                    name="type"
-                    label="Volunteer"
-                    defaultChecked
+                <div className="mb-8 grid gap-4 lg:grid-cols-2">
+                  <Controller
+                    name="email"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { onBlur, onChange, value } }) => (
+                      <TextField
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        label="Email"
+                        variant="standard"
+                        placeholder="eg. buzstopboys@gmail.com"
+                        color="primary"
+                        size="medium"
+                        disabled={sending}
+                        className="!min-w-full mb-3 md:mb-0"
+                        InputLabelProps={{ shrink: true }}
+                        error={Boolean(errors.email)}
+                        {...(errors.email && { helperText: errors.email.message })}
+                      />
+                    )}
                   />
-                  {/* @ts-ignore */}
-                  <Radio color="gray" name="type" label="Sponsor" />
-                  {/* @ts-ignore */}
-                  <Radio color="gray" name="type" label="Donate" />
-                  {/* @ts-ignore */}
-                  <Radio color="gray" name="type" label="Other" />
+
+                  <Controller
+                    name="contact"
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextField
+                        type="number"
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        label="Phone Number"
+                        variant="standard"
+                        placeholder="enter phone number"
+                        color="primary"
+                        size="medium"
+                        disabled={sending}
+                        className="!min-w-full mb-3 md:mb-0"
+                        InputLabelProps={{ shrink: true }}
+                        error={Boolean(errors.contact)}
+                        {...(errors.contact && { helperText: errors.contact.message })}
+                      />
+                    )}
+                  />
                 </div>
-                <Textarea
-                  color="gray"
-                  size="lg"
-                  variant="static"
-                  label="Your Message"
-                  name="first-name"
-                  containerProps={{
-                    className: "!min-w-full mb-8",
-                  }}
+
+                <Controller
+                  name="interest"
+                  control={control}
+                  defaultValue="volunteer"
+                  rules={{ required: 'Please select an option' }}
+                  render={({ field }) => (
+                    <FormControl>
+                      <FormLabel id="interest" className="text-sm mt-6">
+                        <Typography variant="body2" className="!text-blue-gray-500 mb-2">
+                          What are you interested in?
+                        </Typography>
+                      </FormLabel>
+                      <RadioGroup
+                        {...field}
+                        id="interest"
+                        className="flex items-center justify-center"
+                      >
+                        <div className={errors.interest ? 'ml-3' : 'ml-3 mb-10'}>
+                          {['volunteer', 'sponsor', 'donate', 'other'].map((option) => (
+                            <FormControlLabel
+                              key={option}
+                              value={option}
+                              control={<Radio disabled={sending} />}
+                              label={option.charAt(0).toUpperCase() + option.slice(1)}
+                              sx={{
+                                '.MuiFormControlLabel-label': {
+                                  fontSize: '14px',
+                                },
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </RadioGroup>
+                      {errors.interest && (
+                        <FormHelperText error className="mb-10">
+                          {errors.interest.message}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  )}
                 />
-                <div className="w-full flex justify-end">
-                  <Button className="w-full md:w-fit" color="gray" size="md">
+
+                <Controller
+                  name="message"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onBlur, onChange, value } }) => (
+                    <CustomTextField
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      value={value}
+                      rows={4}
+                      multiline
+                      label="Your message"
+                      placeholder="Type your message here..."
+                      className="mb-8"
+                      disabled={sending}
+                      fullWidth
+                      error={Boolean(errors.message)}
+                      {...(errors.message && { helperText: errors.message.message })}
+                      InputProps={{
+                        sx: {
+                          overflow: 'hidden',
+                          '& textarea': {
+                            overflowX: 'hidden',
+                          },
+                        },
+                      }}
+                    />
+                  )}
+                />
+                <div className="w-full flex justify-end mt-2">
+                  <Button
+                    type={userIsAdmin && !devMode ? 'button' : 'submit'}
+                    disabled={sending}
+                    onClick={userIsAdmin && !devMode ? handleAdminSubit : undefined}
+                    startIcon={
+                      <Icon icon={sending ? 'line-md:uploading-loop' : 'mynaui:send-solid'} />
+                    }
+                    variant="contained"
+                    className="w-full md:w-fit hover:bg-blue-500"
+                  >
                     Send message
                   </Button>
                 </div>
               </form>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
       </div>
     </section>
-  );
+  )
 }
 
-export default ContactForm;
+export default ContactForm
