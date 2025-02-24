@@ -5,158 +5,76 @@ import { forwardRef } from 'react'
 import { styled } from '@mui/material/styles'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 
-const TextFieldStyled = styled(TextField)<TextFieldProps>(({theme}) => ({
+const TextFieldStyled = styled(TextField)<TextFieldProps>(() => ({
   alignItems: 'flex-start',
   '& .MuiInputLabel-root': {
     transform: 'none',
     lineHeight: 1.154,
     position: 'relative',
-    marginBottom: theme.spacing(1),
-    fontSize: theme.typography.body2.fontSize,
-    color: `${theme.palette.text.primary} !important`
+    marginBottom: '8px', // Fixed margin value
+    fontSize: '14px', // Fixed font size
+    color: '#000000 !important', // Fixed color
   },
   '& .MuiInputBase-root': {
-    borderRadius: 8,
-    backgroundColor: 'transparent !important',
-    // border: `1px solid rgba(${theme.palette.customColors.main}, 0.2)`,
-    transition: theme.transitions.create(['border-color', 'box-shadow'], {
-      duration: theme.transitions.duration.shorter
-    }),
-    '&:not(.Mui-focused):not(.Mui-disabled):not(.Mui-error):hover': {
-      // borderColor: `rgba(${theme.palette.customColors.main}, 0.28)`
-    },
+    borderRadius: '8px',
+    backgroundColor: '#f1f3ffbc !important',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease', // Fixed transition
     '&:before, &:after': {
-      display: 'none'
+      display: 'none',
     },
     '&.MuiInputBase-sizeSmall': {
-      borderRadius: 6
+      borderRadius: '6px',
     },
     '&.Mui-error': {
-      borderColor: theme.palette.error.main
+      borderColor: '#f44336', // Fixed error color (red)
     },
     '&.Mui-focused': {
-      boxShadow: theme.shadows[2],
+      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
       '& .MuiInputBase-input:not(.MuiInputBase-readOnly):not([readonly])::placeholder': {
-        transform: 'translateX(4px)'
+        transform: 'translateX(4px)',
       },
       '&.MuiInputBase-colorPrimary': {
-        borderColor: theme.palette.primary.main
+        borderColor: '#1976d2', // Fixed primary color (blue)
       },
-      '&.MuiInputBase-colorSecondary': {
-        borderColor: theme.palette.secondary.main
-      },
-      '&.MuiInputBase-colorInfo': {
-        borderColor: theme.palette.info.main
-      },
-      '&.MuiInputBase-colorSuccess': {
-        borderColor: theme.palette.success.main
-      },
-      '&.MuiInputBase-colorWarning': {
-        borderColor: theme.palette.warning.main
-      },
-      '&.MuiInputBase-colorError': {
-        borderColor: theme.palette.error.main
-      },
-      '&.Mui-error': {
-        borderColor: theme.palette.error.main
-      }
     },
     '&.Mui-disabled': {
-      backgroundColor: `${theme.palette.action.selected} !important`
+      backgroundColor: '#f5f5f5 !important', // Disabled background
     },
     '& .MuiInputAdornment-root': {
-      marginTop: '0 !important'
-    }
+      marginTop: '0 !important',
+    },
   },
   '& .MuiInputBase-input': {
-    color: theme.palette.text.secondary,
+    color: '#4a4a4a', // Input text color
     '&:not(textarea)': {
-      padding: '15.5px 13px'
+      padding: '15.5px 13px',
     },
     '&:not(textarea).MuiInputBase-inputSizeSmall': {
-      padding: '7.5px 13px'
+      padding: '7.5px 13px',
     },
     '&:not(.MuiInputBase-readOnly):not([readonly])::placeholder': {
-      transition: theme.transitions.create(['opacity', 'transform'], { duration: theme.transitions.duration.shorter })
+      transition: 'opacity 0.2s ease, transform 0.2s ease',
     },
-
-    // ** For Autocomplete
-    '&.MuiInputBase-inputAdornedStart:not(.MuiAutocomplete-input)': {
-      paddingLeft: 0
-    },
-    '&.MuiInputBase-inputAdornedEnd:not(.MuiAutocomplete-input)': {
-      paddingRight: 0
-    }
   },
   '& .MuiFormHelperText-root': {
     lineHeight: 1.154,
-    margin: theme.spacing(1, 0, 0),
-    color: theme.palette.text.secondary,
-    fontSize: theme.typography.body2.fontSize,
+    margin: '8px 0 0',
+    color: '#757575', // Helper text color (gray)
+    fontSize: '12px',
     '&.Mui-error': {
-      color: theme.palette.error.main
-    }
-  },
-
-  // ** For Select
-  '& .MuiSelect-select:focus, & .MuiNativeSelect-select:focus': {
-    backgroundColor: 'transparent'
-  },
-  '& .MuiSelect-filled .MuiChip-root': {
-    height: 22
-  },
-
-  // ** For Autocomplete
-  '& .MuiAutocomplete-input': {
-    paddingLeft: '6px !important',
-    paddingTop: '7.5px !important',
-    paddingBottom: '7.5px !important',
-    '&.MuiInputBase-inputSizeSmall': {
-      paddingLeft: '6px !important',
-      paddingTop: '2.5px !important',
-      paddingBottom: '2.5px !important'
-    }
-  },
-  '& .MuiAutocomplete-inputRoot': {
-    paddingTop: '8px !important',
-    paddingLeft: '8px !important',
-    paddingBottom: '8px !important',
-    '&:not(.MuiInputBase-sizeSmall).MuiInputBase-adornedStart': {
-      paddingLeft: '13px !important'
+      color: '#f44336', // Error text color (red)
     },
-    '&.MuiInputBase-sizeSmall': {
-      paddingTop: '5px !important',
-      paddingLeft: '5px !important',
-      paddingBottom: '5px !important',
-      '& .MuiAutocomplete-tag': {
-        margin: 2,
-        height: 22
-      }
-    }
   },
-
-  // ** For Textarea
+  // For multiline Textarea
   '& .MuiInputBase-multiline': {
     padding: '15.25px 13px',
     '&.MuiInputBase-sizeSmall': {
-      padding: '7.25px 13px'
+      padding: '7.25px 13px',
     },
-    '& textarea.MuiInputBase-inputSizeSmall:placeholder-shown': {
-      overflowX: 'hidden'
-    }
   },
-
-  // ** For Date Picker
-  '& + .react-datepicker__close-icon': {
-    top: 11,
-    '&:after': {
-      fontSize: '1.6rem !important'
-    }
-  }
 }))
 
 const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
-  // ** Props
   const { size = 'small', InputLabelProps, ...rest } = props
 
   return (
@@ -164,7 +82,7 @@ const CustomTextField = forwardRef((props: TextFieldProps, ref) => {
       size={size}
       inputRef={ref}
       {...rest}
-      variant='filled'
+      variant="filled"
       InputLabelProps={{ ...InputLabelProps, shrink: true }}
     />
   )
