@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { Button, Typography, Card } from "@material-tailwind/react";
+import Image from 'next/image'
+import { Typography, Card } from '@material-tailwind/react'
+import IconifyIcon from '@/components/icon'
+import { Button } from '@mui/material'
 
 function PageHero() {
   return (
     <div className="!flex h-[76vh] w-full items-center justify-between mb-20 mt-10">
       <Image
+        priority
         width={1200}
         height={1200}
         src="/images/banner/cover5.jpg"
@@ -19,22 +22,38 @@ function PageHero() {
             <Typography
               variant="h1"
               color="blue-gray"
-              className="lg:text-5xl !leading-snug text-3xl lg:max-w-3xl"
+              className="lg:text-5xl !leading-snug text-3xl lg:max-w-3xl !text-black md:text-blue-gray-800 font-bold md:font-semibold"
             >
               Be Part of the Change
             </Typography>
-            <Typography variant="lead" className="mb-10 mt-6 !text-gray-900">
-              Together, we can make a difference. Whether you volunteer your
-              time, donate resources, or simply spread the word, your
-              contribution matters. Let’s build a cleaner, healthier Ghana for
-              generations to come.
+            <Typography
+              variant="lead"
+              className="mb-10 mt-6 !text-gray-900 font-semibold md:font-normal"
+            >
+              Together, we can make a difference. Whether you volunteer your time, donate resources,
+              or simply spread the word, your contribution matters. Let’s build a cleaner, healthier
+              Ghana for generations to come.
             </Typography>
             <div className="mb-8 flex justify-center gap-4 lg:justify-start">
-              <Button color="gray" variant="outlined">
+              <Button
+                variant="outlined"
+                sx={{
+                  color: 'black',
+                  borderColor: 'black', // Outline color
+                  '&:hover': {
+                    borderColor: '#151641',
+                    backgroundColor: '#17112c1c',
+                  },
+                }}
+              >
                 Join Our Journey
               </Button>
-              <Button variant="gradient" color="green">
-                <i className="fas fa-heart" /> Donate
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<IconifyIcon icon="streamline:give-gift-solid" className="w-3 h-3" />}
+              >
+                Donate
               </Button>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-between gap-4 lg:justify-start">
@@ -71,7 +90,7 @@ function PageHero() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default PageHero;
+export default PageHero
