@@ -72,20 +72,27 @@ const MessageDetails = () => {
           <p className="mt-2">
             <strong>⚜️ Status:</strong> {selectedMessage.status}
           </p>
-          <p>
-            <strong>First name:</strong> {selectedMessage.senderInfo.firstname}
+          <p className="mt-2">
+            <strong>👨🏽‍💼 Sender Status:</strong> {selectedMessage.senderStatus}
           </p>
-          {selectedMessage.senderInfo.lastname && (
-            <p>
-              <strong>Last name:</strong> {selectedMessage.senderInfo.lastname}
-            </p>
+          {selectedMessage.senderInfo && (
+            <>
+              <p>
+                <strong>First name:</strong> {selectedMessage.senderInfo.firstname}
+              </p>
+              {selectedMessage.senderInfo.lastname && (
+                <p>
+                  <strong>Last name:</strong> {selectedMessage.senderInfo.lastname}
+                </p>
+              )}
+              <p>
+                <strong>Email:</strong> {selectedMessage.senderInfo.email}
+              </p>
+              <p>
+                <strong>Contact:</strong> {selectedMessage.senderInfo.contact}
+              </p>
+            </>
           )}
-          <p>
-            <strong>Email:</strong> {selectedMessage.senderInfo.email}
-          </p>
-          <p>
-            <strong>Contact:</strong> {selectedMessage.senderInfo.contact}
-          </p>
         </div>
 
         {/* Back Button */}
