@@ -1,8 +1,9 @@
 'use client'
+import IconifyIcon from '@/components/icon'
 import { AppDispatch, RootState } from '@/store'
 import { singleEvent } from '@/store/events'
 import { formatDate } from '@/utils/utils'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
@@ -14,7 +15,7 @@ const EventDetails = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.events)
 
-  const { selectedEvent, pending } = store
+  const { selectedEvent, fetchingSingleEvent } = store
 
   const {
     startDate,
@@ -38,7 +39,7 @@ const EventDetails = () => {
     }
   }, [dispatch, eventId, selectedEvent.id])
 
-  if (pending) {
+  if (fetchingSingleEvent) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
@@ -136,12 +137,14 @@ const EventDetails = () => {
         </div>
 
         {/* Back Button */}
-        <button
+        <Button
+          startIcon={<IconifyIcon icon="mingcute:back-fill" />}
           onClick={() => router.push('/admin/events')}
-          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          variant="outlined"
+          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
         >
-          Back to Events
-        </button>
+          Back To Events
+        </Button>
       </div>
     </>
   )

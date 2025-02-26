@@ -25,7 +25,7 @@ import Icon from '@/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/modals/mui/chip'
+import CustomChip from '@/components/mui/chip'
 
 // ** Utils Import
 import { formatDate } from '@/utils/utils'
@@ -304,7 +304,7 @@ const DashEvents = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.events)
 
-  const { events, pending } = store
+  const { events, fetchingEvents } = store
 
   useEffect(() => {
     // Fetch Events
@@ -315,7 +315,7 @@ const DashEvents = () => {
 
   const toggleAddEventDrawer = () => setAddNewEventOpen(!addNewEventOpen)
 
-  if (pending) {
+  if (fetchingEvents) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />

@@ -1,8 +1,9 @@
 'use client'
+import IconifyIcon from '@/components/icon'
 import { AppDispatch, RootState } from '@/store'
 import { singleActivity } from '@/store/activities'
 import { formatDate } from '@/utils/utils'
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
@@ -14,7 +15,7 @@ const ActivityDetails = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.activities)
 
-  const { selectedActivity, pending } = store
+  const { selectedActivity, fetchingSingleActivity } = store
 
   const { activityId } = useParams() as { activityId: string }
 
@@ -24,7 +25,7 @@ const ActivityDetails = () => {
     }
   }, [dispatch, activityId, selectedActivity])
 
-  if (pending) {
+  if (fetchingSingleActivity) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
@@ -82,12 +83,14 @@ const ActivityDetails = () => {
         </div>
 
         {/* Back Button */}
-        <button
+        <Button
+          startIcon={<IconifyIcon icon="mingcute:back-fill" />}
           onClick={() => router.push('/activities')}
-          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          variant="outlined"
+          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
         >
-          Back to Activities
-        </button>
+          Back To Activities
+        </Button>
       </div>
     </>
   )

@@ -17,7 +17,7 @@ const DonationCampaignDetails: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.donations)
 
-  const { selectedCampaign, pending } = store
+  const { selectedCampaign, fetchingSingleCampaign } = store
   const { raised, target, imgs, subText, title, desc, status, details, createdAt, updatedAt } =
     selectedCampaign
 
@@ -33,7 +33,7 @@ const DonationCampaignDetails: React.FC = () => {
     }
   }, [dispatch, campaignId, selectedCampaign])
 
-  if (pending) {
+  if (fetchingSingleCampaign) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />

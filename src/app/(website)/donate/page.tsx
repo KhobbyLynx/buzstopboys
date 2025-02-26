@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 function Donations() {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.donations)
-  const { pending, donationOptions, donationCampaigns } = store
+  const { fetchingOptions, donationOptions, donationCampaigns } = store
 
   useEffect(() => {
     // Fetch Donation Campaigns
@@ -20,7 +20,7 @@ function Donations() {
     if (donationOptions.length === 0) dispatch(getDonationOptions())
   }, [dispatch, donationCampaigns.length, donationOptions.length])
 
-  if (pending) {
+  if (fetchingOptions) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
