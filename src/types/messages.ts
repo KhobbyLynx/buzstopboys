@@ -21,7 +21,7 @@ export type MessagesProps = {
   senderInfo: SenderInfoType
   senderStatus: SenderStatusType
   receiverId?: string
-  interest: string
+  title: string
   content: string
   source: MessageSource
   status: MessageStatus
@@ -37,7 +37,7 @@ export type MessageDBType = {
   receiverId?: string
   status: MessageStatus
   isEdited?: EditedType
-  interest: string
+  title: string
   content: string
   source: MessageSource
   senderInfo: SenderInfoType
@@ -48,19 +48,33 @@ export type MessageDBType = {
 
 export type MessageStoreType = {
   receiverId?: string
-  interest: string
+  title: string
   content: string
   source: MessageSource
-  senderInfo: SenderInfoType
+  senderInfo?: SenderInfoType
   senderStatus: SenderStatusType
-  senderId: string | null
+  senderId?: string | null
+  editorId?: string | null
 }
 
 export type MessageSubmitType = {
-  interest: string
+  title: string
   message: string
   firstname: string
   lastname?: string
   email: string
   contact?: number
+}
+
+export type AdminSubmitMessageType = {
+  title: string
+  content: string
+  id?: string
+  editor?: string
+}
+
+export type PatchMessageType = {
+  id: string
+  type: string
+  readerId: string
 }
