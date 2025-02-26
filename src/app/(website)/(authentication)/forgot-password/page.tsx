@@ -14,7 +14,7 @@ import { styled } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** IconifyIcon Imports
 import IconifyIcon from '@/components/icon'
