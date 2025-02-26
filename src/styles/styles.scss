@@ -39,7 +39,7 @@
     width: 40px;
     height: 40px;
     // background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    color: rgb(42, 14, 255);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -65,7 +65,7 @@
 /* Hover Effects */
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-    color: rgba(110, 9, 9, 0.8);
+    color: rgba(21, 150, 255, 0.8);
 }
 
 .swiper-button-prev::after {
@@ -82,4 +82,8 @@
 
 .swiper-button-next {
     right: -50px;
+}
+
+.swiper-wrapper {
+    margin: 10px 0;
 }
