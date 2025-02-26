@@ -6,6 +6,7 @@ const messageSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      index: true,
     },
     senderId: {
       type: String, // ID of the message sender (Admin/Patron/Unregistered)
@@ -17,6 +18,7 @@ const messageSchema = new Schema(
     },
     receiverId: {
       type: String, // Only applicable if sent by an admin
+      unique: true,
     },
     status: {
       type: String, // "sent" | "delivered" | "read"
@@ -47,10 +49,9 @@ const messageSchema = new Schema(
       required: true,
       enum: ['inbox', 'contact'],
     },
-    interest: {
+    title: {
       type: String,
       required: true,
-      enum: ['volunteer', 'donate', 'sponsor', 'other'],
     },
     readBy: {
       type: [String], // Array of admin IDs who read the message
