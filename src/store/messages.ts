@@ -4,14 +4,25 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axiosRequest from '@/utils/axiosRequest'
 import { BProgress } from '@bprogress/core'
 import { Toast } from '@/utils/toast'
-import { MessagesProps, MessageStoreType } from '@/types/messages'
+import {
+  AdminSubmitMessageType,
+  MessagesProps,
+  MessageStoreType,
+  PatchMessageType,
+} from '@/types/messages'
 
 // ** FETCH MESSAGES
 export const getMessages = createAsyncThunk(
   'messages/getMessages',
-  async (_, { rejectWithValue }) => {
+  async (query: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosRequest.get('/messages')
+      let response
+      if (query) {
+        response = await axiosRequest.get(`/messages?${query}`)
+      } else {
+        response = await axiosRequest.get('/messages')
+      }
+
       const messages = response.data
 
       return messages
@@ -26,9 +37,9 @@ export const getMessages = createAsyncThunk(
   }
 )
 
-// ** ADD NEW MESSAGE
-export const createMessage = createAsyncThunk(
-  'messages/createMessage',
+// ** SEND MESSAGE
+export const sendMessage = createAsyncThunk(
+  'messages/sendMessage',
   async (data: MessageStoreType, { rejectWithValue }) => {
     try {
       // Start progress bar
@@ -71,7 +82,7 @@ export const createMessage = createAsyncThunk(
 // ** UPDATE MESSAGE
 export const updateMessage = createAsyncThunk(
   'messages/updateMessage',
-  async (data: MessageStoreType, { rejectWithValue }) => {
+  async (data: AdminSubmitMessageType, { rejectWithValue }) => {
     try {
       // Start progress bar
       BProgress.start()
@@ -102,6 +113,26 @@ export const updateMessage = createAsyncThunk(
       }
       return rejectWithValue(
         error instanceof Error ? error.message : 'An error occurred updating message'
+      )
+    }
+  }
+)
+
+// ** PATCH MESSAGE
+export const patchMessage = createAsyncThunk(
+  'messages/patchMessage',
+  async (data: PatchMessageType, { rejectWithValue }) => {
+    try {
+      const response = await axiosRequest.patch(`/messages`, data)
+      const patchedMessage = response.data
+
+      return patchedMessage
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error patching message', error)
+      }
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An error occurred patching message'
       )
     }
   }
@@ -166,11 +197,49 @@ export const singleMessage = createAsyncThunk(
   }
 )
 
+// ** FETCH COUNTS
+export const fetchMessagesCounts = createAsyncThunk(
+  'messages/fetchMessagesCounts',
+  async (query: string, { rejectWithValue }) => {
+    try {
+      const response = await axiosRequest.get(`/messages/count?${query}`)
+      const responseData = response.data
+
+      return responseData
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error fetching messages counts', error)
+      }
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An error occurred fetching messages counts'
+      )
+    }
+  }
+)
+
 export const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
+    // MESSAGES
     messages: [] as MessagesProps[],
     selectedMessage: {} as MessagesProps,
+
+    // COUNT
+    totalMessages: 0 as number,
+    totalUnreadMessagesByAdmin: 0 as number,
+    totalUnreadMessagesByPatron: 0 as number,
+    totalAdminMessagesUndelivered: 0 as number,
+    totalAdminMessagesUnread: 0 as number,
+    totalMessagesFromUnregisteredUsers: 0 as number,
+    totalMessagesFromContactForm: 0 as number,
+    queryCount: 0 as number, // Count a custom query
+    currentPage: 0 as number,
+    totalPages: 0 as number,
+
+    // FETCH CHUNK SIZE
+    fectCount: 0 as number, // Number of data being fetched by a request
+
+    // LOADERS
     pending: false as boolean,
     sending: false as boolean,
   },
@@ -179,8 +248,11 @@ export const messagesSlice = createSlice({
     builder
       // ** Get Messages
       .addCase(getMessages.fulfilled, (state, action) => {
-        state.messages = action.payload
-        state.pending = false
+        return {
+          ...state,
+          ...action.payload,
+          pending: false,
+        }
       })
       .addCase(getMessages.pending, (state) => {
         state.pending = true
@@ -189,20 +261,26 @@ export const messagesSlice = createSlice({
         state.pending = false
       })
 
-      // ** Add Message
-      .addCase(createMessage.fulfilled, (state, action: { payload: MessagesProps }) => {
+      // ** Send Message
+      .addCase(sendMessage.fulfilled, (state, action: { payload: MessagesProps }) => {
         state.messages.push(action.payload)
         state.sending = false
       })
-      .addCase(createMessage.pending, (state) => {
+      .addCase(sendMessage.pending, (state) => {
         state.sending = true
       })
-      .addCase(createMessage.rejected, (state) => {
+      .addCase(sendMessage.rejected, (state) => {
         state.sending = false
       })
 
       // ** Update Message
       .addCase(updateMessage.fulfilled, (state, action) => {
+        const { id } = action.payload
+        state.messages = state.messages.map((d) => (d.id === id ? { ...d, ...action.payload } : d))
+      })
+
+      // ** Patch Message
+      .addCase(patchMessage.fulfilled, (state, action) => {
         const { id } = action.payload
         state.messages = state.messages.map((d) => (d.id === id ? { ...d, ...action.payload } : d))
         state.pending = false
@@ -211,7 +289,6 @@ export const messagesSlice = createSlice({
       // ** Delete Message
       .addCase(deleteMessage.fulfilled, (state, action) => {
         state.messages = state.messages.filter((d) => d.id !== action.payload)
-        state.pending = false
       })
 
       // ** Fetch Single Message
@@ -224,6 +301,21 @@ export const messagesSlice = createSlice({
       .addCase(singleMessage.fulfilled, (state, action) => {
         state.selectedMessage = action.payload
         state.pending = false
+      })
+
+      // ** FETCH COUNTS
+      .addCase(fetchMessagesCounts.fulfilled, (state, action) => {
+        const { query } = action.payload
+
+        // If its a custom count
+        if (query) {
+          state.queryCount = action.payload.queryCount
+        } else {
+          return {
+            ...state,
+            ...action.payload.count, // spread all the count
+          }
+        }
       })
   },
 })

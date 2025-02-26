@@ -17,9 +17,15 @@ import { Toast } from '@/utils/toast'
 // ** FETCH DONATION CAMPAIGN
 export const getDonationsCampaigns = createAsyncThunk(
   'donations/getDonationsCampaigns',
-  async (_, { rejectWithValue }) => {
+  async (query: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosRequest.get('/donate')
+      let response
+      if (query) {
+        response = await axiosRequest.get(`/donate?${query}`)
+      } else {
+        response = await axiosRequest.get('/donate')
+      }
+
       const donations = response.data
 
       return donations
@@ -145,9 +151,9 @@ export const updateDonationCampaign = createAsyncThunk(
 // ** FETCH DONATION OPTIONS
 export const getDonationOptions = createAsyncThunk(
   'donations/getDonationOptions',
-  async (_, { rejectWithValue }) => {
+  async (query: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosRequest.get('/donation-options')
+      const response = await axiosRequest.get(`/donation-options?${query}`)
       const donationOptions = response.data
 
       return donationOptions
@@ -353,10 +359,29 @@ export const deleteDonationOption = createAsyncThunk(
 export const donationSlice = createSlice({
   name: 'donations',
   initialState: {
+    // DONATIONS
     donationCampaigns: [] as DonationCampaignProps[],
-    donationOptions: [] as DonationOptionsProps[],
-    pending: false as boolean,
     selectedCampaign: {} as DonationCampaignProps,
+
+    // OPTIONS
+    donationOptions: [] as DonationOptionsProps[],
+
+    // DONATIONS COUNTS
+    totalCampaigns: 0 as number,
+    queryCount: 0 as number, // Count a custom query
+    currentPage: 0 as number,
+    totalPages: 0 as number,
+
+    // FETCH CHUNK SIZE
+    fectCount: 0 as number, // Number of data being fetched by a request
+
+    // OPTIONS COUNTS
+
+    // LOADERS
+    fetchingCampaigns: false as boolean,
+    fetchingSingleCampaign: false as boolean,
+
+    fetchingOptions: false as boolean,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -366,24 +391,20 @@ export const donationSlice = createSlice({
       .addCase(getDonationsCampaigns.fulfilled, (state, action) => {
         return {
           ...state,
-          donationCampaigns: action.payload,
-          pending: false,
+          ...action.payload,
+          fetchingCampaigns: false,
         }
       })
       .addCase(getDonationsCampaigns.pending, (state) => {
-        return {
-          ...state,
-          pending: true,
-        }
+        state.fetchingCampaigns = false
       })
       .addCase(getDonationsCampaigns.rejected, (state) => {
-        state.pending = false
+        state.fetchingCampaigns = false
       })
 
       // ** ADD NEW DONATION CAMPAIGN
       .addCase(addDonationCampaign.fulfilled, (state, action) => {
         state.donationCampaigns.push(action.payload)
-        state.pending = false
       })
 
       // ** UPDATE DONATION CAMPAIGN
@@ -414,42 +435,40 @@ export const donationSlice = createSlice({
         return {
           ...state,
           donationCampaigns: state.donationCampaigns.filter((d) => d.id !== action.payload),
-          pending: false,
         }
       })
 
       // ** FETCH SINGLE CAMPAIGN
       .addCase(singleCampaign.pending, (state) => {
-        state.pending = true
+        state.fetchingSingleCampaign = true
       })
       .addCase(singleCampaign.fulfilled, (state, action) => {
         state.selectedCampaign = action.payload
-        state.pending = false
+        state.fetchingSingleCampaign = false
+      })
+      .addCase(singleCampaign.rejected, (state) => {
+        state.fetchingSingleCampaign = false
       })
 
       // DONATION OPTIONS
       // ** FETCH DONATION OPTIONS
       .addCase(getDonationOptions.pending, (state) => {
-        return {
-          ...state,
-          pending: true,
-        }
+        state.fetchingOptions = true
       })
       .addCase(getDonationOptions.fulfilled, (state, action) => {
         return {
           ...state,
           donationOptions: action.payload,
-          pending: false,
+          fetchingOptions: false,
         }
       })
       .addCase(getDonationOptions.rejected, (state) => {
-        state.pending = false
+        state.fetchingOptions = false
       })
 
       // ** ADD NEW DONATION OPTION
       .addCase(addDonationOption.fulfilled, (state, action) => {
         state.donationOptions.push(action.payload)
-        state.pending = false
       })
 
       // ** UPDATE DONATION OPTION
@@ -471,7 +490,6 @@ export const donationSlice = createSlice({
         return {
           ...state,
           donationOptions: updatedDonationOpptions,
-          pending: false,
         }
       })
 
@@ -480,7 +498,6 @@ export const donationSlice = createSlice({
         return {
           ...state,
           donationOptions: state.donationOptions.filter((d) => d.id !== action.payload),
-          pending: false,
         }
       })
   },

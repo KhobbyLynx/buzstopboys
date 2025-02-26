@@ -5,21 +5,30 @@ import { BProgress } from '@bprogress/core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // ** FETCH EVENTS
-export const getEvents = createAsyncThunk('events/getEvents', async (_, { rejectWithValue }) => {
-  try {
-    const response = await axiosRequest.get('/events')
-    const events = response.data
+export const getEvents = createAsyncThunk(
+  'events/getEvents',
+  async (query: string | undefined, { rejectWithValue }) => {
+    try {
+      let response
+      if (query) {
+        response = await axiosRequest.get(`/events?${query}`)
+      } else {
+        response = await axiosRequest.get('/events')
+      }
 
-    return events
-  } catch (error) {
-    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-      console.log('Error fetching events', error)
+      const events = response.data
+
+      return events
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error fetching events', error)
+      }
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An error occurred fetching events'
+      )
     }
-    return rejectWithValue(
-      error instanceof Error ? error.message : 'An error occurred fetching events'
-    )
   }
-})
+)
 
 // ** ADD NEW EVENT
 export const addEvent = createAsyncThunk(
@@ -171,29 +180,44 @@ export const singleEvent = createAsyncThunk(
 export const eventSlice = createSlice({
   name: 'events',
   initialState: {
+    //  EVENTS
     events: [] as EventProps[],
     selectedEvent: {} as EventProps,
-    pending: false,
+
+    // COUNTS
+    queryCount: 0 as number, // Count a custom query
+    currentPage: 0 as number,
+    totalPages: 0 as number,
+
+    // FETCH CHUNK SIZE
+    totalEvents: 0 as number,
+    fectCount: 0 as number, // Number of data being fetched by a request
+
+    // LOADERS
+    fetchingEvents: false,
+    fetchingSingleEvent: false,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       // **FETCH EVENTS
       .addCase(getEvents.fulfilled, (state, action) => {
-        state.events = action.payload
-        state.pending = false
+        return {
+          ...state,
+          ...action.payload,
+          fetchingEvents: false,
+        }
       })
       .addCase(getEvents.pending, (state) => {
-        state.pending = true
+        state.fetchingEvents = true
       })
       .addCase(getEvents.rejected, (state) => {
-        state.pending = false
+        state.fetchingEvents = false
       })
 
       // ** ADD EVENT
       .addCase(addEvent.fulfilled, (state, action: { payload: EventProps }) => {
         state.events.push(action.payload)
-        state.pending = false
       })
 
       // ** UPDATE EVENT
@@ -202,25 +226,23 @@ export const eventSlice = createSlice({
         state.events = state.events.map((event) =>
           event.id === id ? { ...event, ...action.payload } : event
         )
-        state.pending = false
       })
 
       // ** DELETE EVENT
       .addCase(deleteEvent.fulfilled, (state, action) => {
         state.events = state.events.filter((event) => event.id !== action.payload)
-        state.pending = false
       })
 
       // ** FETCH SINGLE EVENT
       .addCase(singleEvent.fulfilled, (state, action) => {
         state.selectedEvent = action.payload
-        state.pending = false
+        state.fetchingSingleEvent = false
       })
       .addCase(singleEvent.pending, (state) => {
-        state.pending = true
+        state.fetchingSingleEvent = true
       })
       .addCase(singleEvent.rejected, (state) => {
-        state.pending = false
+        state.fetchingSingleEvent = false
       })
   },
 })

@@ -9,9 +9,15 @@ import { Toast } from '@/utils/toast'
 // ** FETCH ACTIVITIES
 export const getActivities = createAsyncThunk(
   'activities/getActivities',
-  async (_, { rejectWithValue }) => {
+  async (query: string | undefined, { rejectWithValue }) => {
     try {
-      const response = await axiosRequest.get('/activities')
+      let response
+      if (query) {
+        response = await axiosRequest.get(`/activities?${query}`)
+      } else {
+        response = await axiosRequest.get('/activities')
+      }
+
       const activities = response.data
 
       return activities
@@ -175,29 +181,44 @@ export const singleActivity = createAsyncThunk(
 export const activitiesSlice = createSlice({
   name: 'activities',
   initialState: {
+    // ACTIVITIES
     activities: [] as ActivityProps[],
     selectedActivity: {} as ActivityProps,
-    pending: false as boolean,
+
+    // COUNTS
+    totalActivities: 0 as number,
+    queryCount: 0 as number, // Count a custom query
+    currentPage: 0 as number,
+    totalPages: 0 as number,
+
+    // FETCH CHUNK SIZE
+    fectCount: 0 as number, // Number of data being fetched by a request
+
+    // LOADERS
+    fetchingActivities: false as boolean,
+    fetchingSingleActivity: false as boolean,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       // ** Get Activities
       .addCase(getActivities.fulfilled, (state, action) => {
-        state.activities = action.payload
-        state.pending = false
+        return {
+          ...state,
+          ...action.payload,
+          fetchingActivities: false,
+        }
       })
       .addCase(getActivities.pending, (state) => {
-        state.pending = true
+        state.fetchingActivities = true
       })
       .addCase(getActivities.rejected, (state) => {
-        state.pending = false
+        state.fetchingActivities = false
       })
 
       // ** Add Activity
       .addCase(addActivity.fulfilled, (state, action: { payload: ActivityProps }) => {
         state.activities.push(action.payload)
-        state.pending = false
       })
 
       // ** Update Activity
@@ -206,25 +227,23 @@ export const activitiesSlice = createSlice({
         state.activities = state.activities.map((d) =>
           d.id === id ? { ...d, ...action.payload } : d
         )
-        state.pending = false
       })
 
       // ** Delete Activity
       .addCase(deleteActivity.fulfilled, (state, action) => {
         state.activities = state.activities.filter((d) => d.id !== action.payload)
-        state.pending = false
       })
 
       // ** Fetch Single Activity
       .addCase(singleActivity.pending, (state) => {
-        state.pending = true
+        state.fetchingSingleActivity = true
       })
       .addCase(singleActivity.rejected, (state) => {
-        state.pending = false
+        state.fetchingSingleActivity = false
       })
       .addCase(singleActivity.fulfilled, (state, action) => {
         state.selectedActivity = action.payload
-        state.pending = false
+        state.fetchingSingleActivity = false
       })
   },
 })
