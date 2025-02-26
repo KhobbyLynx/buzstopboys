@@ -12,7 +12,6 @@ import {
   Typography,
   Card,
   CardContent,
-  IconButton,
   FormControl,
   FormLabel,
   RadioGroup,
@@ -20,11 +19,10 @@ import {
   Radio,
   FormHelperText,
 } from '@mui/material'
-import CustomTextField from '@/components/modals/mui/text-field'
-import { useState } from 'react'
+import CustomTextField from '@/components/mui/text-field'
 import { Icon } from '@iconify/react'
 import { MessageSubmitType, MessageSource, SenderStatusType } from '@/types/messages'
-import { createMessage } from '@/store/messages'
+import { sendMessage } from '@/store/messages'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { Toast } from '@/utils/toast'
@@ -36,7 +34,7 @@ export function ContactForm() {
     lastname: yup.string(),
     email: yup.string().email('Invalid email address').required('Email is required'),
     message: yup.string().required('Message is required'),
-    interest: yup.string().required('Please select an option'),
+    title: yup.string().required('Please select an option'),
     contact: yup.number().typeError('Contact must be a number').min(9, 'Contact must be a number'),
   })
 
@@ -44,12 +42,11 @@ export function ContactForm() {
   const dispatch = useDispatch<AppDispatch>()
 
   // ** Store
-  const store = useSelector((state: RootState) => state)
-
-  // ** Loader state for sending a message
-  const { sending } = store.messages
-
-  const { isLoggedIn, data } = store.auth
+  const { sending, data, isLoggedIn } = useSelector((state: RootState) => ({
+    sending: state.messages.sending,
+    data: state.auth.data,
+    isLoggedIn: state.auth.isLoggedIn,
+  }))
 
   const handleAdminSubit = () => {
     Toast.fire({
@@ -72,7 +69,7 @@ export function ContactForm() {
     email: isLoggedIn && data?.email ? data.email : '',
     contact: isLoggedIn && data?.contact ? Number(data.contact) : 0,
     message: '',
-    interest: '',
+    title: '',
   }
 
   const {
@@ -108,12 +105,12 @@ export function ContactForm() {
         senderStatus,
         senderInfo,
         source,
-        interest: formData.interest,
+        title: formData.title,
         content: formData.message,
       }
 
       // dispatch
-      dispatch(createMessage(requiredData))
+      dispatch(sendMessage(requiredData))
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.log(
@@ -280,23 +277,23 @@ export function ContactForm() {
                 </div>
 
                 <Controller
-                  name="interest"
+                  name="title"
                   control={control}
                   defaultValue="volunteer"
                   rules={{ required: 'Please select an option' }}
                   render={({ field }) => (
                     <FormControl>
-                      <FormLabel id="interest" className="text-sm mt-6">
+                      <FormLabel id="title" className="text-sm mt-6">
                         <Typography variant="body2" className="!text-blue-gray-500 mb-2">
                           What are you interested in?
                         </Typography>
                       </FormLabel>
                       <RadioGroup
                         {...field}
-                        id="interest"
+                        id="title"
                         className="flex items-center justify-center"
                       >
-                        <div className={errors.interest ? 'ml-3' : 'ml-3 mb-10'}>
+                        <div className={errors.title ? 'ml-3' : 'ml-3 mb-10'}>
                           {['volunteer', 'sponsor', 'donate', 'other'].map((option) => (
                             <FormControlLabel
                               key={option}
@@ -312,9 +309,9 @@ export function ContactForm() {
                           ))}
                         </div>
                       </RadioGroup>
-                      {errors.interest && (
+                      {errors.title && (
                         <FormHelperText error className="mb-10">
-                          {errors.interest.message}
+                          {errors.title.message}
                         </FormHelperText>
                       )}
                     </FormControl>
@@ -350,7 +347,7 @@ export function ContactForm() {
                     />
                   )}
                 />
-                <div className="w-full flex justify-end mt-2">
+                <div className="w-full flex justify-end mt-6 md:mt-4">
                   <Button
                     type={userIsAdmin && !devMode ? 'button' : 'submit'}
                     disabled={sending}
@@ -361,7 +358,7 @@ export function ContactForm() {
                     variant="contained"
                     className="w-full md:w-fit hover:bg-blue-500"
                   >
-                    Send message
+                    {sending ? 'Sending' : 'Send message'}
                   </Button>
                 </div>
               </form>
