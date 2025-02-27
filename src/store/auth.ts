@@ -52,7 +52,7 @@ export const handleLoginPatron = createAsyncThunk(
       const refreshToken = patronCredentials.refreshToken
       const { lastSignInTime } = patronCredentials.metadata
 
-      const updatePatronInfo = await axiosRequest.put(`/patrons?id=${patronId}`, {
+      const updatePatronInfo = await axiosRequest.patch(`/patrons?id=${patronId}`, {
         lastSignInTime,
         onlineStatus: true,
       })
@@ -121,50 +121,49 @@ export const handleLoginPatron = createAsyncThunk(
 )
 
 // ** HANDLE LOGOUT
-export const handleLogout = createAsyncThunk<
-  void, // Return type of the thunk
-  string, // Argument type (patronId is a string)
-  { rejectValue: string } // Type for rejected value
->('auth/handleLogout', async (patronId, { rejectWithValue }) => {
-  try {
-    // Start Progrss bar
-    BProgress.start()
+export const handleLogout = createAsyncThunk<void, string, { rejectValue: string }>(
+  'auth/handleLogout',
+  async (patronId, { rejectWithValue }) => {
+    try {
+      // Start Progrss bar
+      BProgress.start()
 
-    await axiosRequest.put(`/patrons?id=${patronId}`, {
-      onlineStatus: false,
-    })
+      await axiosRequest.put(`/patrons?id=${patronId}`, {
+        onlineStatus: false,
+      })
 
-    await logoutFirebase()
+      await logoutFirebase()
 
-    // Delete User Data Cookie
-    deleteCookie('userData')
+      // Delete User Data Cookie
+      deleteCookie('userData')
 
-    // End Progress bar
-    BProgress.done()
-    // Success Toast
-    Toast.fire({
-      icon: 'success',
-      title: 'Authentication',
-      text: 'Logout successful!',
-    })
-  } catch (error) {
-    // End Progress bar
-    BProgress.done()
-    // Success Toast
-    Toast.fire({
-      icon: 'error',
-      title: 'Authentication',
-      text: 'Logout unsuccessful!',
-    })
+      // End Progress bar
+      BProgress.done()
+      // Success Toast
+      Toast.fire({
+        icon: 'success',
+        title: 'Authentication',
+        text: 'Logout successful!',
+      })
+    } catch (error) {
+      // End Progress bar
+      BProgress.done()
+      // Success Toast
+      Toast.fire({
+        icon: 'error',
+        title: 'Authentication',
+        text: 'Logout unsuccessful!',
+      })
 
-    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-      console.error('Error logging out @ Handle Logout', error)
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.error('Error logging out @ Handle Logout', error)
+      }
+
+      // Pass error message to rejectWithValue
+      return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
     }
-
-    // Pass error message to rejectWithValue
-    return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
   }
-})
+)
 
 // ** HANDLE AUTO LOGIN
 export const handleAutoLogin = createAsyncThunk(

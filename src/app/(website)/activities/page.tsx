@@ -14,14 +14,14 @@ function Activities() {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.activities)
 
-  const { pending, activities } = store
+  const { fetchingActivities, activities } = store
 
   // ** useEffect
   useEffect(() => {
     if (activities.length === 0) dispatch(getActivities())
   }, [dispatch, activities.length])
 
-  if (pending) {
+  if (fetchingActivities) {
     return (
       <>
         <Box sx={{ mt: 6, mb: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -38,8 +38,8 @@ function Activities() {
     <>
       <Box className="px-8">
         <ActivitiesCollage data={activities} />
+        <VideoSwiper />
       </Box>
-      <VideoSwiper />
       <EventHighlight />
     </>
   )

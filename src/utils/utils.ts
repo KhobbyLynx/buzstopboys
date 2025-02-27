@@ -198,3 +198,5 @@ export function convertToEmbedUrl(youtubeUrl: string): string {
   // Return an empty if the URL is invalid or no video ID is found
   return ''
 }
+
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

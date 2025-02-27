@@ -12,13 +12,13 @@ import { useDispatch, useSelector } from 'react-redux'
 const Events = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.events)
-  const { pending, events } = store
+  const { fetchingEvents, events } = store
 
   useEffect(() => {
     if (events.length === 0) dispatch(getEvents())
   }, [dispatch, events.length])
 
-  if (pending) {
+  if (fetchingEvents) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
@@ -35,7 +35,7 @@ const Events = () => {
         <Typography variant="h4" className="my-3 text-gray-900 text-center uppercase">
           Upcoming Events
         </Typography>
-        <div className="flex items-start justify-between w-full flex-wrap">
+        <div className="flex items-start justify-center w-full flex-wrap">
           {events.map((event) => {
             return <EventCard key={event.title} {...event} />
           })}

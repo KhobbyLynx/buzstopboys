@@ -26,7 +26,7 @@ import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/modals/mui/chip'
+import CustomChip from '@/components/mui/chip'
 
 // ** Utils Import
 import { calculatePercentage, formatAmount, formatDate } from '@/utils/utils'
@@ -363,7 +363,7 @@ const DashDonations = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.donations)
 
-  const { donationOptions, donationCampaigns, pending } = store
+  const { donationOptions, donationCampaigns, fetchingCampaigns, fetchingOptions } = store
 
   useEffect(() => {
     // Fetch Donation Campaigns
@@ -379,41 +379,52 @@ const DashDonations = () => {
 
   const toggleAddCampaignDrawer = () => setAddNewCampaignOpen(!addNewCampaignOpen)
 
-  if (pending) {
-    return (
-      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-        <CircularProgress sx={{ mb: 4 }} />
-        <Typography>Loading...</Typography>
-      </Box>
-    )
-  }
+  // if (fetchingCampaigns && fetchingOptions) {
+  //   return (
+  //     <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+  //       <CircularProgress sx={{ mb: 4 }} />
+  //       <Typography>Loading...</Typography>
+  //     </Box>
+  //   )
+  // }
 
   return (
     <>
       <Grid container spacing={6} sx={{ mt: 1 }}>
-        {/* <Grid item md={6} xs={12} lg={6}>
-          <CardLineChart />
-        </Grid> */}
-        <Grid item md={6} xs={12} lg={6}>
-          <CardOptionsList data={donationOptions} />
-        </Grid>
-        <Grid item xs={12} lg={12}>
-          <Card>
-            <CardHeader title="List of Donation Campaigns" />
-            <Divider sx={{ m: '0 !important' }} />
-            <TableHeader toggle={toggleAddCampaignDrawer} />
-            <DataGrid
-              autoHeight
-              rowHeight={62}
-              rows={donationCampaigns}
-              columns={columns}
-              disableRowSelectionOnClick
-              pageSizeOptions={[10, 25, 50]}
-              paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
-            />
-          </Card>
-        </Grid>
+        {!fetchingOptions ? (
+          <Grid item md={6} xs={12} lg={6}>
+            <CardOptionsList data={donationOptions} />
+          </Grid>
+        ) : (
+          <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <CircularProgress sx={{ mb: 4 }} />
+            <Typography>Loading...</Typography>
+          </Box>
+        )}
+        {!fetchingCampaigns ? (
+          <Grid item xs={12} lg={12}>
+            <Card>
+              <CardHeader title="List of Donation Campaigns" />
+              <Divider sx={{ m: '0 !important' }} />
+              <TableHeader toggle={toggleAddCampaignDrawer} />
+              <DataGrid
+                autoHeight
+                rowHeight={62}
+                rows={donationCampaigns}
+                columns={columns}
+                disableRowSelectionOnClick
+                pageSizeOptions={[10, 25, 50]}
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+              />
+            </Card>
+          </Grid>
+        ) : (
+          <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <CircularProgress sx={{ mb: 4 }} />
+            <Typography>Loading...</Typography>
+          </Box>
+        )}
 
         {/* Create Modal */}
         <SidebarAddDonationCampaign open={addNewCampaignOpen} toggle={toggleAddCampaignDrawer} />

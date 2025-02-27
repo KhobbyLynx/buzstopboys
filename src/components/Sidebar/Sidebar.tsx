@@ -30,7 +30,7 @@ const Sidebar = () => {
 
         {/* Sidebar Collapse Icon */}
         <Icon
-          icon={collapseShow === 'hidden' ? 'la:circle' : 'la:dot-circle'}
+          icon={collapseShow === 'hidden' ? 'la:dot-circle' : 'la:circle'}
           className="w-8 h-8 md:hidden"
           onClick={handleShow}
         />
@@ -42,7 +42,7 @@ const Sidebar = () => {
         <h6 className="text-xs uppercase font-bold py-2">Webpage</h6>
         <ul>
           <li>
-            <Link href="/">
+            <Link href="/" onClick={() => setCollapseShow('hidden')}>
               <div
                 className={`group py-3 font-bold flex items-center transition duration-300 ${
                   pathname === '/'
@@ -62,7 +62,7 @@ const Sidebar = () => {
         <ul>
           {adminNavigation.map(({ name, href, icon }) => (
             <li key={href} className="mb-1">
-              <Link href={href}>
+              <Link href={href} onClick={() => setCollapseShow('hidden')}>
                 <div
                   className={`group py-3 font-bold flex items-center transition duration-300 ${
                     pathname.includes(href)

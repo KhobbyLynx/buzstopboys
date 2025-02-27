@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { FormHelperText } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'

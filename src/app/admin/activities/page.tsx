@@ -48,18 +48,8 @@ import SidebarAddAcitivity from '@/view/admin/activities/list/AddActivityDrawer'
 import SidebarEditActivity from '@/view/admin/activities/list/EditActivityDrawer'
 import { ActivityProps } from '@/types/activities'
 
-interface StatusType {
-  [key: string]: ThemeColor
-}
-
 interface CellType {
   row: ActivityProps
-}
-
-const StatusObj: StatusType = {
-  active: 'info',
-  suspended: 'error',
-  completed: 'success',
 }
 
 const RowOptions = ({ patronID, data }: { patronID: string; data: ActivityProps }) => {
@@ -276,7 +266,7 @@ const DashActivities = () => {
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.activities)
 
-  const { activities, pending } = store
+  const { activities, fetchingActivities } = store
 
   useEffect(() => {
     // Fetch Activities
@@ -287,7 +277,7 @@ const DashActivities = () => {
 
   const toggleAddActivityDrawer = () => setAddNewActivityOpen(!addNewActivityOpen)
 
-  if (pending) {
+  if (fetchingActivities) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
