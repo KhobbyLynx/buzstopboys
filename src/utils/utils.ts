@@ -154,6 +154,10 @@ export const generateRandomPassword = () => {
   return password
 }
 
+export const generatePaymentReference = () => {
+  return `PAY-${uuidv4().slice(0, 15).toUpperCase()}`
+}
+
 // ** getUsername
 export function splitEmail(email: string | null): string | undefined {
   if (!email) return ''
