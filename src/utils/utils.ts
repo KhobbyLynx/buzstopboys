@@ -204,3 +204,23 @@ export function convertToEmbedUrl(youtubeUrl: string): string {
 }
 
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+export function isWithinOneMinute(
+  creationTime: string | undefined,
+  lastSignInTime: string | undefined
+): boolean {
+  if (creationTime && lastSignInTime) {
+    // Convert both timestamps to Date objects
+    const createdTime = new Date(creationTime)
+    const signInTime = new Date(lastSignInTime)
+
+    // Calculate the difference in milliseconds
+    const diffInMilliseconds = Math.abs(signInTime.getTime() - createdTime.getTime())
+
+    // Check if the difference is within 60,000 milliseconds (1 minute)
+    return diffInMilliseconds <= 60000
+  } else {
+    // If either of the timestamps is undefined, return false
+    return false
+  }
+}
