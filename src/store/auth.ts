@@ -5,14 +5,16 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axiosRequest from '@/utils/axiosRequest'
 
 // ** UseJWT import to get config
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../configs/firebase'
-
-// ** Default Avatar
-// import DefaultAvatar from '/images/avatars/avatar-blank.png'
+import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth'
+import { auth, googleProvider } from '../configs/firebase'
 
 // ** Utils
-import { logoutFirebase, splitEmail } from '@/utils/utils'
+import { isWithinOneMinute, logoutFirebase, splitEmail } from '@/utils/utils'
 
 // ** Toast
 import { Toast } from '@/utils/toast'
@@ -33,11 +35,20 @@ interface PatronType {
   avatar?: string
 }
 
+// ** Default Avatar
+const defaultAvatar =
+  'https://res.cloudinary.com/khobbylynx/image/upload/v1740629504/buzstopboys/avatars/avatarDefault_cprnz9.jpg'
+
 // ** HANDLE LOGIN
 export const handleLoginPatron = createAsyncThunk(
   'auth/handleLoginPatron',
   async (patronData: PatronType, { rejectWithValue }) => {
     const { email, password } = patronData
+
+    // VALIDATE
+    if (!email || !password) {
+      throw new Error('Email and password are required to Login')
+    }
 
     try {
       // Start Progess bar
@@ -45,12 +56,12 @@ export const handleLoginPatron = createAsyncThunk(
 
       const response = await signInWithEmailAndPassword(auth, email, password)
 
-      const patronCredentials = response.user
+      const responseData = response.user
 
-      const { uid: patronId } = patronCredentials
-      const accessToken = await patronCredentials.getIdToken()
-      const refreshToken = patronCredentials.refreshToken
-      const { lastSignInTime } = patronCredentials.metadata
+      const { uid: patronId } = responseData
+      const accessToken = await responseData.getIdToken()
+      const refreshToken = responseData.refreshToken
+      const { lastSignInTime } = responseData.metadata
 
       const updatePatronInfo = await axiosRequest.patch(`/patrons?id=${patronId}`, {
         lastSignInTime,
@@ -59,7 +70,7 @@ export const handleLoginPatron = createAsyncThunk(
 
       const patronInfo = updatePatronInfo.data
 
-      const patronDataObj: PatronWebType = {
+      const patronCredentials: PatronWebType = {
         id: patronInfo.id,
         fullname: patronInfo.fullname,
         firstname: patronInfo.firstname,
@@ -69,7 +80,7 @@ export const handleLoginPatron = createAsyncThunk(
         role: patronInfo.role,
         address: patronInfo.address,
         contact: patronInfo.contact,
-        avatar: patronInfo.avatar,
+        avatar: patronInfo.avatar ?? defaultAvatar,
         onlineStatus: true,
         verified: patronInfo.verified,
         timestamps: {
@@ -93,9 +104,9 @@ export const handleLoginPatron = createAsyncThunk(
       })
 
       // Set UserData as cookie
-      setCookie('userData', patronDataObj)
+      await setCookie('userData', patronCredentials)
 
-      return patronDataObj
+      return patronCredentials
     } catch (error) {
       // End Progress bar
       BProgress.done()
@@ -135,7 +146,7 @@ export const handleLogout = createAsyncThunk<void, string, { rejectValue: string
       await logoutFirebase()
 
       // Delete User Data Cookie
-      deleteCookie('userData')
+      await deleteCookie('userData')
 
       // End Progress bar
       BProgress.done()
@@ -176,11 +187,9 @@ export const handleAutoLogin = createAsyncThunk(
       const response = await axiosRequest.get('/set-cookie')
       const userData = response.data
 
-      if (!userData) {
-        throw new Error('No userData found in cookies')
-      }
-
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        if (!userData) console.log('No userData found in cookies')
+
         console.log('User Data found in cookies:', userData)
       }
 
@@ -196,12 +205,12 @@ export const handleAutoLogin = createAsyncThunk(
       // End Progress bar
       BProgress.done()
 
-      Toast.fire({
-        icon: 'error',
-        title: 'Auto Authentication',
-        text: `${error instanceof Error ? error.message : 'An error occurred - Auto Auth'}`,
-      })
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        Toast.fire({
+          icon: 'error',
+          title: 'Auto Authentication',
+          text: `${error instanceof Error ? error.message : 'An error occurred - Auto Auth'}`,
+        })
         console.log('Error fetching patron data - handleAutoLogin', error)
       }
 
@@ -213,71 +222,72 @@ export const handleAutoLogin = createAsyncThunk(
   }
 )
 
-// ** REGISTER NEW USER
-export const handleRegisterPatron = createAsyncThunk(
-  'buzStopBoys/handleRegisterPatron',
-  async (userData: PatronType, { rejectWithValue }) => {
-    const {
-      email,
-      password,
-      username: nameEntered,
-      firstname = '',
-      address = '',
-      lastname = '',
-      contact = '',
-      role: roleSelected,
-      avatar: profileImg,
-    } = userData
+interface PatronFormInputType {
+  email: string
+  password: string
+  username: string
+}
 
-    // Log out user from firebase
+// ** REGISTER NEW USER WITH EMAIL AND PASSWORD
+export const handleRegisterPatron = createAsyncThunk(
+  'auth/handleRegisterPatron',
+  async (userData: PatronFormInputType, { rejectWithValue }) => {
+    const { email, password, username } = userData
+
+    // VALIDATION
+    if (!username) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Username is required to sign up')
+      }
+      throw new Error('Username is required to sign up user')
+    }
+
+    // Log out user from firebase if logged in
     logoutFirebase()
     try {
       // Start Progress bar
       BProgress.start()
 
       const response = await createUserWithEmailAndPassword(auth, email, password)
-      const patronCredentials = response.user
+      const responseData = response.user
 
-      const { email: authEmail, uid: patronId, photoURL, displayName } = patronCredentials
-      const accessToken = await patronCredentials.getIdToken()
-      const refreshToken = patronCredentials.refreshToken
-      const { lastSignInTime } = patronCredentials.metadata
-      const name = splitEmail(authEmail)
-      const username = nameEntered ? nameEntered : displayName ? displayName : name
+      const { uid: patronId, photoURL } = responseData
+      const accessToken = await responseData.getIdToken()
+      const refreshToken = responseData.refreshToken
+      const { lastSignInTime } = responseData.metadata
 
-      const avatar = profileImg ? profileImg : photoURL ? photoURL : ''
-      const role = roleSelected ? roleSelected : 'patron'
-      const combineName = `${firstname} ${lastname}`
-      const fullname = combineName ? combineName : ''
+      const role = 'patron'
+      const firstname = ''
+      const lastname = ''
+      const fullname = ''
+      const address = ''
+      const contact = ''
 
-      const newPatronDataObj = {
+      const avatar = photoURL ? photoURL : ''
+
+      const patronCredentialsForDB = {
         id: patronId,
-        firstname,
-        lastname,
         username,
-        fullname,
         email,
-        address,
-        contact,
-        role,
         avatar,
-        password,
+        lastSignInTime,
+        role,
       }
 
       // ** Write Data to Mongo DB
-      await axiosRequest.post('/patrons', newPatronDataObj)
+      await axiosRequest.post('/patrons/signup', patronCredentialsForDB)
 
-      const patronDataObj: PatronWebType = {
+      const patronCredentials: PatronWebType = {
         id: patronId,
-        fullname,
         firstname,
+        fullname,
         lastname,
+        address,
+        contact,
         username,
         email,
         role,
-        address,
-        contact,
-        avatar,
+        avatar: avatar ?? defaultAvatar,
         onlineStatus: true,
         verified: false,
         timestamps: {
@@ -297,28 +307,32 @@ export const handleRegisterPatron = createAsyncThunk(
       Toast.fire({
         icon: 'success',
         title: 'Signed up successfully',
-        text: `Welcome ${capitalize(username ? username : '')}`,
+        text: `Welcome ${capitalize(username)}`,
       })
 
       // Set UserData as cookie
-      setCookie('userData', patronDataObj)
+      await setCookie('userData', patronCredentials)
 
-      return patronDataObj
+      return patronCredentials
     } catch (error) {
       // End Progress bar
       BProgress.done()
 
-      // Success Toast
-      Toast.fire({
-        icon: 'error',
-        title: 'Signed up',
-        text: `${error instanceof Error ? error.message : 'Sign up unsuccessful!'}`,
-      })
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        // Error Toast
+        Toast.fire({
+          icon: 'error',
+          title: 'Signed up',
+          text: `${error instanceof Error ? error.message : 'Sign up unsuccessful!'}`,
+        })
+      }
 
-      if (error instanceof Error) {
-        console.log('Error creating new patron account', error.message)
-      } else {
-        console.log('Error creating new patron account', error)
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        if (error instanceof Error) {
+          console.log('patron sign up error message:', error.message)
+        } else {
+          console.log('Error creating new patron account', error)
+        }
       }
       // Pass error message to rejectWithValue
       return rejectWithValue(
@@ -328,15 +342,143 @@ export const handleRegisterPatron = createAsyncThunk(
   }
 )
 
-const initialState: { data: PatronWebType | null; isLoggedIn: boolean; pending: boolean } = {
-  data: null,
-  isLoggedIn: false,
-  pending: false,
-}
+// ** GOOGLE AUTH SIGN UP
+export const handleGoogleAuthentication = createAsyncThunk(
+  'auth/handleGoogleAuthentication',
+  async (_, { rejectWithValue }) => {
+    // Log out user from firebase if logged in
+    logoutFirebase()
+    try {
+      // Start Progress bar
+      BProgress.start()
+
+      // SignIn with google
+      const response = await signInWithPopup(auth, googleProvider)
+      const responseData = response.user
+
+      const { uid: patronId, email, photoURL, displayName, metadata } = responseData
+
+      // CreatedAt and lastLoginAt is available in metadata as timestamps
+      // If the createdAt timestamp has a diference of 1min with the lastLoginAt
+      // User is now be registering
+      const creationTime = metadata.creationTime
+      const lastSignInTime = metadata.lastSignInTime
+      const isNewUser: boolean = isWithinOneMinute(creationTime, lastSignInTime)
+      const accessToken = await responseData.getIdToken()
+      const refreshToken = responseData.refreshToken
+
+      if (!email) throw new Error('Email not found in google auth')
+
+      const role = 'patron'
+      const firstname = ''
+      const lastname = ''
+      const fullname = ''
+      const address = ''
+      const contact = ''
+
+      const avatar = photoURL ? photoURL : ''
+
+      // Additional data for Google Auth
+      const username = displayName ?? splitEmail(email)
+
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('--------------EMAIL IN USE ----------')
+        console.log('isNewUser', isNewUser)
+        console.log('--------------EMAIL IN USE ----------')
+      }
+
+      if (isNewUser) {
+        const patronCredentialsForDB = {
+          id: patronId,
+          username,
+          email,
+          avatar,
+          lastSignInTime,
+          role,
+          googleAuth: true,
+        }
+
+        // ✅ Email is NOT in use — Proceed to save user data to MongoDB
+        await axiosRequest.post('/patrons/signup', patronCredentialsForDB)
+      }
+
+      const patronCredentials: PatronWebType = {
+        id: patronId,
+        firstname,
+        fullname,
+        lastname,
+        address,
+        contact,
+        username,
+        email,
+        role,
+        avatar: avatar ?? defaultAvatar,
+        onlineStatus: true,
+        verified: true,
+        type: 'google',
+        timestamps: {
+          createdAt: new Date().toISOString(),
+          lastSignInTime,
+        },
+        tokens: {
+          refreshToken,
+          accessToken,
+        },
+      }
+
+      // End Progress bar
+      BProgress.done()
+      const title = isNewUser ? 'Google Sign Up Successful!' : 'Google Log In Successful!'
+      const text = `Welcome ${
+        isNewUser ? capitalize(username ?? 'patron') : `back ${capitalize(username ?? 'patron')}`
+      }`
+
+      // Success Toast
+      Toast.fire({
+        icon: 'success',
+        title,
+        text,
+      })
+
+      // Set UserData as cookie
+      await setCookie('userData', patronCredentials)
+
+      return patronCredentials
+    } catch (error) {
+      // End Progress bar
+      BProgress.done()
+
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        // Error Toast
+        Toast.fire({
+          icon: 'error',
+          title: 'Signed up',
+          text: `${error instanceof Error ? error.message : 'Sign up unsuccessful!'}`,
+        })
+      }
+
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        if (error instanceof Error) {
+          console.log('patron sign up error message:', error.message)
+        } else {
+          console.log('Error creating new patron account', error)
+        }
+      }
+      // Pass error message to rejectWithValue
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An unknown error occurred signing up'
+      )
+    }
+  }
+)
 
 export const authSlice = createSlice({
   name: 'authentication',
-  initialState,
+  initialState: {
+    data: {} as PatronWebType | null,
+    isLoggedIn: false,
+    pending: false,
+  },
   reducers: {
     handleLogoutReducer: (state) => {
       state.data = null
@@ -360,6 +502,23 @@ export const authSlice = createSlice({
         state.pending = true
       })
       .addCase(handleRegisterPatron.fulfilled, (state, action) => {
+        // Update state immutably
+        return {
+          ...state,
+          data: action.payload,
+          isLoggedIn: true,
+          pending: false,
+        }
+      })
+
+      // ** Google Auth
+      .addCase(handleGoogleAuthentication.rejected, (state) => {
+        state.pending = false
+      })
+      .addCase(handleGoogleAuthentication.pending, (state) => {
+        state.pending = true
+      })
+      .addCase(handleGoogleAuthentication.fulfilled, (state, action) => {
         // Update state immutably
         return {
           ...state,
