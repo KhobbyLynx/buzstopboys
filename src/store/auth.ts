@@ -42,8 +42,8 @@ const defaultAvatar =
 // ** HANDLE LOGIN
 export const handleLoginPatron = createAsyncThunk(
   'auth/handleLoginPatron',
-  async (patronData: PatronType, { rejectWithValue }) => {
-    const { email, password } = patronData
+  async (userData: PatronType, { rejectWithValue }) => {
+    const { email, password } = userData
 
     // VALIDATE
     if (!email || !password) {
@@ -110,12 +110,27 @@ export const handleLoginPatron = createAsyncThunk(
     } catch (error) {
       // End Progress bar
       BProgress.done()
-      // Error Toast
-      Toast.fire({
-        icon: 'error',
-        title: 'Sign In',
-        text: `${error instanceof Error ? error.message : 'An unknown error occurred'}`,
-      })
+      // Handle Firebase Authentication Errors
+      let errorMessage = 'An unknown error occurred'
+
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'auth/user-not-found':
+            errorMessage = 'User not found'
+            break
+          case 'auth/wrong-password':
+            errorMessage = 'Invalid Credentials'
+            break
+          case 'auth/user-disabled':
+            errorMessage = 'Your account has been suspended. Please contact support.'
+            break
+          case 'auth/network-request-failed':
+            errorMessage = 'Network Error'
+            break
+          default:
+            errorMessage = error.message
+        }
+      }
 
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         if (error instanceof Error) {
@@ -126,7 +141,7 @@ export const handleLoginPatron = createAsyncThunk(
       }
 
       // Pass error message to rejectWithValue
-      return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred')
+      return rejectWithValue(errorMessage)
     }
   }
 )
