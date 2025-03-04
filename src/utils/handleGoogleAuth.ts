@@ -1,11 +1,13 @@
+'use client'
+
 import { Dispatch } from '@reduxjs/toolkit'
 import { UseFormSetError } from 'react-hook-form'
-import { NextRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { handleGoogleAuthentication } from '@/store/auth'
 
 interface GoogleAuthParams {
   dispatch: Dispatch
-  router: NextRouter
+  router: ReturnType<typeof useRouter>
   setError: UseFormSetError<any>
   setLoading: (loading: boolean) => void
 }
@@ -45,6 +47,9 @@ export async function handleGoogleAuth({
       }
     }
   } catch (error) {
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+      console.log('Google Auth error', error)
+    }
     // Handle unexpected errors
     setError('password', {
       type: 'manual',
