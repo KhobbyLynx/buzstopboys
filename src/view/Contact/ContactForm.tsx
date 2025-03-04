@@ -18,6 +18,7 @@ import {
   FormControlLabel,
   Radio,
   FormHelperText,
+  InputAdornment,
 } from '@mui/material'
 import CustomTextField from '@/components/mui/text-field'
 import { Icon } from '@iconify/react'
@@ -48,8 +49,8 @@ export function ContactForm() {
     isLoggedIn: state.auth.isLoggedIn,
   }))
 
-  const handleAdminSubit = () => {
-    Toast.fire({
+  const handleAdminSubmit = () => {
+    return Toast.fire({
       icon: 'info',
       title: 'Send Message',
       text: 'Admin can not send a message through the contact form',
@@ -135,19 +136,7 @@ export function ContactForm() {
   }
 
   return (
-    <section className="mb-20 lg:mb-40 px-0 pt-[64px]">
-      <div className="container mx-auto mb-20 text-center">
-        <Typography variant="h4" color="blue-gray " className="mb-4 px-4 font-extrabold text-2xl">
-          Get in Touch with Us
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          className="mx-auto ml-auto w-full lg:w-5/12 !text-gray-500 text-center"
-        >
-          Have questions, suggestions, or want to collaborate with us? Reach out! We value your
-          feedback and are always excited to connect with like-minded individuals and organizations.
-        </Typography>
-      </div>
+    <section className="mb-20 lg:mb-40 px-0 pt-[64px]" id="contact_form">
       <div>
         <Card className="container mx-auto border border-gray/50">
           <CardContent className="grid grid-cols-1 lg:grid-cols-7 md:gap-10">
@@ -337,6 +326,11 @@ export function ContactForm() {
                       error={Boolean(errors.message)}
                       {...(errors.message && { helperText: errors.message.message })}
                       InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconifyIcon fontSize="1.25rem" icon="tabler:message" />
+                          </InputAdornment>
+                        ),
                         sx: {
                           overflow: 'hidden',
                           '& textarea': {
@@ -351,12 +345,12 @@ export function ContactForm() {
                   <Button
                     type={userIsAdmin && !devMode ? 'button' : 'submit'}
                     disabled={sending}
-                    onClick={userIsAdmin && !devMode ? handleAdminSubit : undefined}
+                    onClick={userIsAdmin && !devMode ? handleAdminSubmit : undefined}
                     startIcon={
                       <Icon icon={sending ? 'line-md:uploading-loop' : 'mynaui:send-solid'} />
                     }
-                    variant="contained"
                     className="w-full md:w-fit hover:bg-blue-500"
+                    variant="contained"
                   >
                     {sending ? 'Sending' : 'Send message'}
                   </Button>
