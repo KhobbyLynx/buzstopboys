@@ -39,9 +39,9 @@ const TableHeader = (props: TableHeaderProps) => {
         {refreshing ? 'Refreshing...' : 'Refresh'}
       </Button>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-        <Button onClick={toggle} variant="contained" sx={{ '& svg': { mr: 2 } }}>
+        <Button disabled={sending} onClick={toggle} variant="contained" sx={{ '& svg': { mr: 2 } }}>
           <Icon fontSize="1.125rem" icon={sending ? 'tabler:loader' : 'mynaui:send-solid'} />
-          Send Message
+          {sending ? 'Sending...' : 'Send Message'}
         </Button>
       </Box>
     </Box>
