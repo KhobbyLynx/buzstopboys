@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { Tooltip } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -112,6 +112,10 @@ const SidebarSendMessage = (props: SidebarSendMessageType) => {
         receiverId,
       }
 
+      console.log('---------sendMessage--------')
+      console.log(requiredData)
+      console.log('---------sendMessage--------')
+
       // dispatch with required data
       dispatch(sendMessage(requiredData))
     } catch (error: any) {
@@ -208,7 +212,7 @@ const SidebarSendMessage = (props: SidebarSendMessageType) => {
             fullWidth
             value={receiverId}
             sx={{ mb: 4 }}
-            label="Select Icon"
+            label="Receiver Id"
             onChange={(e) => setReceiverId(e.target.value)}
             SelectProps={{
               value: receiverId,
