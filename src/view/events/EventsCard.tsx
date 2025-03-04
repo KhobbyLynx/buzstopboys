@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
@@ -13,6 +13,8 @@ import { Button } from '@mui/material'
 import Link from 'next/link'
 import { EventProps } from '@/types/events'
 import { formatDate } from '@/utils/utils'
+import DialogVolunteerForm from '@/components/dialog/VolunteerFormDialog'
+import DonateFormDialog from '@/components/dialog/DonateFormDialog'
 
 // Styled component for the image container
 const ImageContainer = styled(Box)({
@@ -46,6 +48,7 @@ const ButtonsContainer = styled(Box)({
 })
 
 const EventCard: React.FC<EventProps> = ({
+  id,
   title,
   caption,
   venue,
@@ -58,6 +61,17 @@ const EventCard: React.FC<EventProps> = ({
   img,
   status,
 }) => {
+  const [showDonationForm, setShowDonationForm] = useState(false)
+  const [showVolunteerForm, setShowVolunteerForm] = useState(false)
+
+  const handleOpenDonationForm = () => {
+    setShowDonationForm(!showDonationForm)
+  }
+
+  const handleOpenVolunteerForm = () => {
+    setShowVolunteerForm(!showVolunteerForm)
+  }
+
   const Time = () => {
     if (status === 'past') {
       return (
@@ -138,12 +152,23 @@ const EventCard: React.FC<EventProps> = ({
 
         {/* Action Buttons */}
         <ButtonsContainer>
-          <Link href={'/donate'}>
-            <Button variant="outlined">Donate</Button>
-          </Link>
-          <Button variant="contained">Volunteer</Button>
+          <Button variant="outlined" onClick={handleOpenDonationForm}>
+            Donate
+          </Button>
+
+          <Button variant="contained" onClick={handleOpenVolunteerForm}>
+            Volunteer
+          </Button>
         </ButtonsContainer>
       </StyledCardContent>
+      <DialogVolunteerForm show={showVolunteerForm} handleClose={handleOpenVolunteerForm} />
+      <DonateFormDialog
+        show={showDonationForm}
+        handleClose={handleOpenDonationForm}
+        donationId={id}
+        donationType="event"
+        amount={null}
+      />
     </Card>
   )
 }
