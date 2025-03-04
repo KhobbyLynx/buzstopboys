@@ -16,9 +16,15 @@ export const detectCurrency = async (): Promise<string> => {
   try {
     const { data } = await axiosRequest.get('http://ip-api.com/json')
 
+    const allPersonalData = await axiosRequest.get('http://ip-api.com/json')
+
     console.log('---- DETECTED CURRENCY --------')
     console.log(`Country Code: ${data.countryCode}`)
     console.log('Full Data:', data)
+    console.log('--------------------------------')
+
+    console.log('---- DETECTED DATA --------')
+    console.log('Full Data:', allPersonalData)
     console.log('--------------------------------')
 
     return getCurrencyByCountry(data.countryCode)
