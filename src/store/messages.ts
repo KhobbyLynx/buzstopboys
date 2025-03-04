@@ -14,21 +14,18 @@ import {
 // ** FETCH MESSAGES
 export const getMessages = createAsyncThunk(
   'messages/getMessages',
-  async (query: string | undefined, { rejectWithValue }) => {
+  async (
+    query: { page?: number; limit?: number; [key: string]: string | number | undefined },
+    { rejectWithValue }
+  ) => {
     try {
-      let response
-      if (query) {
-        response = await axiosRequest.get(`/messages?${query}`)
-      } else {
-        response = await axiosRequest.get('/messages')
-      }
+      const queryString = new URLSearchParams(query as Record<string, string>).toString()
+      const response = await axiosRequest.get(`/messages?${queryString}`)
 
-      const messages = response.data
-
-      return messages
+      return response.data
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-        console.log('Error fetching messages', error)
+        console.error('Error fetching messages', error)
       }
       return rejectWithValue(
         error instanceof Error ? error.message : 'An error occurred fetching messages'
