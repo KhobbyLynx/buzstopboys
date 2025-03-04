@@ -46,7 +46,14 @@ const ActivitiesCollage = ({ data: ACTIVITIES }: { data: ActivityProps[] }) => (
         >
           {images.map((src, index) => (
             <SwiperSlide key={index}>
-              <Image src={src} alt="event" layout="responsive" width={400} height={400} />
+              <Image
+                src={src}
+                alt="event"
+                style={{ width: '100%', height: 'auto' }}
+                width={400}
+                height={400}
+                priority
+              />
             </SwiperSlide>
           ))}
         </Swiper>
