@@ -4,6 +4,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../configs/firebase'
+import { IconifyIcon } from '@iconify/react'
 
 // ** Firebase Logout Func
 export const logoutFirebase = async () => {
