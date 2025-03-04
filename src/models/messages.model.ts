@@ -41,13 +41,14 @@ const messageSchema = new Schema(
     senderInfo: {
       firstname: { type: String, trim: true },
       lastname: { type: String, trim: true },
+      fullname: { type: String, trim: true },
       email: { type: String, trim: true }, // Optional if sender is admin
       contact: { type: String, trim: true },
     },
     source: {
       type: String, // "inbox" | "contact"
       required: true,
-      enum: ['inbox', 'contact'],
+      enum: ['inbox', 'contact', 'volunteer'],
     },
     title: {
       type: String,
