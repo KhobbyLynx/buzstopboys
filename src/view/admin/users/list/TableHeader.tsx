@@ -4,30 +4,17 @@ import Button from '@mui/material/Button'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/store'
-import { getPatrons } from '@/store/users'
 
 interface TableHeaderProps {
   toggle: () => void
+  handleRefresh: () => void
+  refreshing: boolean
+  submitting: boolean
 }
-
 const TableHeader = (props: TableHeaderProps) => {
   // ** Props
-  const { toggle } = props
+  const { toggle, handleRefresh, refreshing, submitting } = props
 
-  // ** State
-  const [refreshing, setRefreshing] = useState<boolean>(false)
-
-  const dispatch = useDispatch<AppDispatch>()
-
-  const handleRefresh = () => {
-    setRefreshing(true)
-    dispatch(getPatrons()).then(() => {
-      setRefreshing(false)
-    })
-  }
   return (
     <Box
       sx={{
@@ -52,7 +39,7 @@ const TableHeader = (props: TableHeaderProps) => {
       </Button>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
         <Button onClick={toggle} variant="contained" sx={{ '& svg': { mr: 2 } }}>
-          <Icon fontSize="1.125rem" icon="tabler:plus" />
+          <Icon fontSize="1.125rem" icon={submitting ? 'tabler:loader' : 'tabler:plus'} />
           Add New Patron
         </Button>
       </Box>
