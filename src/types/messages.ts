@@ -1,7 +1,8 @@
-export type MessageSource = 'contact' | 'inbox'
+export type MessageSource = 'contact' | 'inbox' | 'volunteer'
 export type SenderStatusType = 'admin' | 'patron' | 'unregistered'
 export type SenderInfoType = {
-  firstname: string
+  fullname?: string
+  firstname?: string
   lastname?: string
   email: string
   contact?: string
