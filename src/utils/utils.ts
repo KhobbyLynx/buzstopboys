@@ -83,7 +83,7 @@ export function formatAmount(amount: number): string {
 export function formatDate(
   isoDate: string,
   locale: string = 'en-GH'
-): { time: string; date: string; periodFromNow: string } {
+): { time: string; date: string; periodFromNow: string; dateString: string } {
   const date = new Date(isoDate)
   const now = new Date()
 
@@ -104,11 +104,19 @@ export function formatDate(
   })
   const dateFormatted = dateFormatter.format(date)
 
-  // Calculate the difference in milliseconds
-  const diff = now.getTime() - date.getTime()
+  // Date in Month YYYY format (e.g., April 2025)
+  const monthYearFormatter = new Intl.DateTimeFormat(locale, {
+    month: 'long',
+    year: 'numeric',
+  })
+  const dateString = monthYearFormatter.format(date)
 
-  // Helper function to determine the time ago
-  const getTimeAgo = (milliseconds: number): string => {
+  // Calculate the difference in milliseconds
+  const diff = Math.abs(now.getTime() - date.getTime())
+  const isFuture = date > now
+
+  // Helper function to determine the time difference
+  const getTimeDifference = (milliseconds: number): string => {
     const seconds = Math.floor(milliseconds / 1000)
     const minutes = Math.floor(seconds / 60)
     const hours = Math.floor(minutes / 60)
@@ -117,21 +125,22 @@ export function formatDate(
     const months = Math.floor(days / 30)
     const years = Math.floor(days / 365)
 
-    if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`
-    if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`
-    if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''} ago`
-    if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`
-    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
-    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
-    return `${seconds} second${seconds !== 1 ? 's' : ''} ago`
+    if (years > 0) return `${years} year${years > 1 ? 's' : ''}`
+    if (months > 0) return `${months} month${months > 1 ? 's' : ''}`
+    if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''}`
+    if (days > 0) return `${days} day${days > 1 ? 's' : ''}`
+    if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''}`
+    if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''}`
+    return `${seconds} second${seconds !== 1 ? 's' : ''}`
   }
 
-  const periodFromNow = getTimeAgo(diff)
+  const periodFromNow = `${getTimeDifference(diff)} ${isFuture ? 'more' : 'ago'}`
 
   return {
     time,
     date: dateFormatted,
     periodFromNow,
+    dateString,
   }
 }
 
