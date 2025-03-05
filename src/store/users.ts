@@ -1,4 +1,4 @@
-import { PatronDatabaseType } from '@/types/patron'
+import { PatronDatabaseType, PatronProfileType } from '@/types/patron'
 import axiosRequest from '@/utils/axiosRequest'
 import { Toast } from '@/utils/toast'
 import { BProgress } from '@bprogress/core'
@@ -279,6 +279,45 @@ export const handleAdminRegisterPatron = createAsyncThunk(
   }
 )
 
+// ** UPDATE USER
+export const updateUserInfo = createAsyncThunk(
+  'users/updateUserInfo',
+  async ({ data, userId }: { data: PatronProfileType; userId: string }, { rejectWithValue }) => {
+    try {
+      // Start Progress bar
+      BProgress.start()
+
+      const updatePatronInfo = await axiosRequest.put(`/patrons?id=${userId}`, data)
+
+      // Success Toast
+      Toast.fire({
+        icon: 'success',
+        title: 'Patrons',
+        text: `${capitalize(data.username || '')} updated!`,
+      })
+
+      return updatePatronInfo
+    } catch (error) {
+      // Error Toast
+      Toast.fire({
+        icon: 'error',
+        title: 'Patrons',
+        text: `${capitalize(data.username || '')} not updated!`,
+      })
+
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error updating User', error)
+      }
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'An unknown error occurred updating user'
+      )
+    } finally {
+      // End Progress bar
+      BProgress.done()
+    }
+  }
+)
+
 export const patronSlice = createSlice({
   initialState: {
     // USERS
@@ -303,6 +342,7 @@ export const patronSlice = createSlice({
     fetchingUsers: false as boolean,
     fetchingUsersWithQuery: false as boolean,
     fetchingSingleUser: false as boolean,
+    updatingUserPending: false,
   },
   name: 'users',
   reducers: {},
@@ -393,6 +433,20 @@ export const patronSlice = createSlice({
         } else {
           state.totalPatrons + 1
         }
+      })
+
+      // ** ADMIN REGISTER USER
+      .addCase(updateUserInfo.fulfilled, (state, action) => {
+        state.users = state.users.map((u) =>
+          u.id === action.payload.data.id ? action.payload.data : u
+        )
+        state.updatingUserPending = false
+      })
+      .addCase(updateUserInfo.pending, (state) => {
+        state.updatingUserPending = true
+      })
+      .addCase(updateUserInfo.rejected, (state) => {
+        state.updatingUserPending = false
       })
   },
 })

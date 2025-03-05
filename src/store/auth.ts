@@ -506,6 +506,15 @@ export const authSlice = createSlice({
     setAuthNotPending: (state) => {
       state.pending = false
     },
+    updateUser: (state, action) => {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...action.payload,
+        },
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -585,6 +594,7 @@ export const authSlice = createSlice({
   },
 })
 
-export const { handleLogoutReducer, setAuthNotPending, setAuthPending } = authSlice.actions
+export const { handleLogoutReducer, setAuthNotPending, setAuthPending, updateUser } =
+  authSlice.actions
 
 export default authSlice.reducer
