@@ -60,6 +60,12 @@ const patronSchema = new Schema(
     password: {
       type: String,
     },
+    social: {
+      x: { type: String },
+      facebook: { type: String },
+      instagram: { type: String },
+      tiktok: { type: String },
+    },
   },
   {
     timestamps: true,
