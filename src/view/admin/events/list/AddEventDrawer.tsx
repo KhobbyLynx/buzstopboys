@@ -35,7 +35,6 @@ import { addEvent } from '@/store/events'
 // ** Types Imports
 import { AppDispatch } from '@/store'
 import Image from 'next/image'
-import { Toast } from '@/utils/toast'
 import { FormHelperText } from '@mui/material'
 
 type EventStatusType = 'upcoming' | 'past' | 'suspended'
