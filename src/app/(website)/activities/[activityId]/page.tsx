@@ -87,7 +87,7 @@ const ActivityDetails = () => {
           startIcon={<IconifyIcon icon="mingcute:back-fill" />}
           onClick={() => router.push('/activities')}
           variant="outlined"
-          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
+          className="!mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
         >
           Back To Activities
         </Button>

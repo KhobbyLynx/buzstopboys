@@ -1,20 +1,27 @@
 'use client'
-import React from 'react'
+import React, { useRef } from 'react'
 import { Navbar as MTNavbar, Collapse, Button, IconButton } from '@material-tailwind/react'
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import PatronDropdown from '../../dropdowns/patronDropdown'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { PatronWebType } from '@/types/patron'
 import IconifyIcon from '../../icon'
 import { clientNavigation } from '@/navigation/client.navigation'
 import { Box } from '@mui/material'
+import { useClickOutside } from '@/hooks/useOutsideClick'
+import { AppDispatch } from '@/store'
+import { handleLogout } from '@/store/auth'
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false)
   const [isScrolling, setIsScrolling] = React.useState(false)
+
+  const navRef = useRef(null)
+
+  useClickOutside(navRef, () => setOpen(false))
 
   const patronData = useSelector(
     (state: { auth: { data: PatronWebType | null; isLoggedIn: boolean } }) => state.auth
@@ -24,6 +31,7 @@ export function Navbar() {
   const isLoggedIn = patronData.isLoggedIn
 
   const pathname = usePathname()
+  const router = useRouter()
 
   const handleOpen = () => setOpen((cur) => !cur)
 
@@ -53,8 +61,25 @@ export function Navbar() {
     }
   }, [])
 
+  const dispatch = useDispatch<AppDispatch>()
+
+  const handleSignout = async () => {
+    setOpen(false)
+    try {
+      if (auth?.id) {
+        await dispatch(handleLogout(auth.id))
+        router.push('/')
+      }
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.error('Error during signout:', error)
+      }
+    }
+  }
+
   return (
     <MTNavbar
+      ref={navRef}
       shadow={false}
       fullWidth
       blurred={false}
@@ -68,6 +93,7 @@ export function Navbar() {
           width={80}
           height={80}
           className="hidden lg:block"
+          priority
         />
         <ul
           className={`ml-10 hidden items-center gap-6 lg:flex ${
@@ -105,9 +131,10 @@ export function Navbar() {
           </div>
         )}
 
-        {/* SHOW IMAGE IN MIDDLE OF NAV ON SMALL SCREENS */}
+        {/* SHOW LOGO IN MIDDLE OF NAV ON SMALL SCREENS */}
         <Box className="flex  justify-between items-center w-full lg:hidden">
           {auth && isLoggedIn ? <PatronDropdown patronData={auth} /> : null}
+
           <Image
             src={isScrolling ? `/images/logos/logo_black.png` : '/images/logos/buzstopboys.png'}
             alt="BuzStopBoys"
@@ -140,12 +167,21 @@ export function Navbar() {
               </Link>
             ))}
           </ul>
-          {auth && isLoggedIn ? null : (
+          {auth && isLoggedIn ? (
+            <Button
+              variant="text"
+              onClick={handleSignout}
+              className="bg-gray-900 text-white mt-6 hover:bg-blue-gray-700"
+              fullWidth
+            >
+              Sign Out
+            </Button>
+          ) : (
             <div className="mt-6 flex items-center gap-4">
-              <Link href="/log-in">
+              <Link href="/log-in" onClick={() => setOpen(false)}>
                 <Button variant="text">Log in</Button>
               </Link>
-              <Link href="/sign-up">
+              <Link href="/sign-up" onClick={() => setOpen(false)}>
                 <Button color="gray">Sign Up</Button>
               </Link>
             </div>

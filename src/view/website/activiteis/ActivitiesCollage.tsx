@@ -49,9 +49,9 @@ const ActivitiesCollage = ({ data: ACTIVITIES }: { data: ActivityProps[] }) => (
               <Image
                 src={src}
                 alt="event"
-                style={{ width: '100%', height: 'auto' }}
                 width={400}
                 height={400}
+                style={{ width: '100%', height: 'auto' }}
                 priority
               />
             </SwiperSlide>

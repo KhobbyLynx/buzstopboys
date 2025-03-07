@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { Typography, Card } from '@material-tailwind/react'
 import IconifyIcon from '@/components/icon'
 import { Button } from '@mui/material'
+import Link from 'next/link'
 
 function PageHero() {
   return (
@@ -35,26 +36,30 @@ function PageHero() {
               Ghana for generations to come.
             </Typography>
             <div className="mb-8 flex justify-center gap-4 lg:justify-start">
-              <Button
-                variant="outlined"
-                sx={{
-                  color: 'black',
-                  borderColor: 'black', // Outline color
-                  '&:hover': {
-                    borderColor: '#151641',
-                    backgroundColor: '#17112c1c',
-                  },
-                }}
-              >
-                Join Our Journey
-              </Button>
-              <Button
-                variant="contained"
-                color="success"
-                startIcon={<IconifyIcon icon="streamline:give-gift-solid" className="w-3 h-3" />}
-              >
-                Donate
-              </Button>
+              <Link href="/contact">
+                <Button
+                  variant="outlined"
+                  sx={{
+                    color: 'black',
+                    borderColor: 'black', // Outline color
+                    '&:hover': {
+                      borderColor: '#151641',
+                      backgroundColor: '#17112c1c',
+                    },
+                  }}
+                >
+                  Join Our Journey
+                </Button>
+              </Link>
+              <Link href="/donate">
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<IconifyIcon icon="streamline:give-gift-solid" className="w-3 h-3" />}
+                >
+                  Donate
+                </Button>
+              </Link>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 items-center justify-between gap-4 lg:justify-start">
               <Image

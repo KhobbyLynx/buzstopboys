@@ -24,6 +24,8 @@ const SnackbarAlert = ({
   vertical = 'bottom',
   horizontal = 'left',
 }: SnackBarProps) => {
+  const position = { vertical, horizontal }
+
   const handleClose = (event?: Event | SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') {
       return
@@ -38,7 +40,7 @@ const SnackbarAlert = ({
         onClose={handleClose}
         autoHideDuration={3000}
         key={vertical + horizontal}
-        anchorOrigin={{ vertical, horizontal }}
+        anchorOrigin={position}
       >
         <Alert
           variant={variant || 'filled'}

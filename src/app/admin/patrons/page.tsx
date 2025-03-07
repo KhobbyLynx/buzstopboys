@@ -24,13 +24,13 @@ import Icon from '@/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/modals/mui/chip'
+import CustomChip from '@/components/mui/chip'
 
 // ** Utils Import
 import { getInitials } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteUser, getPatrons, reinstateUser, suspendUser } from '@/store/users'
+import { deleteUser, getUsers, reinstateUser, suspendUser } from '@/store/users'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'
@@ -39,7 +39,7 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 // ** Types
-import { PatronMDBType } from '@/types/patron'
+import { PatronDatabaseType } from '@/types/patron'
 type ThemeColor = 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | 'default'
 
 import { RootState, AppDispatch } from '@/store'
@@ -47,7 +47,7 @@ import { RootState, AppDispatch } from '@/store'
 // ** Custom Table Components Imports
 import TableHeader from '@/view/admin/users/list/TableHeader'
 import SidebarAddPatron from '@/view/admin/users/list/AddPatronDrawer'
-import { Avatar, CircularProgress } from '@mui/material'
+import { Avatar, capitalize, CircularProgress } from '@mui/material'
 
 interface UserRoleType {
   [key: string]: { icon: string; color: string }
@@ -62,7 +62,7 @@ interface verificationStatusType {
 }
 
 interface CellType {
-  row: PatronMDBType
+  row: PatronDatabaseType
 }
 
 // ** renders client column
@@ -85,7 +85,7 @@ const verificationStatusObj: verificationStatusType = {
 }
 
 // ** renders client column
-const renderClient = (row: PatronMDBType) => {
+const renderClient = (row: PatronDatabaseType) => {
   if (row.avatar) {
     return <Avatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
@@ -97,6 +97,8 @@ const renderClient = (row: PatronMDBType) => {
           height: 38,
           fontWeight: 500,
           fontSize: (theme) => theme.typography.body1.fontSize,
+          textTransform: 'uppercase',
+          backgroundColor: `${row.role === 'admin' ? 'success' : 'info'}.main`,
         }}
       >
         {getInitials(row.username ? row.username : 'X X')}
@@ -106,13 +108,15 @@ const renderClient = (row: PatronMDBType) => {
 }
 
 const RowOptions = ({
-  patronID,
+  userId,
   suspended,
   username,
+  role,
 }: {
-  patronID: string
+  userId: string
   suspended: boolean | undefined
   username: string
+  role: string
 }) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
@@ -144,7 +148,7 @@ const RowOptions = ({
     }).then(async function (result) {
       if (result.value) {
         // Run Suspend action
-        dispatch(suspendUser({ userId: patronID, username }))
+        dispatch(suspendUser({ userId, username }))
 
         MySwal.fire({
           icon: 'warning',
@@ -184,7 +188,7 @@ const RowOptions = ({
     }).then(async function (result) {
       if (result.value) {
         // Run Suspend action
-        dispatch(reinstateUser({ userId: patronID, username }))
+        dispatch(reinstateUser({ userId, username }))
 
         MySwal.fire({
           icon: 'warning',
@@ -224,7 +228,7 @@ const RowOptions = ({
     }).then(async function (result) {
       if (result.value) {
         // Run delete action
-        dispatch(deleteUser(patronID))
+        dispatch(deleteUser({ userId, role }))
 
         MySwal.fire({
           icon: 'warning',
@@ -272,7 +276,7 @@ const RowOptions = ({
         <MenuItem
           component={Link}
           sx={{ '& svg': { mr: 2 } }}
-          href={`/admin/patrons/${patronID}`}
+          href={`/admin/patrons/$ userId}`}
           onClick={handleRowOptionsClose}
         >
           <Icon icon="tabler:eye" fontSize={20} />
@@ -306,7 +310,6 @@ const columns: GridColDef[] = [
     headerName: 'Patron',
     renderCell: ({ row }: CellType) => {
       const { email, username } = row
-
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {renderClient(row)}
@@ -317,6 +320,7 @@ const columns: GridColDef[] = [
               href={`/admin/patrons/${row.id}`}
               sx={{
                 fontWeight: 500,
+
                 textDecoration: 'none',
                 color: 'text.secondary',
                 '&:hover': { color: 'primary.main' },
@@ -324,7 +328,11 @@ const columns: GridColDef[] = [
             >
               {username}
             </Typography>
-            <Typography noWrap variant="body2" sx={{ color: 'text.disabled' }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: 'text.disabled', textTransform: 'lowercase' }}
+            >
               {email}
             </Typography>
           </Box>
@@ -359,23 +367,6 @@ const columns: GridColDef[] = [
   },
   {
     flex: 0.15,
-    minWidth: 260,
-    headerName: 'Full Name',
-    field: 'firstname',
-    renderCell: ({ row }: CellType) => {
-      const { firstname, lastname } = row
-      return (
-        <Typography
-          noWrap
-          sx={{ fontWeight: 500, color: 'text.secondary', textTransform: 'capitalize' }}
-        >
-          {firstname || lastname ? `${firstname} ${lastname}` : '-'}
-        </Typography>
-      )
-    },
-  },
-  {
-    flex: 0.15,
     minWidth: 120,
     headerName: 'Contact',
     field: 'contact',
@@ -389,20 +380,6 @@ const columns: GridColDef[] = [
   },
   {
     flex: 0.1,
-    minWidth: 240,
-    field: 'address',
-    headerName: 'Address',
-    renderCell: ({ row }: CellType) => {
-      return (
-        <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {row.address ?? '-'}
-        </Typography>
-      )
-    },
-  },
-
-  {
-    flex: 0.1,
     minWidth: 136,
     field: 'verified',
     headerName: 'Verified',
@@ -414,12 +391,11 @@ const columns: GridColDef[] = [
           size="small"
           label={row.verified ? 'Verified' : 'Unverified'}
           color={verificationStatusObj[row.verified ? 'Verified' : 'Unverified']}
-          sx={{ textTransform: 'capitalize', textAlign: 'center' }}
+          sx={{ textAlign: 'center' }}
         />
       )
     },
   },
-
   {
     flex: 0.1,
     minWidth: 120,
@@ -445,7 +421,14 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     renderCell: ({ row }: CellType) => {
-      return <RowOptions patronID={row.id} suspended={row.suspended} username={row.username} />
+      return (
+        <RowOptions
+          userId={row.id}
+          suspended={row.suspended}
+          username={row.username}
+          role={row.role}
+        />
+      )
     },
   },
 ]
@@ -454,21 +437,35 @@ const UserList = () => {
   // ** State
   const [addUserOpen, setAddUserOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
+  const [refreshing, setRefreshing] = useState<boolean>(false)
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.users)
-  const { pending, numberOfUsers, users } = store
+  const { fetchingUsers, users } = store
 
   useEffect(() => {
-    if (numberOfUsers === 0) {
-      dispatch(getPatrons())
+    if (users.length === 0) {
+      dispatch(getUsers())
     }
-  }, [dispatch, numberOfUsers])
+  }, [dispatch, users])
+
+  async function handleRefresh() {
+    try {
+      setRefreshing(true)
+      await dispatch(getUsers())
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('Error during refresh - getUsers:', error)
+      }
+    } finally {
+      setRefreshing(false)
+    }
+  }
 
   const toggleAddUserDrawer = () => setAddUserOpen(!addUserOpen)
 
-  if (pending) {
+  if (fetchingUsers && !refreshing) {
     return (
       <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <CircularProgress sx={{ mb: 4 }} />
@@ -483,7 +480,12 @@ const UserList = () => {
         <Card>
           <CardHeader title="List of Patrons" />
           <Divider sx={{ m: '0 !important' }} />
-          <TableHeader toggle={toggleAddUserDrawer} />
+          <TableHeader
+            toggle={toggleAddUserDrawer}
+            refreshing={refreshing}
+            handleRefresh={handleRefresh}
+            submitting={fetchingUsers}
+          />
           <DataGrid
             autoHeight
             rowHeight={62}

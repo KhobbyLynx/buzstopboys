@@ -10,7 +10,8 @@ export async function GET(request: NextRequest, context: { params: Promise<{ use
     await connectMongoDB()
 
     // Fetch by ID (Single Patron)
-    const patron = await Patron.findOne({ id: userId }, { _id: 0, __v: 0 })
+    // With .lean(), results are simple JavaScript objects, making queries faster and consuming less memory.
+    const patron = await Patron.findOne({ id: userId }, { _id: 0, __v: 0 }).lean()
 
     if (!patron) {
       return new Response(JSON.stringify({ message: 'Patron not found' }), {

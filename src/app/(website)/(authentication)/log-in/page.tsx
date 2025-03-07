@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
+import Image from 'next/image'
 
 // ** MUI Components
 import Box from '@mui/material/Box'
@@ -24,48 +25,24 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { handleLoginPatron } from '@/store/auth'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/store'
+import { useRouter } from 'next/navigation'
+
+// ** Store
+import { handleLoginPatron } from '@/store/auth'
 
 // ** Custom Component Import
 import CustomTextField from '@/components/mui/text-field'
 
 // ** Icon Imports
 import IconifyIcon from '@/components/icon'
-import { useRouter } from 'next/navigation'
+
+// ** Types
+import { AppDispatch, RootState } from '@/store'
+
 import { CircularProgress } from '@mui/material'
 import FallbackSpinner from '@/components/spinner'
-import Image from 'next/image'
-
-// ** Demo Imports
-const AuthIllustrationV1Wrapper = styled(Box)({
-  width: '100%',
-  maxWidth: 400,
-  position: 'relative',
-  '&:before': {
-    zIndex: -1,
-    top: '-79px',
-    content: '""',
-    left: '-46px',
-    width: '238px',
-    height: '234px',
-    position: 'absolute',
-    backgroundColor: '#E0E7FF',
-    borderRadius: '50%',
-  },
-  '&:after': {
-    zIndex: -1,
-    content: '""',
-    width: '180px',
-    right: '-57px',
-    height: '180px',
-    bottom: '-54px',
-    position: 'absolute',
-    backgroundColor: '#C7D2FE',
-    borderRadius: '50%',
-  },
-})
+import { handleGoogleAuth } from '@/utils/handleGoogleAuth'
 
 // ** Styled Components
 const Card = styled(MuiCard)({
@@ -93,9 +70,18 @@ const loginSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 })
 
+let password = ''
+let email = ''
+
+// Set default values in development mode
+if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+  password = 'Testing123@'
+  email = 'help@gmail.com'
+}
+
 const defaultValues = {
-  password: 'Testing123@',
-  email: 'help@gmail.com',
+  password,
+  email,
 }
 
 interface FormData {
@@ -127,13 +113,17 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   })
 
-  const onSubmit = async (data: FormData) => {
+  const handleGoogleLogin = async () => {
+    await handleGoogleAuth({ dispatch, router, setError, setLoading })
+  }
+
+  const onSubmit = async (userData: FormData) => {
     // Set loading state
     setLoading(true)
 
     try {
       // Dispatch the login action
-      const resultAction = await dispatch(handleLoginPatron(data))
+      const resultAction = await dispatch(handleLoginPatron(userData))
 
       // Check if the action is fulfilled
       if (handleLoginPatron.fulfilled.match(resultAction)) {
@@ -199,141 +189,145 @@ const Login = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#F9FAFB',
+        backgroundColor: '#07305a',
       }}
     >
-      <AuthIllustrationV1Wrapper>
-        <Card>
-          <CardContent sx={{ padding: '2rem 2.5rem' }}>
+      <Card>
+        <CardContent sx={{ padding: '2rem 2.5rem' }}>
+          <Box
+            sx={{
+              mb: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Link href="/">
+              <Image
+                src="/images/logos/logo_black.png"
+                alt="logo"
+                width={90}
+                height={90}
+                priority
+              />
+            </Link>
+          </Box>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+              Welcome to BuzStopBoys!
+            </Typography>
+            <Typography style={{ color: '#6B7280' }}>Enter your credentials to login</Typography>
+          </Box>
+          <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+            <Box sx={{ mb: 4 }}>
+              <Controller
+                name="email"
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <CustomTextField
+                    fullWidth
+                    autoFocus
+                    label="Email"
+                    value={value}
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    placeholder="eg. lynx@gmail.com"
+                    error={Boolean(errors.email)}
+                    {...(errors.email && { helperText: errors.email.message })}
+                  />
+                )}
+              />
+            </Box>
+            <Box sx={{ mb: 1.5 }}>
+              <Controller
+                name="password"
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange, onBlur } }) => (
+                  <CustomTextField
+                    fullWidth
+                    value={value}
+                    onBlur={onBlur}
+                    label="Password"
+                    placeholder="Enter your password"
+                    onChange={onChange}
+                    error={Boolean(errors.password)}
+                    {...(errors.password && { helperText: errors.password.message })}
+                    type={showPassword ? 'text' : 'password'}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            edge="end"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <IconifyIcon
+                              fontSize="1.25rem"
+                              icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'}
+                            />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Box>
             <Box
               sx={{
-                mb: 1,
+                mb: 1.75,
                 display: 'flex',
+                flexWrap: 'wrap',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
               }}
             >
-              <Link href="/">
-                <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
-              </Link>
-            </Box>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
-                Welcome to BuzStopBoys!
+              <FormControlLabel
+                label="Remember Me"
+                control={
+                  <Checkbox
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                }
+              />
+              <Typography component={LinkStyled} href="/forgot-password">
+                Forgot Password?
               </Typography>
-              <Typography style={{ color: '#6B7280' }}>Enter your credentials to login</Typography>
             </Box>
-            <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-              <Box sx={{ mb: 4 }}>
-                <Controller
-                  name="email"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <CustomTextField
-                      fullWidth
-                      autoFocus
-                      label="Email"
-                      value={value}
-                      onBlur={onBlur}
-                      onChange={onChange}
-                      placeholder="admin@vuexy.com"
-                      error={Boolean(errors.email)}
-                      {...(errors.email && { helperText: errors.email.message })}
-                    />
-                  )}
-                />
-              </Box>
-              <Box sx={{ mb: 1.5 }}>
-                <Controller
-                  name="password"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { value, onChange, onBlur } }) => (
-                    <CustomTextField
-                      fullWidth
-                      value={value}
-                      onBlur={onBlur}
-                      label="Password"
-                      onChange={onChange}
-                      id="auth-login-v2-password"
-                      error={Boolean(errors.password)}
-                      {...(errors.password && { helperText: errors.password.message })}
-                      type={showPassword ? 'text' : 'password'}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              edge="end"
-                              onMouseDown={(e) => e.preventDefault()}
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              <IconifyIcon
-                                fontSize="1.25rem"
-                                icon={showPassword ? 'tabler:eye' : 'tabler:eye-off'}
-                              />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Box>
-              <Box
-                sx={{
-                  mb: 1.75,
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              sx={{ marginBottom: '16px', backgroundColor: '#1976d2', color: '#fff' }}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Log in'}
+            </Button>
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography style={{ color: '#6B7280', marginRight: '0.5rem' }}>
+                New on our platform?
+              </Typography>
+              <Typography component={LinkStyled} href="/sign-up">
+                Create an account
+              </Typography>
+            </Box>
+            <Divider sx={{ marginY: 2, fontSize: '14px', color: '#6b7280' }}>or</Divider>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <IconButton
+                href="/"
+                component={Link}
+                sx={{ color: '#db4437' }}
+                onClick={handleGoogleLogin}
               >
-                <FormControlLabel
-                  label="Remember Me"
-                  control={
-                    <Checkbox
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                    />
-                  }
-                />
-                <Typography component={LinkStyled} href="/forgot-password">
-                  Forgot Password?
-                </Typography>
-              </Box>
-              <Button
-                fullWidth
-                type="submit"
-                variant="contained"
-                disabled={loading}
-                sx={{ marginBottom: '16px', backgroundColor: '#1976d2', color: '#fff' }}
-              >
-                {loading ? <CircularProgress size={24} color="inherit" /> : 'Log in'}
-              </Button>
-              <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Typography style={{ color: '#6B7280', marginRight: '0.5rem' }}>
-                  New on our platform?
-                </Typography>
-                <Typography component={LinkStyled} href="/sign-up">
-                  Create an account
-                </Typography>
-              </Box>
-              <Divider sx={{ marginY: 2, fontSize: '14px', color: '#6b7280' }}>or</Divider>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <IconButton
-                  href="/"
-                  component={Link}
-                  sx={{ color: '#db4437' }}
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <IconifyIcon icon="mdi:google" />
-                </IconButton>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      </AuthIllustrationV1Wrapper>
+                <IconifyIcon icon="mdi:google" />
+              </IconButton>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
     </Box>
   )
 }

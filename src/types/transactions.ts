@@ -1,7 +1,7 @@
 export type PAYMENTCHANNELSTYPE = 'mobile_money' | 'card' | 'bank_transfer'
 export type ACCEPTEDCURRENCYTYPE = 'GHS' | 'NGN' | 'USD' | 'ZAR'
 export type TRANSACTIONSTATUSTYPE = 'success' | 'pending' | 'error'
-export type DONATIONTYPE = 'campaign' | 'option' | 'custom'
+export type DONATIONTYPE = 'campaign' | 'option' | 'custom' | 'event'
 
 export type TRANSACTIONSTYPE = {
   id: string
@@ -25,7 +25,10 @@ export type PAYMENTDATATYPE = {
   userId?: string
   amount: number | null
   email?: string
-  patron_name?: string
-  donationType: DONATIONTYPE
-  donationTypeId: string
+  username?: string
+  currency: string
+  status: string
+  transactionTypeId: string
+  transactionType: DONATIONTYPE
+  verificationInfo?: any // any because its a response from paystack api
 }

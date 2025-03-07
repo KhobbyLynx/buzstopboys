@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@mui/material'
 import IconifyIcon from '@/components/icon'
+import Image from 'next/image'
 
 const images = [
   'https://res.cloudinary.com/khobbylynx/image/upload/v1741042431/buzstopboys/merch/orange1_eurewb.jpg',
@@ -20,14 +21,13 @@ const images = [
 const shapes = ['rounded-lg', 'rounded-full', 'rounded-xl', 'rounded-2xl']
 
 const Gallery = () => {
-  const router = useRouter()
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4 pt-10">
       <header className="text-center mb-8">
         <h1 className="text-4xl font-bold">🚀 BuzStopBoys Product Shop</h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
-          ✨ Coming Soon – Support the Cause with Every Purchase!
+          ✨ <span className="text-red-600 font-bold italic">Coming Soon</span> – Support the Cause
+          with Every Purchase!
         </p>
       </header>
 
@@ -39,9 +39,11 @@ const Gallery = () => {
             whileTap={{ scale: 0.95 }}
             className={`overflow-hidden shadow-lg ${shapes[index % shapes.length]}`}
           >
-            <img
+            <Image
               src={src}
               alt={`Gallery Image ${index + 1}`}
+              width={500}
+              height={256}
               className="w-full h-64 object-cover"
             />
           </motion.div>
@@ -52,7 +54,7 @@ const Gallery = () => {
         {/* Back Button */}
         <Button
           startIcon={<IconifyIcon icon="mingcute:back-fill" />}
-          onClick={() => router.push('/')}
+          onClick={() => window.history.back()}
           variant="outlined"
           className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
         >

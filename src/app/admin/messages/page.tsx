@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { formatDate } from '@/utils/utils'
 
 // ** Custom Components Imports
-import CustomChip from '@/components/modals/mui/chip'
+import CustomChip from '@/components/mui/chip'
 
 // ** Actions Imports
 import { deleteMessage, getMessages, patchMessage } from '@/store/messages'
@@ -60,14 +60,14 @@ const messageStatus: Record<
 > = {
   sent: 'warning',
   read: 'success',
-  delivered: 'info',
+  delivered: 'primary',
 }
 
 const messageSource: Record<
   string,
   'default' | 'warning' | 'success' | 'info' | 'primary' | 'secondary' | 'error'
 > = {
-  contact: 'info',
+  contact: 'warning',
   inbox: 'success',
 }
 
@@ -318,15 +318,13 @@ const columns: GridColDef[] = [
 
   {
     flex: 0.1,
-    minWidth: 240,
+    minWidth: 160,
     field: 'createdAt',
-    headerName: 'Period',
+    headerName: 'Time',
     renderCell: ({ row }: CellType) => {
       return (
         <Typography noWrap sx={{ color: 'text.secondary' }}>
-          {formatDate(row.createdAt).date}
-          {' @ '}
-          {formatDate(row.createdAt).time}
+          {formatDate(row.createdAt).periodFromNow}
         </Typography>
       )
     },
@@ -348,78 +346,104 @@ const DashInbox = () => {
   const [sendMessageOpen, setSendMessageOpen] = useState<boolean>(false)
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 10 })
   const [refreshing, setRefreshing] = useState<boolean>(false)
+  const [patchedIds, setPatchedIds] = useState<Set<string>>(new Set()) // Track patched message IDs
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state)
+  const { messages, sending, pending, auth } = useSelector((state: RootState) => ({
+    messages: state.messages.messages,
+    sending: state.messages.sending,
+    pending: state.messages.pending,
+    auth: state.auth.data,
+  }))
 
-  const userId = store.auth.data ? store.auth.data.id : null
-  const { messages, pending, sending } = store.messages
+  const userId = auth?.id || ''
 
   // Cache "sent" messages for faster lookups
   const pendingMessages = useMemo(() => {
     return messages.filter((m) => m.status === 'sent')
   }, [messages])
 
-  // Helper function
-  // Patch messages in chunks for large data
-  const patchMessagesInChunks = async (
-    data: Array<{ id: string; type: string; readerId: string }>,
-    chunkSize = 50
-  ) => {
-    for (let i = 0; i < data.length; i += chunkSize) {
-      const chunk = data.slice(i, i + chunkSize)
-      await Promise.all(chunk.map((item) => dispatch(patchMessage(item))))
-    }
-  }
+  // Helper function to chunk and patch messages
+  const patchMessagesInChunks = useCallback(
+    async (data: Array<{ id: string; type: string; readerId: string }>, chunkSize = 50) => {
+      for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize)
+        await Promise.all(chunk.map((item) => dispatch(patchMessage(item))))
+      }
+    },
+    [dispatch]
+  )
 
-  const fetchMessages = useCallback(async () => {
-    if (pendingMessages.length === 0) return
+  // Fetch Messages
+  const fetchMessages = useCallback(
+    async (page: number, limit: number) => {
+      if (pending) return
 
-    // Prepare patch payloads
-    const messagesToPatch = pendingMessages.map((m) => ({
-      id: m.id,
-      type: 'delivered',
-      readerId: userId || '', // Ensure readerId is a string
-    }))
+      try {
+        // Fetch new messages
+        if (messages.length === 0 || refreshing) {
+          await dispatch(getMessages({}))
+        }
 
-    await patchMessagesInChunks(messagesToPatch)
-  }, [pendingMessages, userId, dispatch])
+        // Identify new messages that need patching
+        const newMessagesToPatch = pendingMessages.filter((m) => !patchedIds.has(m.id))
 
-  useEffect(() => {
-    if (messages.length === 0) {
-      dispatch(getMessages())
-    } else {
-      const timer = setTimeout(fetchMessages, 300) // Debounce patching for rapid updates
-      return () => clearTimeout(timer)
-    }
-  }, [messages.length, fetchMessages, dispatch])
-
-  const toggleSendMessageDrawer = () => setSendMessageOpen(!sendMessageOpen)
-
-  // Refresh function to fetch and patch messages
-  async function handleRefresh() {
-    try {
-      setRefreshing(true)
-      // Fetch the latest messages
-      await dispatch(getMessages())
-
-      // Trigger patching if there are pending messages
-      if (pendingMessages.length > 0) {
-        await patchMessagesInChunks(
-          pendingMessages.map((m) => ({
+        if (newMessagesToPatch.length > 0) {
+          const messagesToPatch = newMessagesToPatch.map((m) => ({
             id: m.id,
             type: 'delivered',
-            readerId: userId || '',
+            readerId: userId,
           }))
-        )
+
+          // Patch in chunks
+          await patchMessagesInChunks(messagesToPatch, 50)
+
+          // Mark as patched
+          setPatchedIds((prev) => {
+            const updatedIds = new Set(prev)
+            newMessagesToPatch.forEach((m) => updatedIds.add(m.id))
+            return updatedIds
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error)
       }
-    } catch (error) {
-      console.error('Error during refresh:', error)
+    },
+    [
+      dispatch,
+      pending,
+      patchedIds,
+      patchMessagesInChunks,
+      pendingMessages,
+      userId,
+      messages.length,
+      refreshing,
+    ]
+  )
+
+  // Manual refresh handler
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    try {
+      await fetchMessages(paginationModel.page, paginationModel.pageSize)
     } finally {
       setRefreshing(false)
     }
   }
+
+  // Handle Pagination Change
+  const handlePaginationChange = (newModel: GridPaginationModel) => {
+    setPaginationModel(newModel)
+    fetchMessages(newModel.page, newModel.pageSize)
+  }
+
+  // Initial fetch only once
+  useEffect(() => {
+    fetchMessages(paginationModel.page, paginationModel.pageSize)
+  }, [fetchMessages, paginationModel]) // Empty dependency array prevents looping
+
+  const toggleSendMessageDrawer = () => setSendMessageOpen(!sendMessageOpen)
 
   if (pending && !refreshing) {
     return (
@@ -451,7 +475,7 @@ const DashInbox = () => {
               disableRowSelectionOnClick
               pageSizeOptions={[10, 25, 50]}
               paginationModel={paginationModel}
-              onPaginationModelChange={setPaginationModel}
+              onPaginationModelChange={handlePaginationChange}
             />
           </Card>
         </Grid>

@@ -15,6 +15,7 @@ import { EventProps } from '@/types/events'
 import { formatDate } from '@/utils/utils'
 import DialogVolunteerForm from '@/components/dialog/VolunteerFormDialog'
 import DonateFormDialog from '@/components/dialog/DonateFormDialog'
+import Image from 'next/image'
 
 // Styled component for the image container
 const ImageContainer = styled(Box)({
@@ -109,14 +110,14 @@ const EventCard: React.FC<EventProps> = ({
       }}
     >
       {/* Image Section */}
-      <ImageContainer>
-        <CardMedia
-          component="img"
-          height="200"
-          image={img} // Use the first image in the array
-          alt={title}
-        />
-      </ImageContainer>
+      <Image
+        height={400}
+        width={400}
+        src={img}
+        alt={title}
+        style={{ width: '100%', height: 'auto' }}
+        priority
+      />
 
       {/* Content Section */}
       <StyledCardContent>

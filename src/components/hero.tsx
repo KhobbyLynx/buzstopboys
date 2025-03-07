@@ -1,7 +1,9 @@
 'use client'
 
-import { Button, Typography } from '@material-tailwind/react'
+import { Typography } from '@material-tailwind/react'
 import Link from 'next/link'
+import IconifyIcon from './icon'
+import { Button } from '@mui/material'
 
 function Hero() {
   return (
@@ -24,13 +26,27 @@ function Hero() {
           </Typography>
           <div className="flex items-center gap-4">
             <Link href="/about-us">
-              <Button variant="outlined" color="white">
+              <Button
+                variant="outlined"
+                sx={{
+                  color: 'white',
+                  borderColor: 'white', // Outline color
+                  '&:hover': {
+                    borderColor: '#d6d7ff',
+                    backgroundColor: '#ffffff1c',
+                  },
+                }}
+              >
                 Learn More
               </Button>
             </Link>
             <Link href="/donate">
-              <Button variant="gradient" color="green">
-                <i className="fas fa-heart" /> Donate
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<IconifyIcon icon="streamline:give-gift-solid" className="w-3 h-3" />}
+              >
+                Donate
               </Button>
             </Link>
           </div>

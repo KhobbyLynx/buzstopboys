@@ -1,5 +1,6 @@
 import connectMongoDB from '@/libs/mongodb'
 import Patron from '@/models/patron.model'
+import { verifyBeforeUpdateEmail } from 'firebase/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 // ** POST
@@ -8,52 +9,40 @@ export async function POST(request: NextRequest) {
     // Get the patron data from the request body
     const patronData = await request.json()
 
-    const {
-      id,
-      email,
-      username,
-      password,
-      avatar,
-      lastSignInTime = new Date().toISOString(),
-      firstname = '',
-      lastname = '',
-      fullname = '',
-      address = '',
-      contact = null,
-    } = patronData
+    const { id, email, username, avatar, lastSignInTime, role, googleAuth = false } = patronData
 
     // Check if the required fields are provided
-    if (!email || !password || !username) {
+    if (!id || !email || !username || !role) {
       return NextResponse.json(
-        { message: 'Email, Password and Username are required' },
+        { message: 'User Id, email, username and role are required' },
         { status: 400 }
       )
+    }
+
+    let verified = false
+    let type = 'patron'
+
+    if (googleAuth) {
+      verified = true
+      type = 'google'
     }
 
     // Connect to MongoDB
     await connectMongoDB()
 
-    const role = 'patron'
-
-    const newPatronDataObj = {
+    const newPatron = {
       id,
       email,
-      firstname,
-      lastname,
       username,
-      fullname,
-      address,
-      contact,
       role,
       avatar,
-      password,
-      verified: false,
-      suspended: false,
       lastSignInTime,
+      verified,
       onlineStatus: true,
+      type,
     }
 
-    await Patron.create(newPatronDataObj)
+    await Patron.create(newPatron)
 
     // Return the new user
     return new Response(JSON.stringify({ message: 'User sign up successful!' }), {
@@ -64,7 +53,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-      console.log('Error creating user', error)
+      console.log('sign up error:', error)
     }
 
     return new Response(JSON.stringify({ message: error.message }), {

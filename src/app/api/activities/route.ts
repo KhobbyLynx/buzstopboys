@@ -4,28 +4,60 @@ import axiosRequest from '@/utils/axiosRequest'
 import { generateRandomId } from '@/utils/utils'
 import { NextRequest } from 'next/server'
 
+// ** GET
 export async function GET(request: NextRequest) {
   try {
+    // Extract query parameters
+    const { searchParams } = new URL(request.url)
+
+    // Prepare query object dynamically
+    const query: Record<string, any> = {}
+
+    // Helper: Build query with dynamic filters
+    searchParams.forEach((value, key) => {
+      if (['name', 'type', 'location'].includes(key)) {
+        query[key] = { $regex: value, $options: 'i' } // Case-insensitive search
+      } else if (key === 'isActive') {
+        query[key] = value === 'true'
+      } else {
+        query[key] = value
+      }
+    })
+
+    // Extract pagination parameters
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const limit = parseInt(searchParams.get('limit') || '20', 10)
+    const skip = (page - 1) * limit
+
     // Connect to MongoDB
     await connectMongoDB()
 
-    // Fetch all activities
-    const activities = await Activity.find()
+    // Fetch all activities with dynamic filters
+    const activities = await Activity.find(query)
+      .select('-_id -__v -updatedAt')
+      .skip(skip)
+      .limit(limit)
+      .lean()
 
-    // Return the activities
-    return new Response(JSON.stringify(activities), {
-      headers: {
-        'content-type': 'application/json',
-      },
+    // Get the count of matching activities
+    const fetchCount = await Activity.countDocuments(query).lean()
+
+    const returnedData = {
+      activities,
+      fetchCount,
+      currentPage: page,
+      totalPages: Math.ceil(fetchCount / limit),
+    }
+
+    return new Response(JSON.stringify(returnedData), {
       status: 200,
+      headers: { 'content-type': 'application/json' },
     })
   } catch (error: any) {
     console.error('Error fetching activities:', error)
     return new Response(JSON.stringify({ message: error.message }), {
       status: 500,
-      headers: {
-        'content-type': 'application/json',
-      },
+      headers: { 'content-type': 'application/json' },
     })
   }
 }
