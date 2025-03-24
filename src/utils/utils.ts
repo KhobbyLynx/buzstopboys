@@ -80,10 +80,83 @@ export function formatAmount(amount: number): string {
 
 // ** Format Date & Time
 // Returns an object with time, date, and period from now
+// export function formatDate(
+//   isoDate: string,
+//   locale: string = 'en-GH'
+// ): { time: string; date: string; periodFromNow: string; dateString: string } {
+//   const date = new Date(isoDate)
+//   const now = new Date()
+
+//   // Time in 12-hour format with AM/PM
+//   const timeFormatter = new Intl.DateTimeFormat(locale, {
+//     hour: 'numeric',
+//     minute: 'numeric',
+//     second: 'numeric',
+//     hour12: true,
+//   })
+//   const time = timeFormatter.format(date)
+
+//   // Date in DD/MM/YYYY format
+//   const dateFormatter = new Intl.DateTimeFormat(locale, {
+//     day: '2-digit',
+//     month: '2-digit',
+//     year: 'numeric',
+//   })
+//   const dateFormatted = dateFormatter.format(date)
+
+//   // Date in Month YYYY format (e.g., April 2025)
+//   const monthYearFormatter = new Intl.DateTimeFormat(locale, {
+//     month: 'long',
+//     year: 'numeric',
+//   })
+//   const dateString = monthYearFormatter.format(date)
+
+//   // Calculate the difference in milliseconds
+//   const diff = Math.abs(now.getTime() - date.getTime())
+//   const isFuture = date > now
+
+//   // Helper function to determine the time difference
+//   const getTimeDifference = (milliseconds: number): string => {
+//     const seconds = Math.floor(milliseconds / 1000)
+//     const minutes = Math.floor(seconds / 60)
+//     const hours = Math.floor(minutes / 60)
+//     const days = Math.floor(hours / 24)
+//     const weeks = Math.floor(days / 7)
+//     const months = Math.floor(days / 30)
+//     const years = Math.floor(days / 365)
+
+//     if (years > 0) return `${years} year${years > 1 ? 's' : ''}`
+//     if (months > 0) return `${months} month${months > 1 ? 's' : ''}`
+//     if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''}`
+//     if (days > 0) return `${days} day${days > 1 ? 's' : ''}`
+//     if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''}`
+//     if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''}`
+//     return `${seconds} second${seconds !== 1 ? 's' : ''}`
+//   }
+
+//   const periodFromNow = `${getTimeDifference(diff)} ${isFuture ? 'more' : 'ago'}`
+
+//   return {
+//     time,
+//     date: dateFormatted,
+//     periodFromNow,
+//     dateString,
+//   }
+// }
+
 export function formatDate(
-  isoDate: string,
+  isoDate: string | undefined,
   locale: string = 'en-GH'
 ): { time: string; date: string; periodFromNow: string; dateString: string } {
+  if (!isoDate || isNaN(new Date(isoDate).getTime())) {
+    return {
+      time: '',
+      date: '',
+      periodFromNow: '',
+      dateString: '',
+    }
+  }
+
   const date = new Date(isoDate)
   const now = new Date()
 
