@@ -124,7 +124,10 @@ const UserProfileHeader = () => {
               >
                 <Icon fontSize="1.25rem" icon="tabler:calendar" />
                 <Typography sx={{ color: 'text.secondary' }}>
-                  Joined {formatDate(userData?.timestamps?.createdAt).dateString}
+                  Joined{' '}
+                  {userData?.timestamps?.createdAt
+                    ? formatDate(userData.timestamps.createdAt).dateString
+                    : 'N/A'}
                 </Typography>
               </Box>
             </Box>
