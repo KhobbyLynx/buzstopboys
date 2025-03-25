@@ -24,7 +24,7 @@ import IconifyIcon from '@/components/icon'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { updateDonationOption } from '@/store/donations'
+import { updateDonationOption } from '@/store/slides/donations'
 
 // ** Types Imports
 import { AppDispatch, RootState } from '@/store'

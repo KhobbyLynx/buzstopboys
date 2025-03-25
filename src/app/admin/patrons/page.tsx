@@ -30,7 +30,7 @@ import CustomChip from '@/components/mui/chip'
 import { getInitials } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteUser, getUsers, reinstateUser, suspendUser } from '@/store/users'
+import { deleteUser, getUsers, reinstateUser, suspendUser } from '@/store/slides/users'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'

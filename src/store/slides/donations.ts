@@ -222,10 +222,10 @@ export const singleCampaign = createAsyncThunk(
       return campaignData
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-        console.log('Error fetching single activity', error)
+        console.log('Error fetching single campaign', error)
       }
       return rejectWithValue(
-        error instanceof Error ? error.message : 'An error occurred fetching single activity'
+        error instanceof Error ? error.message : 'An error occurred fetching single campaign'
       )
     }
   }

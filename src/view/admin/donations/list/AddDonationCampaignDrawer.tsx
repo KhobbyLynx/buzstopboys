@@ -28,7 +28,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 
 // ** Actions Imports
-import { addDonationCampaign } from '@/store/donations'
+import { addDonationCampaign } from '@/store/slides/donations'
 
 // ** Next Imports
 import Image from 'next/image'

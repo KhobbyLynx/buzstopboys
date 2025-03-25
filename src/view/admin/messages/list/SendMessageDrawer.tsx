@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 
 // ** Actions Imports
-import { sendMessage } from '@/store/messages'
+import { sendMessage } from '@/store/slides/messages'
 
 // ** Types Imports
 import { AdminSubmitMessageType, MessageSource, SenderStatusType } from '@/types/messages'

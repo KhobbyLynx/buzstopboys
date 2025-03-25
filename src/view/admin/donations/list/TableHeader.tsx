@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import Icon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
-import { getDonationsCampaigns } from '@/store/donations'
+import { getDonationsCampaigns } from '@/store/slides/donations'
 import { setRef } from '@mui/material'
 import { useState } from 'react'
 
@@ -21,12 +21,12 @@ const TableHeader = (props: TableHeaderProps) => {
   // ** Props
   const { toggle } = props
   const dispatch = useDispatch<AppDispatch>()
-  
-  const handleRefresh = () => { 
+
+  const handleRefresh = () => {
     setRefreshing(true)
-      dispatch(getDonationsCampaigns()).then(() => {
-        setRefreshing(false)
-      })
+    dispatch(getDonationsCampaigns()).then(() => {
+      setRefreshing(false)
+    })
   }
 
   return (
@@ -39,24 +39,24 @@ const TableHeader = (props: TableHeaderProps) => {
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}
     >
       {/* <Button color='primary' variant='outlined' startIcon={<Icon icon='tabler:upload' />}>
         Export
       </Button> */}
-      <Button 
+      <Button
         onClick={handleRefresh}
-        color='primary' 
-        variant='outlined' 
+        color="primary"
+        variant="outlined"
         disabled={refreshing}
         startIcon={<Icon icon={refreshing ? 'tabler:loader' : 'tabler:refresh'} />}
       >
         {refreshing ? 'Refreshing...' : 'Refresh'}
       </Button>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-        <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
-          <Icon fontSize='1.125rem' icon='tabler:plus' />
+        <Button onClick={toggle} variant="contained" sx={{ '& svg': { mr: 2 } }}>
+          <Icon fontSize="1.125rem" icon="tabler:plus" />
           Add New Campaign
         </Button>
       </Box>

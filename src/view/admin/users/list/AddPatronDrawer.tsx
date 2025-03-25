@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Types Imports
 import { RootState, AppDispatch } from '@/store'
 import { PatronDatabaseType, PatronType } from '@/types/patron'
-import { getUsers, handleAdminRegisterPatron } from '@/store/users'
+import { getUsers, handleAdminRegisterPatron } from '@/store/slides/users'
 
 interface SidebarAddUserType {
   open: boolean

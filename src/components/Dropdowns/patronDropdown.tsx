@@ -4,7 +4,7 @@ import { useState, SyntheticEvent } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
-import { handleLogout } from '@/store/auth'
+import { handleLogout } from '@/store/slides/auth'
 
 // ** MUI Imports
 import { Box, Menu, Badge, Avatar, Divider, MenuItem, Typography, styled } from '@mui/material'
@@ -15,6 +15,7 @@ import IconifyIcon from '@/components/icon'
 // ** Types
 import { PatronWebType } from '@/types/patron'
 import Link from 'next/link'
+import { clearLoggedInUserTransactions } from '@/store/slides/transactions'
 
 const BadgeContent = styled('span')(({ theme }) => ({
   width: 8,
@@ -59,8 +60,10 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
     try {
       handleDropdownClose()
       if (id) {
-        await dispatch(handleLogout(id))
-        router.push('/')
+        await dispatch(handleLogout(id)).then(() => {
+          dispatch(clearLoggedInUserTransactions())
+          router.push('/')
+        })
       }
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
@@ -79,7 +82,7 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
       condition: role === 'admin',
     },
     { label: 'My Profile', icon: 'tabler:user-check', url: '/user/profile' },
-    { label: 'Settings', icon: 'tabler:settings', url: '/account-settings' },
+    { label: 'Settings', icon: 'tabler:settings', url: '/user/settings' },
     { label: 'Help', icon: 'tabler:lifebuoy', url: '/contact' },
     { label: 'FAQ', icon: 'tabler:info-circle', onClick: handleScrollToFAQ },
     { label: 'Sign Out', icon: 'tabler:logout', onClick: handleSignout },

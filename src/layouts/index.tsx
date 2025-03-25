@@ -8,7 +8,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/configs/firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
-import { handleAutoLogin } from '@/store/auth'
+import { handleAutoLogin } from '@/store/slides/auth'
 import FallbackSpinner from '@/components/spinner'
 import UserProfileLayout from './UserProfileLayout'
 

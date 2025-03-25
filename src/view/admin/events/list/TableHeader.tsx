@@ -7,7 +7,7 @@ import Icon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import { useState } from 'react'
-import { getEvents } from '@/store/events'
+import { getEvents } from '@/store/slides/events'
 
 interface TableHeaderProps {
   toggle: () => void
@@ -20,12 +20,12 @@ const TableHeader = (props: TableHeaderProps) => {
   // ** Props
   const { toggle } = props
   const dispatch = useDispatch<AppDispatch>()
-  
-  const handleRefresh = () => { 
+
+  const handleRefresh = () => {
     setRefreshing(true)
-      dispatch(getEvents()).then(() => {
-        setRefreshing(false)
-      })
+    dispatch(getEvents()).then(() => {
+      setRefreshing(false)
+    })
   }
 
   return (
@@ -38,21 +38,21 @@ const TableHeader = (props: TableHeaderProps) => {
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}
     >
-      <Button 
+      <Button
         onClick={handleRefresh}
-        color='primary' 
-        variant='outlined' 
+        color="primary"
+        variant="outlined"
         disabled={refreshing}
         startIcon={<Icon icon={refreshing ? 'tabler:loader' : 'tabler:refresh'} />}
       >
         {refreshing ? 'Refreshing...' : 'Refresh'}
       </Button>
       <Box sx={{ rowGap: 2, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
-        <Button onClick={toggle} variant='contained' sx={{ '& svg': { mr: 2 } }}>
-          <Icon fontSize='1.125rem' icon='tabler:plus' />
+        <Button onClick={toggle} variant="contained" sx={{ '& svg': { mr: 2 } }}>
+          <Icon fontSize="1.125rem" icon="tabler:plus" />
           Add New Event
         </Button>
       </Box>

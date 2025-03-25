@@ -1,7 +1,7 @@
 'use client'
 import IconifyIcon from '@/components/icon'
 import { AppDispatch, RootState } from '@/store'
-import { singleEvent } from '@/store/events'
+import { singleEvent } from '@/store/slides/events'
 import { formatDate } from '@/utils/utils'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import Head from 'next/head'

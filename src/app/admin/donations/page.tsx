@@ -36,7 +36,7 @@ import {
   deleteDonationCampaign,
   getDonationOptions,
   getDonationsCampaigns,
-} from '@/store/donations'
+} from '@/store/slides/donations'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'

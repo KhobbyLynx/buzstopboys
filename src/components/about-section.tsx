@@ -2,7 +2,7 @@
 
 import AboutCard from '@/components/about-card'
 import { AppDispatch, RootState } from '@/store'
-import { getActivities } from '@/store/activities'
+import { getActivities } from '@/store/slides/activities'
 import { Typography } from '@material-tailwind/react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'

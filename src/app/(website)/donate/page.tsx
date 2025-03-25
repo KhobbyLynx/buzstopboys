@@ -1,6 +1,6 @@
 'use client'
 import { AppDispatch, RootState } from '@/store'
-import { getDonationOptions, getDonationsCampaigns } from '@/store/donations'
+import { getDonationOptions, getDonationsCampaigns } from '@/store/slides/donations'
 import DonationCampaign from '@/view/website/donations/DonationCampaign'
 import DonationCards from '@/view/website/donations/DonationCards'
 import { Box, CircularProgress, Typography } from '@mui/material'

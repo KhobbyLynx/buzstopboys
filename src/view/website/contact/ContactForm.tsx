@@ -23,7 +23,7 @@ import {
 import CustomTextField from '@/components/mui/text-field'
 import { Icon } from '@iconify/react'
 import { MessageSubmitType, MessageSource, SenderStatusType } from '@/types/messages'
-import { sendMessage } from '@/store/messages'
+import { sendMessage } from '@/store/slides/messages'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { Toast } from '@/utils/toast'

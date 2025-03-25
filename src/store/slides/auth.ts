@@ -11,7 +11,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth'
-import { auth, googleProvider } from '../configs/firebase'
+import { auth, googleProvider } from '../../configs/firebase'
 
 // ** Utils
 import { isWithinOneMinute, logoutFirebase, splitEmail } from '@/utils/utils'

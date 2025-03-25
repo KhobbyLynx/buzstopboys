@@ -1,7 +1,7 @@
 'use client'
 
 import { AppDispatch, RootState } from '@/store'
-import { getEvents } from '@/store/events'
+import { getEvents } from '@/store/slides/events'
 import EventCard from '@/view/website/events/EventsCard'
 import EventsHeader from '@/view/website/events/EventsHeader'
 import { Typography } from '@material-tailwind/react'

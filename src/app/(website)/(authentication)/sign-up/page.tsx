@@ -30,7 +30,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { handleRegisterPatron } from '@/store/auth'
+import { handleRegisterPatron } from '@/store/slides/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'

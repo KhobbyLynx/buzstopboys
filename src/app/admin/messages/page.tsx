@@ -30,7 +30,7 @@ import { formatDate } from '@/utils/utils'
 import CustomChip from '@/components/mui/chip'
 
 // ** Actions Imports
-import { deleteMessage, getMessages, patchMessage } from '@/store/messages'
+import { deleteMessage, getMessages, patchMessage } from '@/store/slides/messages'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'

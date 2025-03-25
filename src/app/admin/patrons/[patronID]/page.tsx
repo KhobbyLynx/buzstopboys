@@ -15,7 +15,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { formatDate } from '@/utils/utils'
-import { singleUser } from '@/store/users'
+import { singleUser } from '@/store/slides/users'
 import IconifyIcon from '@/components/icon'
 
 export default function UserPage() {

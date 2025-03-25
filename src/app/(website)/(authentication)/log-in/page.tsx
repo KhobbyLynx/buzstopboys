@@ -29,7 +29,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 
 // ** Store
-import { handleLoginPatron } from '@/store/auth'
+import { handleLoginPatron } from '@/store/slides/auth'
 
 // ** Custom Component Import
 import CustomTextField from '@/components/mui/text-field'

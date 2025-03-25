@@ -6,7 +6,7 @@ import { Avatar, Box, Button, Chip, CircularProgress, Typography } from '@mui/ma
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
-import { singleCampaign } from '@/store/donations'
+import { singleCampaign } from '@/store/slides/donations'
 import { SwiperSlide, Swiper } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
 import Head from 'next/head'

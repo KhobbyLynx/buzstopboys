@@ -27,7 +27,7 @@ import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { updateMessage } from '@/store/messages'
+import { updateMessage } from '@/store/slides/messages'
 
 // ** Types Imports
 import {

@@ -7,7 +7,7 @@ import VideoSwiper from '@/components/carousel/VideoSwiper'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { useEffect } from 'react'
-import { getActivities } from '@/store/activities'
+import { getActivities } from '@/store/slides/activities'
 
 function Activities() {
   // ** Hooks

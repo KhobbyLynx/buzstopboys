@@ -3,7 +3,7 @@
 import { Dispatch } from '@reduxjs/toolkit'
 import { UseFormSetError } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import { handleGoogleAuthentication } from '@/store/auth'
+import { handleGoogleAuthentication } from '@/store/slides/auth'
 
 interface GoogleAuthParams {
   dispatch: Dispatch

@@ -29,7 +29,7 @@ import { AppDispatch, RootState } from '@/store'
 import { Toast } from '@/utils/toast'
 import { Icon } from '@iconify/react'
 import { MessageSource, SenderStatusType } from '@/types/messages'
-import { sendMessage } from '@/store/messages'
+import { sendMessage } from '@/store/slides/messages'
 
 const CustomCloseButton = styled(IconButton)<IconButtonProps>(({ theme }) => ({
   top: 0,
