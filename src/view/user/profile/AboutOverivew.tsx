@@ -54,9 +54,7 @@ const renderList = (arr: ProfileTabCommonType[]) => {
             >
               {item.property}
             </Typography>
-            <Typography sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
-              {item?.value}
-            </Typography>
+            <Typography sx={{ color: 'text.secondary' }}>{item?.value}</Typography>
           </Box>
         </Box>
       )
