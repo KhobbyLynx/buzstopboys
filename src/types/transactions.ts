@@ -5,12 +5,13 @@ export type DONATIONTYPE = 'campaign' | 'option' | 'custom' | 'event'
 
 export type TRANSACTIONSTYPE = {
   id: string
+  email: string
   amount: number
   currency: ACCEPTEDCURRENCYTYPE
   reference: string
   status: TRANSACTIONSTATUSTYPE
   channel: PAYMENTCHANNELSTYPE
-  donationType: DONATIONTYPE
+  transactionType: DONATIONTYPE
   metadata: {
     patronId: string
     note: string
