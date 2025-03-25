@@ -38,6 +38,10 @@ const UserProfileHeader = () => {
     if (data) setUserData(data)
   }, [data])
 
+  const avatar =
+    userData?.avatar ||
+    'https://res.cloudinary.com/khobbylynx/image/upload/v1740629504/buzstopboys/avatars/avatarDefault_cprnz9.jpg'
+
   if (!userData) return null
 
   const roleIcon = userData.role === 'admin' ? 'ri:admin-line' : 'eos-icons:role-binding'
@@ -62,7 +66,7 @@ const UserProfileHeader = () => {
           justifyContent: { xs: 'center', md: 'flex-start' },
         }}
       >
-        <ProfilePicture src={userData.avatar} alt="profile-picture" />
+        <ProfilePicture src={avatar} alt="profile-picture" />
         <Box
           sx={{
             width: '100%',
