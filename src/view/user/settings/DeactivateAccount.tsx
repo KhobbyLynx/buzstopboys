@@ -20,8 +20,9 @@ import { logoutFirebase } from '@/utils/utils'
 import SnackbarAlert from '@/components/snackbar'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
-import { deleteUser } from '@/store/users'
-import { handleLogout } from '@/store/auth'
+import { deleteUser } from '@/store/slides/users'
+import { handleLogout } from '@/store/slides/auth'
+import { clearLoggedInUserTransactions } from '@/store/slides/transactions'
 
 const MySwal = withReactContent(Swal)
 
@@ -71,9 +72,11 @@ const DeactivateAccount = () => {
       try {
         if (id && role) {
           await dispatch(deleteUser({ userId: id, role }))
-          await dispatch(handleLogout(id))
-          router.push('/')
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+          await dispatch(handleLogout(id)).then(() => {
+            dispatch(clearLoggedInUserTransactions())
+            router.push('/')
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+          })
           handleOpenSnackbar()
           setMsg({
             type: 'success',
