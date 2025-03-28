@@ -13,7 +13,8 @@ import { clientNavigation } from '@/navigation/client.navigation'
 import { Box } from '@mui/material'
 import { useClickOutside } from '@/hooks/useOutsideClick'
 import { AppDispatch } from '@/store'
-import { handleLogout } from '@/store/auth'
+import { handleLogout } from '@/store/slides/auth'
+import { clearLoggedInUserTransactions } from '@/store/slides/transactions'
 
 export function Navbar() {
   const [open, setOpen] = React.useState(false)
@@ -67,8 +68,10 @@ export function Navbar() {
     setOpen(false)
     try {
       if (auth?.id) {
-        await dispatch(handleLogout(auth.id))
-        router.push('/')
+        await dispatch(handleLogout(auth.id)).then(() => {
+          dispatch(clearLoggedInUserTransactions())
+          router.push('/')
+        })
       }
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
