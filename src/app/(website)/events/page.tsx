@@ -1,9 +1,9 @@
 'use client'
 
 import { AppDispatch, RootState } from '@/store'
-import { getEvents } from '@/store/events'
-import EventCard from '@/view/events/EventsCard'
-import EventsHeader from '@/view/events/EventsHeader'
+import { getEvents } from '@/store/slides/events'
+import EventCard from '@/view/website/events/EventsCard'
+import EventsHeader from '@/view/website/events/EventsHeader'
 import { Typography } from '@material-tailwind/react'
 import { Box, CircularProgress } from '@mui/material'
 import React, { useEffect } from 'react'
@@ -28,20 +28,22 @@ const Events = () => {
   }
 
   return (
-    <div>
-      <EventsHeader />
+    <>
+      <Box className="px-8">
+        <EventsHeader />
+      </Box>
 
-      <div className="bg-gray-100 p-10">
+      <Box className="bg-gray-100 p-10">
         <Typography variant="h4" className="my-3 text-gray-900 text-center uppercase">
           Upcoming Events
         </Typography>
-        <div className="flex items-start justify-center w-full flex-wrap">
+        <Box className="flex items-start justify-center w-full flex-wrap">
           {events.map((event) => {
             return <EventCard key={event.title} {...event} />
           })}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </>
   )
 }
 

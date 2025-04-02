@@ -4,6 +4,7 @@ export const adminNavigation: NavigationType[] = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: 'fa-border-all' },
   { name: 'Patrons', href: '/admin/patrons', icon: 'fa-users' },
   { name: 'Donations', href: '/admin/donations', icon: 'fa-hand-holding-dollar' },
+  { name: 'Transactions', href: '/admin/transactions', icon: 'fa-hand-holding-dollar' },
   { name: 'Activities', href: '/admin/activities', icon: 'fa-person-digging' },
   { name: 'Events', href: '/admin/events', icon: 'fa-calendar-days' },
   { name: 'Volunteers', href: '/admin/volunteers', icon: 'fa-handshake-angle' },

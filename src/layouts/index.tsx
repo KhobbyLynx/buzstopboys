@@ -8,8 +8,9 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '@/configs/firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
-import { handleAutoLogin } from '@/store/auth'
+import { handleAutoLogin } from '@/store/slides/auth'
 import FallbackSpinner from '@/components/spinner'
+import UserProfileLayout from './UserProfileLayout'
 
 interface DataType {
   id: string
@@ -56,6 +57,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname()
   const isBlankLayout = ['/sign-up', '/log-in', '/forgot-password', '/not-found'].includes(pathname)
   const isAdminLayout = pathname.startsWith('/admin')
+  const isProfileLayout = pathname.startsWith('/user')
   const isMainLayout = [
     '/',
     '/our-merch',

@@ -42,8 +42,7 @@ export const deleteCookie = async (name: String) => {
   } catch (error) {
     if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
       console.error('Error deleting cookie:', error)
+      throw error
     }
-
-    throw error
   }
 }

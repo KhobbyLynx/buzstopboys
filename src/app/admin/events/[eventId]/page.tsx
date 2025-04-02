@@ -1,7 +1,7 @@
 'use client'
 import IconifyIcon from '@/components/icon'
 import { AppDispatch, RootState } from '@/store'
-import { singleEvent } from '@/store/events'
+import { singleEvent } from '@/store/slides/events'
 import { formatDate } from '@/utils/utils'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import Head from 'next/head'
@@ -141,7 +141,7 @@ const EventDetails = () => {
           startIcon={<IconifyIcon icon="mingcute:back-fill" />}
           onClick={() => router.push('/admin/events')}
           variant="outlined"
-          className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
+          className="!mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
         >
           Back To Events
         </Button>

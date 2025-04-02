@@ -6,11 +6,11 @@ export const clientNavigation: NavigationType[] = [
     icon: 'heroicons:home-solid',
     href: '/',
   },
-  // {
-  //   name: "Our Merch",
-  //   icon: 'fa6-brands:shopify',
-  //   href: "/our-merch"
-  // },
+  {
+    name: 'Our Merch',
+    icon: 'fa6-brands:shopify',
+    href: '/our-merch',
+  },
   {
     name: 'Activities',
     icon: 'healthicons:miner-worker-alt',

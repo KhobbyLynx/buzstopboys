@@ -1,10 +1,11 @@
 // ** Slides
-import auth from './auth'
-import users from './users'
-import donations from './donations'
-import activities from './activities'
-import events from './events'
-import messages from './messages'
+import auth from './slides/auth'
+import users from './slides/users'
+import donations from './slides/donations'
+import activities from './slides/activities'
+import events from './slides/events'
+import messages from './slides/messages'
+import transactions from './slides/transactions'
 
 const rootReducer = {
   auth,
@@ -13,6 +14,7 @@ const rootReducer = {
   activities,
   events,
   messages,
+  transactions,
 }
 
 export default rootReducer

@@ -90,7 +90,13 @@ const ForgotPassword = () => {
               }}
             >
               <Link href="/">
-                <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
+                <Image
+                  src="/images/logos/logo_black.png"
+                  alt="logo"
+                  width={90}
+                  height={90}
+                  priority
+                />
               </Link>
             </Box>
             <Box sx={{ mb: 2, textAlign: 'center' }}>

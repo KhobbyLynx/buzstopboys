@@ -1,10 +1,11 @@
 import connectMongoDB from '@/libs/mongodb'
 import Patron from '@/models/patron.model'
-import { generateRandomPassword } from '@/utils/utils'
+import { emailRegex, generateRandomPassword } from '@/utils/utils'
 import { NextRequest, NextResponse } from 'next/server'
 
 import admin from 'firebase-admin'
 
+// INITIALIZE ADMIN
 const getAdminAuth = async () => {
   if (!admin.apps.length) {
     admin.initializeApp({
@@ -22,7 +23,7 @@ const getAdminAuth = async () => {
   return auth
 }
 
-//** POST - Create Patron */
+// ** POST
 export async function POST(request: NextRequest) {
   try {
     // Get the patron data from the request body
@@ -106,7 +107,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-//** PATCH  */
+// ** PATCH
 export async function PATCH(request: NextRequest) {
   try {
     // Get the ID from the request query (if provided)
@@ -118,17 +119,27 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ message: 'Patron ID is required' }, { status: 400 })
     }
 
-    // Validate the request body
-    const { suspended } = await request.json()
+    // Request Body
+    const data = await request.json()
+    const { suspended, onlineStatus, lastSignInTime } = data
 
     // Initialize firebase admin sdk
     const auth = await getAdminAuth()
 
     if (suspended) {
+      // Suspend user
       await auth.updateUser(id, { disabled: true })
+
+      // Log out user from firebase
+      await auth.revokeRefreshTokens(id)
     } else {
+      // Reinstate user
       await auth.updateUser(id, { disabled: false })
     }
+
+    // if updating the online status onlineStataus will be defined
+    // if the onlineStatus is not defined set to false
+    const setOnlineStatus = onlineStatus ? onlineStatus : false
 
     // Connect to MongoDB
     await connectMongoDB()
@@ -136,10 +147,9 @@ export async function PATCH(request: NextRequest) {
     // Update the patron
     const patron = await Patron.findOneAndUpdate(
       { id },
-      { $set: { suspended } },
-      { new: true } // return the updated document
+      { $set: { suspended, onlineStatus: setOnlineStatus, lastSignInTime } },
+      { new: true, projection: { _id: 0, __v: 0 } } // return the updated document
     )
-    console.log(patron)
 
     // Return a success response
     return NextResponse.json(patron, {
@@ -156,7 +166,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-//** DELETE  */
+// ** DELETE
 export async function DELETE(request: NextRequest) {
   try {
     const id = request.nextUrl.searchParams.get('id')
@@ -189,7 +199,7 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-//** PUT  */
+// ** PUT
 export async function PUT(request: NextRequest) {
   try {
     // Get the ID from the request query (if provided)
@@ -198,12 +208,40 @@ export async function PUT(request: NextRequest) {
 
     // Check if the patron ID is provided
     if (!id) {
-      return NextResponse.json({ message: 'Patron ID is required' }, { status: 400 })
+      return NextResponse.json({ message: 'User Id is required' }, { status: 400 })
     }
 
-    // Validate the request body
-    const { firstname, lastname, contact, role, lastSignInTime, onlineStatus } =
-      await request.json()
+    // Request body
+    const data = await request.json()
+    console.log('------------------------INSIDE----------------------')
+    console.log('--------', data)
+    console.log('--------', id)
+    console.log('----------------------------------------------')
+    const {
+      firstname,
+      lastname,
+      contact,
+      role,
+      lastSignInTime,
+      onlineStatus,
+      email,
+      address,
+      fullname,
+      username,
+      avatar,
+    } = data
+
+    if (email) {
+      if (emailRegex.test(email)) {
+        // Initialize firebase admin sdk
+        const auth = await getAdminAuth()
+
+        // update email in firebase
+        await auth.updateUser(id, { email })
+      } else {
+        return NextResponse.json({ message: 'Invalid email format' }, { status: 400 })
+      }
+    }
 
     // Connect to MongoDB
     await connectMongoDB()
@@ -211,10 +249,23 @@ export async function PUT(request: NextRequest) {
     // Update the patron
     const patron = await Patron.findOneAndUpdate(
       { id },
-      { $set: { firstname, lastname, contact, role, lastSignInTime, onlineStatus } },
-      { new: true } // return the updated document
+      {
+        $set: {
+          firstname,
+          lastname,
+          contact,
+          role,
+          lastSignInTime,
+          onlineStatus,
+          email,
+          address,
+          fullname,
+          username,
+          avatar,
+        },
+      },
+      { new: true, projection: { _id: 0, __v: 0 } } // return the updated document
     )
-    console.log(patron)
 
     // Return a success response
     return NextResponse.json(patron, {
@@ -231,55 +282,70 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-//** GET All or Single PATRON */
+// ** GET
 export async function GET(request: NextRequest) {
   try {
+    // Extract query parameters
+    const { searchParams } = new URL(request.url)
+
+    // Prepare query object dynamically
+    const query: Record<string, any> = {}
+
+    // Helper: Build query with dynamic filters
+    searchParams.forEach((value, key) => {
+      if (['username', 'email', 'contact'].includes(key)) {
+        query[key] = { $regex: value, $options: 'i' } // Case-insensitive search
+      } else if (key === 'verified' || key === 'onlineStatus') {
+        query[key] = value === 'true'
+      } else {
+        query[key] = value
+      }
+    })
+
+    // Extract pagination parameters
+    const page = parseInt(searchParams.get('page') || '1', 10)
+    const limit = parseInt(searchParams.get('limit') || '20', 10)
+    const skip = (page - 1) * limit
+
+    // Projection for optimized data retrieval
+    const patronProjection = {
+      id: 1,
+      username: 1,
+      email: 1,
+      contact: 1,
+      role: 1,
+      verified: 1,
+      onlineStatus: 1,
+      avatar: 1,
+    }
+
     // Connect to MongoDB
     await connectMongoDB()
 
-    // Get the ID from the request query (if provided)
-    const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
+    // Fetch All Patrons with dynamic filters
+    // With .lean(), results are simple JavaScript objects, making queries faster and consuming less memory.
+    const patrons = await Patron.find(query, patronProjection).skip(skip).limit(limit).lean()
 
-    if (id) {
-      // Fetch a single patron by ID
-      const patron = await Patron.findOne({ id })
+    // Get the count of matching patrons
+    // Get the count of all users if query is an empty object
+    const fetchCount = await Patron.countDocuments(query).lean()
 
-      if (!patron) {
-        return new Response(JSON.stringify({ message: 'Patron not found' }), {
-          status: 404,
-          headers: {
-            'content-type': 'application/json',
-          },
-        })
-      }
-
-      // Return the single patron
-      return new Response(JSON.stringify(patron), {
-        headers: {
-          'content-type': 'application/json',
-        },
-        status: 200,
-      })
+    const returnedData = {
+      users: patrons,
+      fetchCount,
+      currentPage: page,
+      totalPages: Math.ceil(fetchCount / limit),
     }
 
-    // Fetch all patrons if no ID is provided
-    const patrons = await Patron.find()
-
-    // Return all patrons
-    return new Response(JSON.stringify(patrons), {
-      headers: {
-        'content-type': 'application/json',
-      },
+    return new Response(JSON.stringify(returnedData), {
       status: 200,
+      headers: { 'content-type': 'application/json' },
     })
   } catch (error: any) {
     console.error('Error fetching patrons:', error)
     return new Response(JSON.stringify({ message: error.message }), {
       status: 500,
-      headers: {
-        'content-type': 'application/json',
-      },
+      headers: { 'content-type': 'application/json' },
     })
   }
 }

@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { Tooltip } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 
 // ** Actions Imports
-import { sendMessage } from '@/store/messages'
+import { sendMessage } from '@/store/slides/messages'
 
 // ** Types Imports
 import { AdminSubmitMessageType, MessageSource, SenderStatusType } from '@/types/messages'
@@ -111,6 +111,10 @@ const SidebarSendMessage = (props: SidebarSendMessageType) => {
         content: formData.content,
         receiverId,
       }
+
+      console.log('---------sendMessage--------')
+      console.log(requiredData)
+      console.log('---------sendMessage--------')
 
       // dispatch with required data
       dispatch(sendMessage(requiredData))
@@ -208,7 +212,7 @@ const SidebarSendMessage = (props: SidebarSendMessageType) => {
             fullWidth
             value={receiverId}
             sx={{ mb: 4 }}
-            label="Select Icon"
+            label="Receiver Id"
             onChange={(e) => setReceiverId(e.target.value)}
             SelectProps={{
               value: receiverId,

@@ -41,6 +41,8 @@ export type PatronWebType = {
   suspended?: boolean
   onlineStatus: boolean
   verified: boolean
+  type?: string
+  socials?: { [key: string]: string | undefined }
   timestamps: {
     createdAt: string // ISO date string
     lastSignInTime?: string
@@ -49,6 +51,18 @@ export type PatronWebType = {
     refreshToken: string
     accessToken: string
   }
+}
+
+export type PatronProfileType = {
+  fullname?: string
+  firstname?: string
+  lastname?: string
+  username?: string
+  email?: string
+  avatar?: string
+  address?: string
+  contact?: string
+  socials?: { [key: string]: string | undefined }
 }
 
 export type PatronAdminType = {

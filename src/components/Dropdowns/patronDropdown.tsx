@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, SyntheticEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
-import { handleLogout } from '@/store/auth'
-import { logoutFirebase } from '@/utils/utils'
+import { handleLogout } from '@/store/slides/auth'
 
 // ** MUI Imports
 import { Box, Menu, Badge, Avatar, Divider, MenuItem, Typography, styled } from '@mui/material'
@@ -16,6 +15,7 @@ import IconifyIcon from '@/components/icon'
 // ** Types
 import { PatronWebType } from '@/types/patron'
 import Link from 'next/link'
+import { clearLoggedInUserTransactions } from '@/store/slides/transactions'
 
 const BadgeContent = styled('span')(({ theme }) => ({
   width: 8,
@@ -27,9 +27,10 @@ const BadgeContent = styled('span')(({ theme }) => ({
 
 const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
   const { avatar, username, role, id } = patronData
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const pathname = usePathname()
 
   const handleDropdownOpen = (event: SyntheticEvent) =>
     setAnchorEl(event.currentTarget as HTMLElement)
@@ -41,20 +42,36 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
     setAnchorEl(null)
   }
 
+  // Scroll to FAQ on home page
+  const handleScrollToFAQ = () => {
+    handleDropdownClose() // Close dropdown on click
+
+    if (pathname === '/') {
+      // If already on the home page, scroll directly
+      document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // Navigate to home with query
+      router.push('/?section=faq')
+    }
+  }
+
+  // Sign Out
   const handleSignout = async () => {
     try {
+      handleDropdownClose()
       if (id) {
-        await dispatch(handleLogout(id))
+        await dispatch(handleLogout(id)).then(() => {
+          dispatch(clearLoggedInUserTransactions())
+          router.push('/')
+        })
       }
     } catch (error) {
       if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
         console.error('Error during signout:', error)
       }
 
-      throw new Error(error instanceof Error ? error.message : 'An error occurred sigining out')
+      throw new Error(error instanceof Error ? error.message : 'An error occurred signing out')
     }
-
-    handleDropdownClose()
   }
 
   const menuItems = [
@@ -64,10 +81,10 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
       url: '/admin/dashboard',
       condition: role === 'admin',
     },
-    { label: 'My Profile', icon: 'tabler:user-check', url: '/user-profile' },
-    { label: 'Settings', icon: 'tabler:settings', url: '/account-settings' },
-    { label: 'Help', icon: 'tabler:lifebuoy', url: '/help-center' },
-    { label: 'FAQ', icon: 'tabler:info-circle', url: '/faq' },
+    { label: 'My Profile', icon: 'tabler:user-check', url: '/user/profile' },
+    { label: 'Settings', icon: 'tabler:settings', url: '/user/settings' },
+    { label: 'Help', icon: 'tabler:lifebuoy', url: '/contact' },
+    { label: 'FAQ', icon: 'tabler:info-circle', onClick: handleScrollToFAQ },
     { label: 'Sign Out', icon: 'tabler:logout', onClick: handleSignout },
   ]
 
@@ -113,6 +130,7 @@ const PatronDropdown = ({ patronData }: { patronData: PatronWebType }) => {
           (item, index) =>
             item.condition !== false && (
               <Box key={index}>
+                {item.label === 'Sign Out' && <Divider sx={{ my: 1.5 }} />}
                 <MenuItem
                   onClick={() => (item.onClick ? item.onClick() : handleDropdownClose(item.url))}
                 >

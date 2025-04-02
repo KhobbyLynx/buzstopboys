@@ -29,7 +29,7 @@ import IconifyIcon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { updateEvent } from '@/store/events'
+import { updateEvent } from '@/store/slides/events'
 
 // ** Types Imports
 import { AppDispatch } from '@/store'

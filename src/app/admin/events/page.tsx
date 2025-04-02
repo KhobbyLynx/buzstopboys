@@ -31,7 +31,7 @@ import CustomChip from '@/components/mui/chip'
 import { formatDate } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteEvent, getEvents } from '@/store/events'
+import { deleteEvent, getEvents } from '@/store/slides/events'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'

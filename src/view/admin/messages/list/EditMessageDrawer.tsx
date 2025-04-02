@@ -12,7 +12,7 @@ import Box, { BoxProps } from '@mui/material/Box'
 import { FormHelperText, Tooltip } from '@mui/material'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -27,7 +27,7 @@ import { AppDispatch, RootState } from '@/store'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Actions Imports
-import { updateMessage } from '@/store/messages'
+import { updateMessage } from '@/store/slides/messages'
 
 // ** Types Imports
 import {
@@ -70,13 +70,11 @@ const SidebarEditMessage = (props: SidebarEditMessageType) => {
 
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
-  const store = useSelector((state: RootState) => state)
-
-  // ** Auth
-  const { isLoggedIn, data } = store.auth
-
-  // ** Loader state for sending a message
-  const { sending } = store.messages
+  const { sending, data, isLoggedIn } = useSelector((state: RootState) => ({
+    sending: state.messages.sending,
+    data: state.auth.data,
+    isLoggedIn: state.auth.isLoggedIn,
+  }))
 
   const {
     reset,
@@ -200,7 +198,7 @@ const SidebarEditMessage = (props: SidebarEditMessageType) => {
               />
             )}
           />
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 3 }}>
             <Button type="submit" variant="contained" sx={{ mr: 3 }}>
               Submit
             </Button>

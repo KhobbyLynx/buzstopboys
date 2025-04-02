@@ -30,7 +30,9 @@ export async function GET(request: Request) {
   const userData = cookies.userData ? JSON.parse(cookies.userData) : null
 
   if (!userData) {
-    return NextResponse.json({ message: 'No user data found @ GET COOKIE' }, { status: 404 })
+    if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+      console.log('No user data found @ GET COOKIE')
+    }
   }
 
   return NextResponse.json(userData)

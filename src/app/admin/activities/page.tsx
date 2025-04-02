@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { formatDate } from '@/utils/utils'
 
 // ** Actions Imports
-import { deleteActivity, getActivities } from '@/store/activities'
+import { deleteActivity, getActivities } from '@/store/slides/activities'
 
 // ** Third Party Imports
 import Swal from 'sweetalert2'

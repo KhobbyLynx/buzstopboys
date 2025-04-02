@@ -50,7 +50,13 @@ function DonationCampaignModal({
               }}
               className="rounded mx-auto"
             >
-              <Image src={img} alt={title} layout="responsive" width={400} height={200} />
+              <Image
+                src={img}
+                alt={title}
+                style={{ width: '100%', height: 'auto' }}
+                width={400}
+                height={200}
+              />
               <Typography variant="h6" className="text-center pt-2 pb-2">
                 {title}
               </Typography>

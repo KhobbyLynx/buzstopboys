@@ -25,7 +25,7 @@ import IconifyIcon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 
 // ** Actions Imports
-import { updateActivity } from '@/store/activities'
+import { updateActivity } from '@/store/slides/activities'
 
 // ** Types Imports
 import { AppDispatch } from '@/store'

@@ -11,6 +11,7 @@ import { RootState } from '@/store'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
 import Link from 'next/link'
+import DialogDonateForm from '../dialog/DonateFormDialog'
 
 interface DonationCampaignCardProps {
   id: string
@@ -24,16 +25,13 @@ interface DonationCampaignCardProps {
 
 export function DonationCampaignCard({ ...props }: DonationCampaignCardProps) {
   const { id, imgs, target, title, desc, raised, status } = props
-  const [show, setShow] = useState<boolean>(false)
-  const [showDetails, setShowDetails] = useState<boolean>(false)
-  const toggleAuthModal = () => setShow(!show)
+  const [showFormDialog, setShowFormDialog] = useState<boolean>(false)
+  const handleOpenDialog = () => setShowFormDialog(!showFormDialog)
 
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn)
 
-  const handeCampaignDonate = () => {}
-
   return (
-    <div>
+    <div className="mb-10">
       <Card className="border">
         <CardHeader className="h-64 border-solid border-gray-700">
           <div className="relative w-full h-64 overflow-hidden rounded-2xl">
@@ -91,28 +89,19 @@ export function DonationCampaignCard({ ...props }: DonationCampaignCardProps) {
             className="justify-self-end self-end"
             disabled={status !== 'active'}
             color={status === 'completed' ? 'green' : 'red'}
-            onClick={() => {
-              !isLoggedIn ? toggleAuthModal() : handeCampaignDonate()
-              console.log('Donated!', show)
-            }}
+            onClick={status === 'completed' ? undefined : handleOpenDialog}
           >
             {status === 'completed' ? 'Target Reached' : 'Donate Toward a Purpose'}
           </Button>
         </CardBody>
       </Card>
-      <AuthModal show={show} toggleModal={toggleAuthModal} />
-      {/* <DonationCampaignModal
-        isLoggedIn={isLoggedIn}
-        show={showDetails}
-        toggleModal={toggleDetailsModal}
-        handeCampaignDonate={handeCampaignDonate}
-        img={img}
-        target={target}
-        title={title}
-        desc={desc}
-        raised={raised}
-        status={status}
-      /> */}
+      <DialogDonateForm
+        show={showFormDialog}
+        handleClose={handleOpenDialog}
+        amount={null}
+        donationId={id}
+        donationType="campaign"
+      />
     </div>
   )
 }

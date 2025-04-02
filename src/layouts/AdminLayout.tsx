@@ -1,7 +1,7 @@
 import React from 'react'
 
 // Components
-import Sidebar from '@/components/sidebar/Sidebar'
+import Sidebar from '@/components/sidebar/AdminSidebar'
 import AdminFooter from '@/components/footers/AdminFooter'
 
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

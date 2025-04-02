@@ -30,13 +30,14 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
-import { handleRegisterPatron } from '@/store/auth'
+import { handleRegisterPatron } from '@/store/slides/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@/store'
 import { useRouter } from 'next/navigation'
 import { CircularProgress } from '@mui/material'
 import FallbackSpinner from '@/components/spinner'
 import Image from 'next/image'
+import { handleGoogleAuth } from '@/utils/handleGoogleAuth'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(() => ({
@@ -65,10 +66,21 @@ const registerSchema = yup.object().shape({
   password: yup.string().required('Password is required'),
 })
 
+let password = ''
+let email = ''
+let username = ''
+
+// Set default values in development mode
+if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+  username = 'Lynx'
+  password = 'Testing123@'
+  email = 'help@gmail.com'
+}
+
 const defaultValues = {
-  username: 'lynx',
-  password: 'Testing123@',
-  email: 'help@gmail.com',
+  username,
+  password,
+  email,
 }
 
 interface FormData {
@@ -101,7 +113,11 @@ const Register = () => {
     resolver: yupResolver(registerSchema),
   })
 
-  const onSubmit = async (data: FormData) => {
+  const handleGoogleSignup = async () => {
+    await handleGoogleAuth({ dispatch, router, setError, setLoading })
+  }
+
+  const onSubmit = async (userData: FormData) => {
     // Check if T&C checked
     if (!agree) {
       // Error Display in the password HelperText
@@ -115,7 +131,7 @@ const Register = () => {
 
     setLoading(true)
     try {
-      const resultAction = await dispatch(handleRegisterPatron(data))
+      const resultAction = await dispatch(handleRegisterPatron(userData))
 
       // Check if action was fulfilled
       if (handleRegisterPatron.fulfilled.match(resultAction)) {
@@ -129,6 +145,14 @@ const Register = () => {
           setError('password', {
             type: 'manual',
             message: 'Email Already In Use',
+          })
+        } else if (
+          typeof resultAction.payload === 'string' &&
+          resultAction.payload.includes('auth/user-disabled')
+        ) {
+          setError('password', {
+            type: 'manual',
+            message: 'Your account has been suspended. Please contact support.',
           })
         } else if (
           typeof resultAction.payload === 'string' &&
@@ -169,7 +193,7 @@ const Register = () => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: '#f9fafb',
+        backgroundColor: '#07305a',
       }}
     >
       <Card>
@@ -182,7 +206,13 @@ const Register = () => {
             }}
           >
             <Link href="/">
-              <Image src="/images/logos/logo_black.png" alt="logo" width={90} height={90} />
+              <Image
+                src="/images/logos/logo_black.png"
+                alt="logo"
+                width={90}
+                height={90}
+                priority
+              />
             </Link>
           </Box>
           <Box sx={{ mb: 2, textAlign: 'center' }}>
@@ -225,7 +255,7 @@ const Register = () => {
                     value={value}
                     onBlur={onBlur}
                     onChange={onChange}
-                    placeholder="khobbylynx55@gmail.com"
+                    placeholder="eg. lynx@gmail.com"
                     error={Boolean(errors.email)}
                     {...(errors.email && { helperText: errors.email.message })}
                   />
@@ -243,8 +273,8 @@ const Register = () => {
                     value={value}
                     onBlur={onBlur}
                     label="Password"
+                    placeholder="Enter your password"
                     onChange={onChange}
-                    id="auth-login-v2-password"
                     error={Boolean(errors.password)}
                     {...(errors.password && { helperText: errors.password.message })}
                     type={showPassword ? 'text' : 'password'}
@@ -321,7 +351,7 @@ const Register = () => {
                 href="/"
                 component={Link}
                 sx={{ color: '#db4437' }}
-                onClick={(e) => e.preventDefault()}
+                onClick={handleGoogleSignup}
               >
                 <IconifyIcon icon="mdi:google" />
               </IconButton>

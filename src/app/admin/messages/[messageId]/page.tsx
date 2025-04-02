@@ -1,6 +1,6 @@
 'use client'
 import { AppDispatch, RootState } from '@/store'
-import { singleMessage } from '@/store/messages'
+import { singleMessage } from '@/store/slides/messages'
 import { formatDate } from '@/utils/utils'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import Head from 'next/head'

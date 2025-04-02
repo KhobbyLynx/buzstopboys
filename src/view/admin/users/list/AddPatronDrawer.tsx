@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 
 // ** Custom Component Import
-import CustomTextField from '@/components/modals/mui/text-field'
+import CustomTextField from '@/components/mui/text-field'
 
 // ** Third Party Imports
 import * as yup from 'yup'
@@ -28,8 +28,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // ** Types Imports
 import { RootState, AppDispatch } from '@/store'
-import { PatronMDBType, PatronType } from '@/types/patron'
-import { getPatrons, handleAdminRegisterPatron } from '@/store/users'
+import { PatronDatabaseType, PatronType } from '@/types/patron'
+import { getUsers, handleAdminRegisterPatron } from '@/store/slides/users'
 
 interface SidebarAddUserType {
   open: boolean
@@ -102,37 +102,25 @@ const SidebarAddPatron = (props: SidebarAddUserType) => {
 
   const onSubmit = (data: PatronType) => {
     // Check if users exist in store, if not fetch them
-    if (store.numberOfUsers === 0) {
-      dispatch(getPatrons())
+    if (store.users.length === 0) {
+      dispatch(getUsers())
     }
 
-    // Set for faster lookups
-    const emails = new Set(store.users.map((u: PatronMDBType) => u.email))
-    const usernames = new Set(store.users.map((u: PatronMDBType) => u.username))
-
-    if (emails.has(data.email)) {
-      setError('email', { message: 'Email already exists!' })
-    }
-    if (usernames.has(data.username)) {
-      setError('username', { message: 'Username already exists!' })
-    }
-
-    if (!emails.has(data.email) && !usernames.has(data.username)) {
-      try {
-        const requiredUserData = {
-          ...data,
-          role,
-        }
-
-        dispatch(handleAdminRegisterPatron(requiredUserData)) // Register user
-      } catch (error) {
-        if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
-          console.log('Error Adding Patron', error)
-        }
-      } finally {
-        // Reset Form
-        handleClose()
+    try {
+      const requiredUserData = {
+        ...data,
+        role,
+        type: 'admin',
       }
+
+      dispatch(handleAdminRegisterPatron(requiredUserData)) // Register user
+    } catch (error) {
+      if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
+        console.log('error creating user - admin', error)
+      }
+    } finally {
+      // Reset Form
+      handleClose()
     }
   }
 

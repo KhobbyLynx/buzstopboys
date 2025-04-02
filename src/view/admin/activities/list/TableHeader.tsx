@@ -6,7 +6,7 @@ import Button from '@mui/material/Button'
 import Icon from '@/components/icon'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
-import { getDonationsCampaigns } from '@/store/donations'
+import { getDonationsCampaigns } from '@/store/slides/donations'
 import { useState } from 'react'
 
 interface TableHeaderProps {

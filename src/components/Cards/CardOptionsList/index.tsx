@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { deleteDonationOption } from '@/store/donations'
+import { deleteDonationOption } from '@/store/slides/donations'
 
 // ** Icon Imports
 import Icon from '@/components/icon'
