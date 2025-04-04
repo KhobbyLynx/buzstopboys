@@ -63,7 +63,7 @@ const LinkStyled = styled(Link)(() => ({
   alignItems: 'center',
   textDecoration: 'none',
   justifyContent: 'center',
-  color: '#1976d2',
+  color: '#2196F3',
   fontSize: '16px',
 }))
 
@@ -124,7 +124,7 @@ const ForgotPassword = () => {
                   marginBottom: '24px',
                   padding: '12px',
                   fontSize: '16px',
-                  backgroundColor: '#1976d2',
+                  backgroundColor: '#2196F3',
                 }}
               >
                 Send reset link
