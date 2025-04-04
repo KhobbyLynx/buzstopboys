@@ -48,7 +48,7 @@ const Card = styled(MuiCard)<CardProps>(() => ({
 
 const LinkStyled = styled(Link)(() => ({
   textDecoration: 'none',
-  color: '#7367F0',
+  color: '#2196F3',
 }))
 
 const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(() => ({
@@ -136,6 +136,11 @@ const Register = () => {
       // Check if action was fulfilled
       if (handleRegisterPatron.fulfilled.match(resultAction)) {
         router.push('/')
+
+        setTimeout(() => {
+          setLoading(false)
+        }, 15000)
+        return
       } else {
         // Handle the case where the action was rejected
         if (
@@ -160,28 +165,27 @@ const Register = () => {
         ) {
           setError('password', {
             type: 'manual',
-            message: 'Network Error',
+            message: 'Network Error. Check your internet connection and try again.',
           })
         } else {
           setError('password', {
             type: 'manual',
-            message: 'Registration failed. Please try again.',
+            message: 'Sign up failed. Please try again.',
           })
         }
       }
-
-      setLoading(false)
     } catch (error) {
-      setLoading(false)
       // Error Display in the password HelperText
       setError('password', {
         type: 'manual',
         message: `${error instanceof Error ? error.message : 'An unknown error occurred'}`,
       })
+    } finally {
+      setLoading(false)
     }
   }
 
-  if (pending) {
+  if (pending || loading) {
     return <FallbackSpinner />
   }
 
@@ -193,7 +197,7 @@ const Register = () => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: '#07305a',
+        backgroundColor: '#2196F3',
       }}
     >
       <Card>
@@ -326,7 +330,7 @@ const Register = () => {
               type="submit"
               variant="contained"
               disabled={loading}
-              sx={{ marginBottom: '16px', backgroundColor: '#1976d2', color: '#fff' }}
+              sx={{ marginBottom: '16px', backgroundColor: '#2196F3', color: '#fff' }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign up'}
             </Button>
