@@ -1,6 +1,6 @@
 'use client'
 // ** React Imports
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -54,7 +54,7 @@ const Card = styled(MuiCard)({
 
 const LinkStyled = styled(Link)({
   textDecoration: 'none',
-  color: '#7367F0',
+  color: '#2196F3',
 })
 
 const FormControlLabel = styled(MuiFormControlLabel)({
@@ -99,7 +99,6 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const store = useSelector((state: RootState) => state.auth)
-
   const { pending } = store
 
   const {
@@ -113,8 +112,17 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   })
 
+  useEffect(() => {
+    console.log('Loading state changed:', loading)
+  }, [loading])
+
   const handleGoogleLogin = async () => {
-    await handleGoogleAuth({ dispatch, router, setError, setLoading })
+    setLoading(true)
+    await handleGoogleAuth({ dispatch, router, setError, setLoading }).then(() => {
+      setTimeout(() => {
+        setLoading(false)
+      }, 15000) // 15 secs
+    })
   }
 
   const onSubmit = async (userData: FormData) => {
@@ -122,62 +130,32 @@ const Login = () => {
     setLoading(true)
 
     try {
-      // Dispatch the login action
-      const resultAction = await dispatch(handleLoginPatron(userData))
+      const resultAction: any = await dispatch(handleLoginPatron(userData))
 
-      // Check if the action is fulfilled
-      if (handleLoginPatron.fulfilled.match(resultAction)) {
+      if (resultAction.meta?.requestStatus === 'fulfilled') {
+        console.log('Auth Result - Fulfilled:', resultAction)
+        // Navigate to home
         router.push('/')
-      } else {
-        // Handle the case where the action was rejected
-        if (
-          typeof resultAction.payload === 'string' &&
-          resultAction.payload.includes('auth/user-not-found')
-        ) {
-          setError('password', {
-            type: 'manual',
-            message: 'User not found',
-          })
-        } else if (
-          typeof resultAction.payload === 'string' &&
-          resultAction.payload.includes('auth/user-disabled')
-        ) {
-          setError('password', {
-            type: 'manual',
-            message: 'Your account has been suspended. Please contact support.',
-          })
-        } else if (
-          typeof resultAction.payload === 'string' &&
-          resultAction.payload.includes('auth/network-request-failed')
-        ) {
-          setError('password', {
-            type: 'manual',
-            message: 'Network Error',
-          })
-        } else if (
-          typeof resultAction.payload === 'string' &&
-          resultAction.payload.includes('auth/wrong-password')
-        ) {
-          setError('password', {
-            type: 'manual',
-            message: 'Invalid credentials',
-          })
-        }
-      }
 
-      // Reset loading state
-      setLoading(false)
+        setTimeout(() => {
+          setLoading(false)
+        }, 15000) // 15 secs
+
+        return
+      }
     } catch (error) {
       setLoading(false)
       // Error Display in the password HelperText
       setError('password', {
         type: 'manual',
-        message: `${error instanceof Error ? error.message : 'An unknown error occurred'}`,
+        message: (error instanceof Error && error.message) || 'An unknown error occurred',
       })
+    } finally {
+      setLoading(false)
     }
   }
 
-  if (pending) {
+  if (pending || loading) {
     return <FallbackSpinner />
   }
 
@@ -189,7 +167,7 @@ const Login = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
-        backgroundColor: '#07305a',
+        backgroundColor: '#2196F3',
       }}
     >
       <Card>
@@ -302,7 +280,7 @@ const Login = () => {
               type="submit"
               variant="contained"
               disabled={loading}
-              sx={{ marginBottom: '16px', backgroundColor: '#1976d2', color: '#fff' }}
+              sx={{ marginBottom: '16px', backgroundColor: '#2196F3', color: '#fff' }}
             >
               {loading ? <CircularProgress size={24} color="inherit" /> : 'Log in'}
             </Button>
