@@ -1,11 +1,13 @@
 'use client'
+
 import IconifyIcon from '@/components/icon'
-import { AppDispatch, RootState } from '@/store'
+import DetailSkeleton from '@/components/skeleton/DetailSkeleton'
+import type { AppDispatch, RootState } from '@/store'
 import { singleActivity } from '@/store/slides/activities'
-import { formatDate } from '@/utils/utils'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { Button } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,12 +28,7 @@ const ActivityDetails = () => {
   }, [dispatch, activityId, selectedActivity])
 
   if (fetchingSingleActivity) {
-    return (
-      <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-        <CircularProgress sx={{ mb: 4 }} />
-        <Typography>Loading...</Typography>
-      </Box>
-    )
+    return <DetailSkeleton />
   }
 
   if (!selectedActivity || Object.keys(selectedActivity).length === 0) {
@@ -58,7 +55,7 @@ const ActivityDetails = () => {
           {selectedActivity.imgs?.map((img: string, index: number) => (
             <div key={index} className="relative w-full h-64">
               <Image
-                src={img}
+                src={img || '/placeholder.svg'}
                 alt={`Activity Image ${index + 1}`}
                 fill
                 className="object-cover rounded-lg"
@@ -84,8 +81,9 @@ const ActivityDetails = () => {
 
         {/* Back Button */}
         <Button
+          LinkComponent={Link}
+          href="/activities"
           startIcon={<IconifyIcon icon="mingcute:back-fill" />}
-          onClick={() => router.push('/activities')}
           variant="outlined"
           className="!mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-100"
         >

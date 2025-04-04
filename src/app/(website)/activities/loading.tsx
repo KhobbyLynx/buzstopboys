@@ -1,13 +1,7 @@
-import { Box, CircularProgress, Typography } from '@mui/material'
-import React from 'react'
+'use client'
 
-const loading = () => {
-  return (
-    <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-      <CircularProgress sx={{ mb: 4 }} />
-      <Typography>Loading...</Typography>
-    </Box>
-  )
+import ActivitySkeleton from '@/components/skeleton/ActivitySkeleton'
+
+export default function Loading() {
+  return <ActivitySkeleton />
 }
-
-export default loading
